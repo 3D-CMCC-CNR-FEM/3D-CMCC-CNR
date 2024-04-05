@@ -80,5 +80,7 @@ For references on **3D-CMCC-FEM**:
 
 17. *“Regional estimates of gross primary production applying the Process-Based Model 3D-CMCC-FEM vs. Remote-Sensing multiple datasets"*, Dalmonech D., Vangi E., Chiesi M., Chirici G., Fibbi L., Giannetti F., Marano G., Massari C., Nolè A., Xiao J., Collalti A.. *European Journal of Remote Sensing*, 57(1): 2301657, https://doi.org/10.1080/22797254.2023.2301657, 2024.
 
+18. *"A harmonized database of European forest simulations under climate change"*, Grünig M., Rammer W., Albrich A., Andrè F., Augustynczik A.L.D., Bohn F., Bowman M., Bugmann H., Collalti A., Cristal I., Dalmonech D., De Caceres M., De Coligny F., Dobor L., Dollinger C., Forrester D.I., Garcia-Gonzalo J., González J.R., Hiltner U., Hlásny T., Honkaniemi J., Huber N., Jonard M., Jönsson A.M., Lagergren F., Nieberg M., Mina M., Mohren F., Moos C., Morin X., Muys B., Peltoniemi M., Reyer C.P.O., Storms I., Thom D., Toigo M., Seidl R.. *Data in Brief*, 110384, https://doi.org/10.1016/j.dib.2024.110384, 2024.
+
 see also at: https://www.forest-modelling-lab.com/publications
 
