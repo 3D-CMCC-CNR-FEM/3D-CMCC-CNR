@@ -92,7 +92,6 @@ int germination (cell_t *const c, const meteo_daily_t *const meteo_daily, specie
 
     int N_seed_vitality = 0;
     long int Seedlings_Number = 0;
-    //int *ptr_Seedlings;
 
 
 
@@ -106,14 +105,6 @@ int germination (cell_t *const c, const meteo_daily_t *const meteo_daily, specie
             //Assigned seedling number to a species vector
             s->counter[SEEDLINGS] = Seedlings_Number;
             //printf("Seedlings = \t%d\n", s->counter[SEEDLINGS]);
-
-            //Assign variable to pointer
-            //ptr_Seedlings = &Seedlings_Number;
-
-
-    //printf("Seedlings = \t%d\n", s->counter[SEEDLINGS]);
-    //printf("Thermicsum = %f\n", meteo_daily->spring_thermic_sum);
-    //printf("ptr seedlings = %d\n", *ptr_Seedlings);
 
 
     return 0;
@@ -330,7 +321,7 @@ int establishment (cell_t *const c, const meteo_daily_t *const meteo_daily, spec
         //Optimal condition for light and temperature (case1)
 		if (meteo_daily->seedling_par >= s->value[SURV_PAR] && meteo_daily->seedling_temp <= s->value[SURV_TEMP]) {
 
-			Seedlings_surv = (s->counter[SEEDLINGS] * 0.7); //L.Muffler et al.2021 0.70
+			Seedlings_surv = (s->counter[SEEDLINGS] * 0.01); //L.Muffler et al.2021 0.70
 
             s->counter[SEEDLINGS_SURV] = Seedlings_surv;
 
@@ -339,7 +330,7 @@ int establishment (cell_t *const c, const meteo_daily_t *const meteo_daily, spec
         //Optimal condition for light but not for temperature (case2)
         else if (meteo_daily->seedling_par >= s->value[SURV_PAR] && meteo_daily->seedling_temp > s->value[SURV_TEMP]) {
 
-	        Seedlings_surv = (s->counter[SEEDLINGS] * 0.55); //L.Muffler et al.2021 0.55
+	        Seedlings_surv = (s->counter[SEEDLINGS] * 0.01); //L.Muffler et al.2021 0.55
             s->counter[SEEDLINGS_SURV] = Seedlings_surv;
 
              }
@@ -347,7 +338,7 @@ int establishment (cell_t *const c, const meteo_daily_t *const meteo_daily, spec
         //Optimal condition for temperature but not for light (case3)
         else if (meteo_daily->seedling_par < s->value[SURV_PAR] && meteo_daily->seedling_temp < s->value[SURV_TEMP]) {
 
-			Seedlings_surv = (s->counter[SEEDLINGS] * 0.3); //L.Muffler et al.2021 0.30
+			Seedlings_surv = (s->counter[SEEDLINGS] * 0.01); //L.Muffler et al.2021 0.30
             s->counter[SEEDLINGS_SURV] = Seedlings_surv;
 
              }
@@ -355,7 +346,7 @@ int establishment (cell_t *const c, const meteo_daily_t *const meteo_daily, spec
 		//Non-Optimal condition for Light and Temperature (case 4)
         else if (meteo_daily->seedling_par < s->value[SURV_PAR] && meteo_daily->seedling_temp > s->value[SURV_TEMP]) {
 
-			Seedlings_surv = (s->counter[SEEDLINGS] * 0.2); //L.Muffler et al.2021 0.20
+			Seedlings_surv = (s->counter[SEEDLINGS] * 0.01); //L.Muffler et al.2021 0.20
             s->counter[SEEDLINGS_SURV] = Seedlings_surv;
 
 

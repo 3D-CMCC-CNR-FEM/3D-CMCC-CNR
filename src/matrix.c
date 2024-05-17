@@ -978,11 +978,12 @@ static const char *sz_species_values[] =
 		"THINNING_REGIME",            /* thinning regime (0 = above, 1 = below) */
 		"THINNING_INTENSITY",         /* thinning intensity (% of Basal Area/N-tree to remove) */
 		//"MAX_CS",                   /* Maximum Carbon accumulation in grams over the years available for seeds production */
-		"WEIGHTFRUIT",                /* weight of fruit that contain seed or seeds in grams (DM)*/
-		"FRUIT_SEED",                 /* Mean number of seeds */
-		"GDD_SEED",                   /* growing degree days for seed germination */
-		"SURV_TEMP",                  /* Optimal survival mean temperature for seedling in summer (°C) */
-		"SURV_PAR",                   /* Optimal summer PAR for maximum survival value (mol/m2 day)*/
+		"WEIGHTFRUIT",                // weight of fruit that contain seed or seeds in grams (DM)
+		"FRUIT_SEED",                 // Mean number of seeds (n)
+		"GDD_SEED",                   // growing degree days for seed germination (°C)
+		"SURV_TEMP",                  // Optimal survival mean temperature for seedling in summer (°C)
+		"SURV_PAR",                   // Optimal summer PAR for maximum survival value (mol/m2 day)
+		"REINEKE_CONSTANT",           // Reineke species specific constant (k || a') for Fagus sylvatica
 
 		"MINSTOCKGROW",
 		"THINNING_80",

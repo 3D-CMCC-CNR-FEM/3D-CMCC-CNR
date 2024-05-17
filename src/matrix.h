@@ -110,12 +110,13 @@ enum {
 	THINNING,                            /* thinning regime (based on year simulation) */
 	THINNING_REGIME,                     /* thinning regime (0 = above, 1 = below) */
 	THINNING_INTENSITY,                  /* thinning intensity (% of Basal Area/N-tree to remove) */
-	//MAX_CS,                            /* maximum Carbon accumulation in grams over the years available for seeds production */
-	WEIGHTFRUIT,                         /* weight of fruit that contain seed or seeds in grams (DM) */
-	FRUIT_SEED,                          /* Mean number of seeds per fruit */
-	GDD_SEED,                            /* growing degree days for seed germination */
-	SURV_TEMP,                           /* Optimal survival mean temperature for seedling in summer (°C) */
-	SURV_PAR,                            /* Optimal summer PAR for maximum survival value (mol/m2 day)*/
+	//MAX_CS,                            // maximum Carbon accumulation in grams over the years available for seeds production
+	WEIGHTFRUIT,                         // weight of fruit that contain seed or seeds in grams (DM)
+	FRUIT_SEED,                          // Mean number of seeds per fruit (n)
+	GDD_SEED,                            // growing degree days for seed germination (°C)
+	SURV_TEMP,                           // Optimal survival mean temperature for seedling in summer (°C)
+	SURV_PAR,                            // Optimal summer PAR for maximum survival value (mol/m2 day)
+	REINEKE_CONSTANT,                    // Reineke species specific constant (k || a') for Fagus sylvatica
 
 	MINSTOCKGROW,
 	THINNING_80,
@@ -540,7 +541,7 @@ enum {
 	TREE_CROOT_C,                       /* (tC/tree) Single Tree Coarse carbon pool */
 	TREE_RESERVE_C,                     /* (tC/tree) Single Tree Reserve carbon pool */
 	TREE_MIN_RESERVE_C,                 /* (tC/tree) Single Tree Minimum Reserve carbon pool */
-        TREE_MIN_ANN_RESERVE_C,             /* (tC/tree) Minimum reserve carbon pool */  // ddalmo corr:  minimum reserve value for that year
+    TREE_MIN_ANN_RESERVE_C,             /* (tC/tree) Minimum reserve carbon pool */  // ddalmo corr:  minimum reserve value for that year
 	TREE_MAX_ANN_RESERVE_C,             /* (tC/tree) Minimum reserve carbon pool */  // ddalmo corr:  maximum reserve value for that year
 	TREE_FRUIT_C,                       /* (tC/tree) Single Tree Fruit carbon pool */
 	TREE_BRANCH_C,                      /* (tC/tree) Single Tree Branch carbon pool */
@@ -1027,7 +1028,7 @@ typedef struct
 	int dos;                                                              /* day of simulation */
 
 	int harvesting;                                                       /* 0 = off, 1 = on */
-	int recr; //INSERITO DA DANIELA
+	int recr; //INSERITO DA DANIELA PER RECRUITMENT (Flag)
 
 	/* for logger */
 	int initial_tree_layers_count;

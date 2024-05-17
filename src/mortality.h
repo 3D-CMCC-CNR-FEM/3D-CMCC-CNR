@@ -20,6 +20,6 @@ void mortality                         (cell_t *const c, const int height, const
 
 void pruning_daily					   (matrix_t* m, int cell_index, pruning_t* p);
 
-void seedlings_mortality               (cell_t *const c, const meteo_daily_t *const meteo_daily, species_t *const s, const int day, const int month, const int year);
+void saplings_mortality                (cell_t *const c, const int height, const int dbh, const int age, const int species);
 
 #endif /* MORTALITY_H_ */

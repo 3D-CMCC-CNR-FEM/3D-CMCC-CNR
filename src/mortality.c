@@ -26,7 +26,7 @@ extern logger_t* g_debug_log;
 
 /******************************************************************************************************************/
 /******************************************************************************************************************/
-
+#if 1
 void self_thinning_mortality (cell_t *const c, const int layer, const int year)
 {
 	int height;
@@ -204,7 +204,7 @@ void self_thinning_mortality (cell_t *const c, const int layer, const int year)
 
 
 }
-
+#endif // 0
 /******************************************************************************************************************/
 /******************************************************************************************************************/
 
@@ -564,125 +564,126 @@ void self_pruning ( cell_t *const c, const int height, const int dbh, const int 
 
 /******************************************************************************************************************/
 /******************************************************************************************************************/
+#if 0
+
+// Self-thinnig mortality function from 3PG */
+//-----------------------------------------------------------------------------
+
+//                     Self-thinnig mortality (3-PG)
+//This function determines the number of stems to remove to ensure the
+//self-thinning rule is satisfied. It applies the Newton-Rhapson method
+//to solve for N to an accuracy of 1 stem or less. To change this,
+//change the value of "accuracy".
+//This was the old mortality function:
+//getMortality = oldN - 1000 * (wSx1000 * oldN / oldW / 1000) ^ (1 / thinPower)
+//which has been superceded by the following ..
+
+//-----------------------------------------------------------------------------
+// NOT USED
+void self_thinning_mortality_3PG (species_t *const s, int years)
+{
+
+	int i;
+	double fN, dfN;
+	double dN, n, x1, x2;
 
 
-/* Self-thinnig mortality function from 3PG */
-/*-----------------------------------------------------------------------------*/
-/*                                                                             */
-/*                     Self-thinnig mortality (3-PG)                           */
-/*This function determines the number of stems to remove to ensure the         */
-/*self-thinning rule is satisfied. It applies the Newton-Rhapson method        */
-/*to solve for N to an accuracy of 1 stem or less. To change this,             */
-/*change the value of "accuracy".                                              */
-/*This was the old mortality function:                                         */
-/*getMortality = oldN - 1000 * (wSx1000 * oldN / oldW / 1000) ^ (1 / thinPower)*/
-/*which has been superceded by the following ..                                */
-/*                                                                             */
-/*-----------------------------------------------------------------------------*/
-/* NOT USED */
-//void self_thinning_mortality_3PG (species_t *const s, int years)
-//{
-//
-//	int i;
-//	double fN, dfN;
-//	double dN, n, x1, x2;
-//
-//
-//	s->value[WS_MAX] = s->value[WSX1000] * pow ( ( 1000 / (double) s->counter[N_TREE] ), s->value[THINPOWER] );
-//
-//	//ALESSIOC ??????????????
-//	//modifified version for 1Km^2 spatial resolution
-//	s->value[WS_MAX] = s->value[WSX1000];
-//
-//	if ( s->value[AV_STEM_MASS_KgDM] > s->value[WS_MAX])
-//	{
-//		logger(g_log, "*Self-thinnig mortality (3-PG)*\n");
-//		logger(g_log, "Average Stem Mass > WSMax\n");
-//		logger(g_log, "WS MAX = %f kgC/tree\n", s->value[WS_MAX]);
-//		logger(g_log, "Average Stem Mass = %f kgC stem/tree\n", s->value[AV_STEM_MASS_KgDM]);
-//		logger(g_log, "Tree Number before Mortality Function = %d\n", s->counter[N_TREE]);
-//
-//		n = (double)s->counter[N_TREE] / 1000;
-//		logger(g_log, "n = %f\n", n);
-//
-//		x1 = 1000 * s->value[MS] * s->value[STEM_C] / (double)s->counter[N_TREE];
-//		logger(g_log, "x1 = %f\n", x1);
-//		i = 0;
-//		while ( 1 )
-//		{
-//			i = i + 1;
-//			logger(g_log, "i = %d\n", i);
-//			x2 = s->value[WSX1000] * pow (n, (1 - s->value[THINPOWER]));
-//			logger(g_log, "X2 = %f\n", x2);
-//			fN = x2 - x1 * n - (1 - s->value[MS]) * s->value[STEM_C];
-//			logger(g_log, "fN = %f\n", fN);
-//			dfN = (1 - s->value[THINPOWER]) * x2 / n - x1;
-//			logger(g_log, "dfN = %f\n", dfN);
-//			dN = -fN / dfN;
-//			logger(g_log, "dN = %f\n", dN);
-//			n = n + dN;
-//			logger(g_log, "n = %f\n", n);
-//			if ((fabs(dN) <= eps) || (i >= 5))
-//				break;
-//		}
-//
-//		s->counter[DEAD_STEMS] = (int)(s->counter[N_TREE] - 1000 * n);
-//		logger(g_log, "Dead Tree In Mortality Function = %d trees \n", s->counter[DEAD_STEMS]);
-//
-//		//SERGIO CONTROL: if DEAD_STEMS < 0 set it to its minimum plausible value; that is 0
-//		if (s->counter[DEAD_STEMS] < 0)
-//		{
-//			s->counter[DEAD_STEMS]	 = 0;
-//		}
-//		//control
-//		if (s->counter[DEAD_STEMS] > s->counter[N_TREE])
-//		{
-//			logger(g_log, "ERROR Number of Dead Trees > N Trees\n");
-//			logger(g_log, "Dead Trees = %d\n", s->counter[DEAD_STEMS]);
-//			logger(g_log, "Live Trees = %d\n", s->counter[N_TREE]);
-//		}
-//		else
-//		{
-//			s->counter[N_TREE] = s->counter[N_TREE] - s->counter[DEAD_STEMS];
-//			logger(g_log, "Number of Trees  after mortality = %d trees\n", s->counter[N_TREE]);
-//			s->value[BIOMASS_FOLIAGE_tDM] = s->value[BIOMASS_FOLIAGE_tDM] - s->value[MF] * s->counter[DEAD_STEMS] * (s->value[BIOMASS_FOLIAGE_tDM] / s->counter[N_TREE]);
-//			s->value[BIOMASS_ROOTS_TOT_tDM] = s->value[BIOMASS_ROOTS_TOT_tDM] - s->value[MR] * s->counter[DEAD_STEMS] * (s->value[BIOMASS_ROOTS_TOT_tDM] / s->counter[N_TREE]);
-//			s->value[BIOMASS_STEM_tDM] = s->value[BIOMASS_STEM_tDM] - s->value[MS] * s->counter[DEAD_STEMS] * (s->value[BIOMASS_STEM_tDM] / s->counter[N_TREE]);
-//			logger(g_log, "Wf after dead = %f tDM/ha\n", s->value[BIOMASS_FOLIAGE_tDM]);
-//			logger(g_log, "Wr after dead = %f tDM/ha\n", s->value[BIOMASS_ROOTS_TOT_tDM]);
-//			logger(g_log, "Ws after dead = %f tDM/ha\n", s->value[BIOMASS_STEM_tDM]);
-//		}
-//
-//
-//
-//		//----------------Number of trees after mortality---------------------
-//
-//
-//
-//
-//		//--------------------------------------------------------------------
-//
-//		//deselected algorithm for 1Km^2 spatial resolution
-//		//s->value[WS_MAX] = s->value[WSX1000] * pow((1000 / (double)s->counter[N_TREE]), s->value[THINPOWER]);
-//
-//		//modifified version for 1Km^2 spatial resolution
-//		s->value[WS_MAX] = s->value[WSX1000];
-//
-//		logger(g_log, "wSmax = %f KgDM/tree\n", s->value[WS_MAX]);
-//		s->value[AV_STEM_MASS_KgDM] = s->value[BIOMASS_STEM_tDM] * 1000.0 / (double)s->counter[N_TREE];
-//		logger(g_log, "AvStemMass after dead = %f Kg/tree\n", s->value[AV_STEM_MASS_KgDM]);
-//	}
-//	else
-//	{
-//		logger(g_log, "NO MORTALITY based SELF-THINNING RULE\n");
-//		logger(g_log, "Average Stem Mass < WSMax\n");
-//	}
-//
-//	logger(g_log, "**********************************\n");
-//
-//
-//
-//}
+	s->value[WS_MAX] = s->value[WSX1000] * pow ( ( 1000 / (double) s->counter[N_TREE] ), s->value[THINPOWER] );
+
+	//ALESSIOC ??????????????
+	//modifified version for 1Km^2 spatial resolution
+	s->value[WS_MAX] = s->value[WSX1000];
+
+	if ( s->value[AV_STEM_MASS_KgDM] > s->value[WS_MAX])
+	{
+		logger(g_log, "*Self-thinnig mortality (3-PG)*\n");
+		logger(g_log, "Average Stem Mass > WSMax\n");
+		logger(g_log, "WS MAX = %f kgC/tree\n", s->value[WS_MAX]);
+		logger(g_log, "Average Stem Mass = %f kgC stem/tree\n", s->value[AV_STEM_MASS_KgDM]);
+		logger(g_log, "Tree Number before Mortality Function = %d\n", s->counter[N_TREE]);
+
+		n = (double)s->counter[N_TREE] / 1000;
+		logger(g_log, "n = %f\n", n);
+
+		x1 = 1000 * s->value[MS] * s->value[STEM_C] / (double)s->counter[N_TREE];
+		logger(g_log, "x1 = %f\n", x1);
+		i = 0;
+		while ( 1 )
+		{
+			i = i + 1;
+			logger(g_log, "i = %d\n", i);
+			x2 = s->value[WSX1000] * pow (n, (1 - s->value[THINPOWER]));
+			logger(g_log, "X2 = %f\n", x2);
+			fN = x2 - x1 * n - (1 - s->value[MS]) * s->value[STEM_C];
+			logger(g_log, "fN = %f\n", fN);
+			dfN = (1 - s->value[THINPOWER]) * x2 / n - x1;
+			logger(g_log, "dfN = %f\n", dfN);
+			dN = -fN / dfN;
+			logger(g_log, "dN = %f\n", dN);
+			n = n + dN;
+			logger(g_log, "n = %f\n", n);
+			if ((fabs(dN) <= eps) || (i >= 5))
+				break;
+		}
+
+		s->counter[DEAD_STEMS] = (int)(s->counter[N_TREE] - 1000 * n);
+		logger(g_log, "Dead Tree In Mortality Function = %d trees \n", s->counter[DEAD_STEMS]);
+
+		//SERGIO CONTROL: if DEAD_STEMS < 0 set it to its minimum plausible value; that is 0
+		if (s->counter[DEAD_STEMS] < 0)
+		{
+			s->counter[DEAD_STEMS]	 = 0;
+		}
+		//control
+		if (s->counter[DEAD_STEMS] > s->counter[N_TREE])
+		{
+			logger(g_log, "ERROR Number of Dead Trees > N Trees\n");
+			logger(g_log, "Dead Trees = %d\n", s->counter[DEAD_STEMS]);
+			logger(g_log, "Live Trees = %d\n", s->counter[N_TREE]);
+		}
+		else
+		{
+			s->counter[N_TREE] = s->counter[N_TREE] - s->counter[DEAD_STEMS];
+			logger(g_log, "Number of Trees  after mortality = %d trees\n", s->counter[N_TREE]);
+			s->value[BIOMASS_FOLIAGE_tDM] = s->value[BIOMASS_FOLIAGE_tDM] - s->value[MF] * s->counter[DEAD_STEMS] * (s->value[BIOMASS_FOLIAGE_tDM] / s->counter[N_TREE]);
+			s->value[BIOMASS_ROOTS_TOT_tDM] = s->value[BIOMASS_ROOTS_TOT_tDM] - s->value[MR] * s->counter[DEAD_STEMS] * (s->value[BIOMASS_ROOTS_TOT_tDM] / s->counter[N_TREE]);
+			s->value[BIOMASS_STEM_tDM] = s->value[BIOMASS_STEM_tDM] - s->value[MS] * s->counter[DEAD_STEMS] * (s->value[BIOMASS_STEM_tDM] / s->counter[N_TREE]);
+			logger(g_log, "Wf after dead = %f tDM/ha\n", s->value[BIOMASS_FOLIAGE_tDM]);
+			logger(g_log, "Wr after dead = %f tDM/ha\n", s->value[BIOMASS_ROOTS_TOT_tDM]);
+			logger(g_log, "Ws after dead = %f tDM/ha\n", s->value[BIOMASS_STEM_tDM]);
+		}
+
+
+
+		//----------------Number of trees after mortality---------------------
+
+
+
+
+		//--------------------------------------------------------------------
+
+		//deselected algorithm for 1Km^2 spatial resolution
+		//s->value[WS_MAX] = s->value[WSX1000] * pow((1000 / (double)s->counter[N_TREE]), s->value[THINPOWER]);
+
+		//modifified version for 1Km^2 spatial resolution
+		s->value[WS_MAX] = s->value[WSX1000];
+
+		logger(g_log, "wSmax = %f KgDM/tree\n", s->value[WS_MAX]);
+		s->value[AV_STEM_MASS_KgDM] = s->value[BIOMASS_STEM_tDM] * 1000.0 / (double)s->counter[N_TREE];
+		logger(g_log, "AvStemMass after dead = %f Kg/tree\n", s->value[AV_STEM_MASS_KgDM]);
+	}
+	else
+	{
+		logger(g_log, "NO MORTALITY based SELF-THINNING RULE\n");
+		logger(g_log, "Average Stem Mass < WSMax\n");
+	}
+
+	logger(g_log, "**********************************\n");
+
+
+
+}
+#endif // 0
 
 void pruning_daily(matrix_t* m, int cell_index, pruning_t* p)
 {
@@ -776,24 +777,81 @@ void pruning_daily(matrix_t* m, int cell_index, pruning_t* p)
 	s->value[N_TO_CWD]                      += s->value[N_CROOT_TO_CWD];
 }
 
-#if 0     //Saponaro test for seedlings mortality
+#if 1     /************** Saplings Self Thinning Rule REINEKE *******/ //SAPONARO May 2024
 
-void seedlings_mortality (cell_t *const c, const meteo_daily_t *const meteo_daily, species_t *const s, const int day, const int month, const int year)
+void saplings_mortality (cell_t *const c, const int height, const int dbh, const int age, const int species)
 {
 
- int Seedling_dead = 0;
- age_t* a;
+ int deadtree = 0;
+ int livetree = 0;
+ int nat_man;   //Natural mortality = 0 ; Managed mortality = 1;
+ double qmd = 0.0; //quadratic mean diameter
+
+    //Pointers
+    height_t *h;
+	dbh_t *d;
+	age_t *a;
+	species_t *s;
+
+	nat_man = 0;
+
+	h = &c->heights[height];
+	d = &h->dbhs[dbh];
+	a = &d->ages[age];
+	s = &a->species[species];
+
+	livetree = s->counter[N_TREE];
+
+ //Based on NFI (2015) 5.0cm
+ if (d->value <= 5.0) {
+
+	//Calculation of Quadratic Mean Diameter (unit measure in cm)
+    qmd = sqrt((s->value[STAND_BASAL_AREA_m2]/s->counter[N_TREE])/0.00007854);
+
+    //Reineke Self-thinning equation
+    deadtree = s->value[REINEKE_CONSTANT] * qmd * exp(-1.605);
+    //printf("Num trees = %d\n", s->counter[N_TREE]);
+    //printf("deadtree = %d\n", deadtree);
+    //printf("QMD = %f\n", qmd);
+
+	if (deadtree >= 1 && livetree > deadtree)
+	{
+			//Remove C and N biomass
+			tree_biomass_remove ( c, height, dbh, age, species, deadtree, nat_man );
+
+		}
+
+		 if ( ! tree_class_remove(c, height, dbh, age, species) )
+           {
+				logger_error(g_debug_log, "unable to remove tree class");
+				exit(1);
+			 }
+
+		        // update at class level
+		        s->counter[DEAD_TREE] += deadtree;
+		        s->counter[N_TREE]    -= deadtree;
+
+		        // check
+		        CHECK_CONDITION(s->counter[N_TREE],    <=, 0);
+		        CHECK_CONDITION(s->counter[DEAD_TREE], <, 0);
+
+		        // update at cell level
+		        c->daily_dead_tree   += deadtree;
+		        c->monthly_dead_tree += deadtree;
+                c->annual_dead_tree  += deadtree;
+                c->n_trees           -= deadtree;
+
+                // check
+		        CHECK_CONDITION(c->daily_dead_tree  , <, 0);
+                CHECK_CONDITION(c->monthly_dead_tree, <, 0);
+                CHECK_CONDITION(c->annual_dead_tree , <, 0);
 
 
- if (establishment (c, meteo_daily, s, day, month, year) )
-  {
+         } else {
 
-     Seedling_dead = s->counter[SEEDLINGS] * (0.0023 * pow(a->value, 2) + (0.1195 * a->value) + 1.03);
+       deadtree = 0;
+	}
 
-  }
-
- return 0;
-
+  return 0;
 }
-
 #endif // 0

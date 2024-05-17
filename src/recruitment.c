@@ -232,7 +232,7 @@ static int fill_cell_for_regeneration (cell_t *const c, species_t *const s) {
 	a->species[a->species_count-1]                  = species;
 	a->species[a->species_count-1].management       = T;
 	a->species[a->species_count-1].name             = p;
-    a->species[a->species_count-1].counter[N_TREE]  = s->counter[SEEDLINGS_SURV];
+    a->species[a->species_count-1].counter[N_TREE]  = s->counter[SEEDLINGS_SURV]; //The limit seems to be 700.000 seedlings
 	a->species[a->species_count-1].counter[N_STUMP] = 0;
 	a->species[a->species_count-1].value[LAI_PROJ]  = (double)1.5;
 
