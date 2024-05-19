@@ -412,7 +412,7 @@ int Tree_model_daily (matrix_t *const m, const int cell, const int day, const in
 
 
 									/* Mortality based on stochasticity */
-									//stochastic_mortality ( c, height, dbh, age, species );
+									stochastic_mortality ( c, height, dbh, age, species );
 
 									//Saplings mortality
 							        saplings_mortality (c, height, dbh, age, species);
@@ -648,7 +648,7 @@ int Tree_model_daily (matrix_t *const m, const int cell, const int day, const in
     /*************************************** NATURAL REGENERATION PROCESS **************************************************/
 
 
-        if ( g_settings->Regeneration) {
+        if ( g_settings->Regeneration && s->value[SEXAGE] < 60) {
 
             if ( c->doy == ( IS_LEAP_YEAR ( c->years[year].year ) ? 366 : 365) )
 
@@ -693,8 +693,6 @@ int Tree_model_daily (matrix_t *const m, const int cell, const int day, const in
                               establishment (c, meteo_daily, s, day, month, year);
                               //printf("Seedlings survived = %ld\n", s->counter[SEEDLINGS_SURV]);
 
-                              //Mortality Establishment
-                              //saplings_mortality (c, height, dbh, age, species);
 
                             if ( year ==1 && c->doy == ( IS_LEAP_YEAR ( c->years[year].year ) ? 366 : 365) )
 
