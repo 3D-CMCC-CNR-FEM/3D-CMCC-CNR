@@ -15,11 +15,11 @@ The **3D-CMCC-FEM** is basically a research tool which is freely available ***on
 
 The **3D-CMCC-FEM** is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. The **3D-CMCC-FEM** code is released under the GNU General Public Licence v3.0 (GPL). See the LICENSE file along with this program for more details.  If not, see http://www.gnu.org/licenses/gpl.html.
 
-This page contains all the code releases developed over the time at CNR on the open source distribution of the computer simulation forest model **3D-CMCC-FEM**. The model has been developed and is maintained by the **Forest Modelling Laboratory** at the National Research Council of Italy, Institute for Agricultural and Forestry Systems in the Mediterranean (CNR-ISAFOM), Perugia (Italy). 
+This page contains all the code releases developed over time at CNR on the open-source distribution of the computer simulation forest model **3D-CMCC-FEM**. The model has been developed and is maintained by the **Forest Modelling Laboratory** at the National Research Council of Italy, Institute for Agricultural and Forestry Systems in the Mediterranean (CNR-ISAFOM), Perugia (Italy). 
 
 All source code and documents provided here are subject to copyright(c) by the CNR
 
-In case you have copied and/or modified the **3D-CMCC-FEM** code overall, even in small parts of it, you may not publish data from it using the name **3D-CMCC-FEM** or any **3D-CMCC-FEM** variants unless you have either coordinated your usage and their changes with the developers listed below, or publish enough details about your changes so that they could be replicated.
+In case you have copied and/or modified the **3D-CMCC-FEM** code overall, even in small parts of it, you may not publish data from it using the name **3D-CMCC-FEM** or any **3D-CMCC-FEM** variants unless you have either coordinated your usage and their changes with the developers listed below or publish enough details about your changes so that they could be replicated.
 
 The **3D-CMCC-FEM** has been developed by:  
 Alessio Collalti  
@@ -28,10 +28,10 @@ Alessio Ribeca
  
 
 
-*Forest Ecology Laboratory* at the National Research Council of Italy (CNR),Institute for Agricultural and Forestry Systems in the Mediterranean (ISAFOM), Via della Madonna Alta, 128, 06128 - Perugia (PG), Italy.   
+*Forest Ecology Laboratory* at the National Research Council of Italy (CNR), Institute for Agricultural and Forestry Systems in the Mediterranean (ISAFOM), Via della Madonna Alta, 128, 06128 - Perugia (PG), Italy.   
 
 *DISCLAIMER*  
-CNR accepts no responsibility for the use of the **3D-CMCC-FEM** in the form supplied or as subsequently modified by third parties. CNR disclaims liability for all losses,damages and costs incurred by any person as a result of relying on this software. Use of this software assumes agreement to this condition of use. Removal of this statement violates the spirit in which **3D-CMCC-FEM** was released by CNR.
+CNR accepts no responsibility for the use of the **3D-CMCC-FEM** in the form supplied or as subsequently modified by third parties. CNR disclaims liability for all losses, damages and costs incurred by any person as a result of relying on this software. Use of this software assumes agreement to this condition of use. Removal of this statement violates the spirit in which **3D-CMCC-FEM** was released by CNR.
 
 For any further information please contact us:  
 -Alessio Collalti (Lab. Head and Model Principal Investigator): alessio.collalti@cnr.it  
@@ -50,7 +50,7 @@ For references on **3D-CMCC-FEM**:
 
 2. *“A process-based model to simulate growth in forests with complex structure: Evaluation and use of 3D-CMCC Forest Ecosystem Model in a deciduous forest in Central Italy“*. Collalti A., Perugini L., Santini M., Chiti T., Nolè A., Matteucci G., Valentini R., *Ecological Modelling*, 272, 362– 378, https://doi.org/10.1016/j.ecolmodel.2013.09.016, 2014.
 
-3. *“Assessing NEE and Carbon Dynamics among 5 European Forest types: Development and Validation of a new Phenology and Soil Carbon routines within the process oriented 3D-CMCC-Forest-Ecosystem Model“*. Marconi S., Chiti T., Valentini R., Collalti A., *MsC Master Thesis (U.S. – Italy Fulbright programme winner)*, University of Tuscia,  2014.
+3. *“Assessing NEE and Carbon Dynamics among 5 European Forest types: Development and Validation of a new Phenology and Soil Carbon routines within the process-oriented 3D-CMCC-Forest-Ecosystem Model“*. Marconi S., Chiti T., Valentini R., Collalti A., *MsC Master Thesis (U.S. – Italy Fulbright programme winner)*, University of Tuscia,  2014.
 
 4. *”Validation of 3D-CMCC Forest Ecosystem Model (v.5.1) against eddy covariance data for ten European forest sites”*, A. Collalti, S. Marconi, A. Ibrom, C. Trotta, A. Anav, E. D'Andrea, G. Matteucci, L. Montagnani, B. Gielen, I. Mammarella, T. Grünwald, A. Knohl, F. Berninger, Y. Zhao, R. Valentini, and M. Santini. *Geoscientific Model Development*, 9:479–504, https://doi.org/10.5194/gmd-9-479-2016, 2016.
 
@@ -81,6 +81,12 @@ For references on **3D-CMCC-FEM**:
 17. *“Regional estimates of gross primary production applying the Process-Based Model 3D-CMCC-FEM vs. Remote-Sensing multiple datasets"*, Dalmonech D., Vangi E., Chiesi M., Chirici G., Fibbi L., Giannetti F., Marano G., Massari C., Nolè A., Xiao J., Collalti A.. *European Journal of Remote Sensing*, 57(1): 2301657, https://doi.org/10.1080/22797254.2023.2301657, 2024.
 
 18. *"A harmonized database of European forest simulations under climate change"*, Grünig M., Rammer W., Albrich A., Andrè F., Augustynczik A.L.D., Bohn F., Bowman M., Bugmann H., Collalti A., Cristal I., Dalmonech D., De Caceres M., De Coligny F., Dobor L., Dollinger C., Forrester D.I., Garcia-Gonzalo J., González J.R., Hiltner U., Hlásny T., Honkaniemi J., Huber N., Jonard M., Jönsson A.M., Lagergren F., Nieberg M., Mina M., Mohren F., Moos C., Morin X., Muys B., Peltoniemi M., Reyer C.P.O., Storms I., Thom D., Toigo M., Seidl R.. *Data in Brief*, 110384, https://doi.org/10.1016/j.dib.2024.110384, 2024.
+
+19. *"Stand Age and Climate Change Effects on Carbon Increments and Stock Dynamics"*, Vangi E., Dalmonech D., Morichetti M., Grieco E., Giannetti F., D'Amico G., Nakhavali M., Chirici G., Collalti A.. *Forests*, 15(7), 1120, https://doi.org/10.3390/f15071120, 2024.
+
+20. *"Predicted Future Changes in the Mean Seasonal Carbon Cycle Due to Climate Change"*, Morichetti M., Vangi E., Collalti A.. *Forests*, 15(7), 1124, https://doi.org/10.3390/f15071124, 2024.
+
+21. *"Monitoring and Predicting Forest Growth and Dynamics"*, Collalti A., Dalmonech D., Vangi E., Marano G., Puchi P.F., Morichetti M., Saponaro V., Orrico, M.R., Grieco E.. *CNR Edizioni*, https://doi.org/10.32018/ForModLab-book-2024 - ISBN 978-88-8080-655-4, 2024
 
 see also at: https://www.forest-modelling-lab.com/publications
 
