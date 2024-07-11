@@ -1,7 +1,12 @@
 # 3D-CMCC-FEM  
 # *Three Dimensional - Coupled Model Carbon Cycle - Forest Ecosystem Module*
 
-![FML_4](https://user-images.githubusercontent.com/27204956/99875955-c8bfea80-2bf3-11eb-821c-c02a068990d4.jpg)
+
+
+![LOGO_3DCMCCFEM_color](https://github.com/Forest-Modelling-Lab/3D-CMCC-FEM/assets/27204956/8e32423e-7963-46d9-af3c-21a6b4fbf164)
+
+
+
 
 **3D-CMCC-FEM *(Three Dimensional - Coupled Model Carbon Cycle - Forest Ecosystem Module)* official repository**
 
@@ -11,7 +16,7 @@ Copyright(c) 2020, Forest Modelling Laboratory – 3D-CMCC-FEM
 All rights reserved
 
 
-The **3D-CMCC-FEM** is basically a research tool which is freely available ***only*** for non-commercial use. We have developed the **3D-CMCC-FEM** code relying solely on open source components, in order to facilitate its use and further development by others. 
+The **3D-CMCC-FEM** is a research tool which is freely available ***only*** for non-commercial use. We have developed the **3D-CMCC-FEM** code relying solely on open-source components, to facilitate its use and further development by others. 
 
 The **3D-CMCC-FEM** is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. The **3D-CMCC-FEM** code is released under the GNU General Public Licence v3.0 (GPL). See the LICENSE file along with this program for more details.  If not, see http://www.gnu.org/licenses/gpl.html.
 
