@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <assert.h>
-#include <new_forest_tree_class.h>
+#include "new_forest_tree_class.h"
 #include "constants.h"
 #include "settings.h"
 #include "common.h"

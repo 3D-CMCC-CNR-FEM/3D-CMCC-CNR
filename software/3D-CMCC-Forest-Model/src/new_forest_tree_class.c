@@ -6,7 +6,7 @@
 #include <string.h>
 #include <math.h>
 #include <assert.h>
-#include <new_forest_tree_class.h>
+#include "new_forest_tree_class.h"
 #include "matrix.h"
 #include "management.h"
 #include "constants.h"
