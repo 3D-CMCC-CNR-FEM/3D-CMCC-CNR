@@ -52,6 +52,9 @@ enum {
 	GROWTHTMAX,                          /* Maximum temperature for growth */
 	GROWTHTOPT,                          /* Optimum temperature for growth */
 	GROWTHSTART,                         /* Thermic sum  value for starting growth in °C */
+	TAU,                                 // day   
+	X0,                                  // °C 
+	Smax,                                // °C 
 	MINDAYLENGTH,                        /* Minimum day length for phenology */
 	SWPOPEN,                             /* (MPa) Soil water potential open */
 	SWPCLOSE,                            /* (MPa) Soil water potential close */
@@ -236,6 +239,13 @@ enum {
 	F_CO2_TR,                           /* (DIM) CO2 reduction effect (for stomatal conductance) */
 	PHYS_MOD,                           /* (DIM) PHYSIOLOGICAL modifier */
 	F_LIGHT_VERT,
+
+        old_X_acl,                          //
+        F_ACCL,                             // cold-acclimation factor for assimilation
+                
+        m_corr,                             // correction factor for assimilation,when stomatal conductance is close to 0
+	m_corr_sun,
+	m_corr_shade,
 
 	F_LIGHT_MAKELA,                            /* (DIM) LIGHT modifier */
 	F_LIGHT_SUN_MAKELA,                        /* (DIM) LIGHT modifier for Sun leaves */
@@ -489,8 +499,8 @@ enum {
 	MIN_RESERVE_C,                      /* (tC/cell) Current Minimum reserve carbon pool */  // corr:  minimum reserve pool which has to be guaranteed that year.
         MIN_ANN_RESERVE_C,                  /* (tC/cell) Current Minimum reserve carbon pool */  // corr:  minimum reserve value for that year
 	MAX_ANN_RESERVE_C,                  /* (tC/cell) Current Minimum reserve carbon pool */  // corr:  maximum reserve value for that year
-	MAX_RESERVE_C_CONC,                 /* (tC/cell) Current Maximum reserve concentration carbon pool */  // max for the year
-	MIN_RESERVE_C_CONC,                 /* (tC/cell) Current Minimum reserve concentration carbon pool */  // min for the year
+	MAX_RESERVE_C_CONC,                 /* (%) Current Maximum reserve concentration carbon pool */  // max for the year
+	MIN_RESERVE_C_CONC,                 /* (%) Current Minimum reserve concentration carbon pool */  // min for the year
 	RESERVE_C,                          /* (tC/cell) Current Reserve carbon pool */
 	FRUIT_C,                            /* (tC/cell) Current Fruit carbon pool */
 	MAX_FRUIT_C,                        /* (tC/cell/year) Annual Fruit carbon pool */
