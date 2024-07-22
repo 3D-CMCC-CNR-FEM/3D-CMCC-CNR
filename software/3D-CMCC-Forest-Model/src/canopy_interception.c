@@ -80,6 +80,18 @@ void canopy_interception(cell_t *const c, const int layer, const int height, con
 			}
 
 #endif
+
+			// 5p606
+			// check condition when we have several classes within the same layer and the total canopy cover projection is higher than 1
+			
+			if ( ( s->value[CANOPY_INT_RAIN] >  meteo_daily->rain )  &&  (c->tree_layers[layer].daily_layer_cover_proj > 1)) ;
+			 {
+			 
+			  s->value[CANOPY_INT_RAIN] =0.;   // we set to 0 the 'lower' (as z) class in the layer).
+			 
+			 }
+                         
+
 			/* update pool */
 			s->value[CANOPY_WATER]    = s->value[CANOPY_INT_RAIN];
 
@@ -102,9 +114,24 @@ void canopy_interception(cell_t *const c, const int layer, const int height, con
 			s->value[CANOPY_INT_SNOW] = 0.;
 #else
 			//s->value[CANOPY_INT_SNOW] = s->value[CANOPY_SNOW] + 0.7 * ( Int_max_snow - s->value[CANOPY_SNOW] ) * (1. - exp( - ( meteo_daily->snow / Int_max_snow ) ) ) * s->value[DAILY_CANOPY_COVER_PROJ];
+			
 			//5p6 we multiply later for the cc_proj
 			s->value[CANOPY_INT_SNOW] = s->value[CANOPY_SNOW] + 0.7 * ( Int_max_snow - s->value[CANOPY_SNOW] ) * (1. - exp( - ( meteo_daily->snow / Int_max_snow ) ) ) ;
 #endif
+
+ 
+ 
+                         //5p606
+			// check condition when we have several classes within the same layer and the total canopy cover projection is higher than 1
+			
+			if ( ( s->value[CANOPY_INT_SNOW] >  meteo_daily->snow )  &&  (c->tree_layers[layer].daily_layer_cover_proj > 1)) ;
+			 {
+			 
+			  s->value[CANOPY_INT_SNOW] =0.;   // we set to 0 the 'lower' (as z) class in the layer).
+			 
+			 }
+                        
+                         
 
 			/* update pool */
 			//fixme for now assuming no snow accumulation
@@ -127,7 +154,8 @@ void canopy_interception(cell_t *const c, const int layer, const int height, con
 
 	// 5p6: please note that CANOPY_INT_RAIN/SNOW refer to m2 of canopy, hence, in order to compute the average amount of rain
 	// reaching the lower layer, it should account for the CC_PROJ
-	//  TODO the overlapping of classes within the same layer!
+	
+	// TODO the overlapping of classes within the same layer!
 	// this is also important in order to compute ASW at cell level.
 
 	/** TODO **/ //check and correct if whithin the same laver overlapping of classe occurrs
