@@ -39,6 +39,7 @@ void photosynthesis_FvCB (cell_t *const c, const int height, const int dbh, cons
 
 	if ( s->value[LEAF_SUN_N] > 0. )
 	{
+
 		/* SUNLIT canopy fraction photosynthesis per unit area */
 		sun_shade = 0;
 
@@ -97,6 +98,28 @@ void photosynthesis_FvCB (cell_t *const c, const int height, const int dbh, cons
 		if ( psn <= 0 ) s->value[ASSIMILATION_SHADE] = 0.;
 	}
 
+	//***********************************************************************************************************************************
+	// 5p606 
+
+         s->value[ASSIMILATION_SUN] = s->value[ASSIMILATION_SUN] *s->value[m_corr_sun];
+       
+         s->value[ASSIMILATION_SHADE] = s->value[ASSIMILATION_SHADE] *s->value[m_corr_shade];
+
+        // direct downregulation of GPP via soil fertility rate as in 3PG 
+	// used in the version for FN
+	
+	 s->value[ASSIMILATION_SUN] = s->value[ASSIMILATION_SUN] * s->value[F_NUTR];
+	
+	 s->value[ASSIMILATION_SHADE] = s->value[ASSIMILATION_SHADE] * s->value[F_NUTR];
+
+	
+	// direct downregulation of GPP due to cold-acclimation in spring
+
+
+	 s->value[ASSIMILATION_SUN] = s->value[ASSIMILATION_SUN] * s->value[F_ACCL];
+	
+	 s->value[ASSIMILATION_SHADE] = s->value[ASSIMILATION_SHADE] * s->value[F_ACCL];
+	
 	/************************************************************************************************************************************/
 	/* as In Wohlfahrt & Gu 2015 Plant Cell and Environment */
 	/* "GPP is intended as an integration of apparent photosynthesis (true photosynthesis minus photorespiration), NOT
