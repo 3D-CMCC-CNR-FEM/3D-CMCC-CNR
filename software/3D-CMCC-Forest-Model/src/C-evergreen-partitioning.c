@@ -5,7 +5,7 @@
  *      Author: alessio
  */
 /* includes */
-#include <CN-allocation.h>
+#include "CN-allocation.h" 
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -295,6 +295,8 @@ void daily_C_evergreen_partitioning (cell_t *const c, const int layer, const int
 			double pS1              = 0.;
                      
 			if ( month < JULY )
+			// test jan 24, for boreal sites OPJ on the verision 5p6 clicfor
+			//if ( month < SEPTEMBER ) 
 			{
 
 				/* if management doens't happen (this to avoid problems in carbon balance) */
