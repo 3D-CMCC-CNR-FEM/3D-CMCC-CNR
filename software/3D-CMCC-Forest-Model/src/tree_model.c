@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <assert.h>
-#include <new_forest_tree_class.h>
+#include "new_forest_tree_class.h" 
 #include "constants.h"
 #include "common.h"
 #include "print_output.h"
@@ -280,7 +280,10 @@ int Tree_model_daily (matrix_t *const m, const int cell, const int day, const in
 							canopy_temperature ( c, layer, height, dbh, age, species, meteo_daily );
 
 							/* daily modifier */
-							modifiers ( c, layer, height, dbh, age, species, meteo_daily, meteo_annual );
+
+							//modifiers ( c, layer, height, dbh, age, species, meteo_daily, meteo_annual );
+                                                        // 5p606
+                                                         modifiers ( c, layer, height, dbh, age, species, meteo_daily, meteo_annual, month, day );
 
 							if ( ! g_settings->PSN_mod )
 							{
