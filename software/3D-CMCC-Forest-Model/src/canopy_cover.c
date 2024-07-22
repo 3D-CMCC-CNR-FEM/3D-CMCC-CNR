@@ -57,8 +57,6 @@ void dbhdc_function ( cell_t *const c, const int layer, const int height, const 
 	previous_dbhdc_eff  = s->value[DBHDC_EFF];
 	logger(g_debug_log,"-DBHDC (old)         = %f\n", s->value[DBHDC_EFF]);
 
-	 //ddalmo
-     //printf("DBHDC_EFF  previous   = %f\n", previous_dbhdc_eff);
 
 	temp_crown_area     = ( s->value[MAX_LAYER_COVER] * g_settings->sizeCell ) / ( c->tree_layers[layer].layer_density * g_settings->sizeCell );
 	logger(g_debug_log,"-temp_crown_area     = %f\n", temp_crown_area);
@@ -74,12 +72,6 @@ void dbhdc_function ( cell_t *const c, const int layer, const int height, const 
 	s->value[DBHDC_EFF] = temp_crown_diameter / d->value;
 	logger(g_debug_log,"-DBHDC (new)         = %f\n", s->value[DBHDC_EFF]);
 
-	    //ddalmo
-    //printf("-temp_crown_area     = %f\n", s->value[MAX_LAYER_COVER]);
-    //printf("layer density     = %f\n",c->tree_layers[layer].layer_density);
-    //printf("DBHDC_EFF     = %f\n", s->value[DBHDC_EFF]);
-    //printf("diameter     = %f\n", d->value);
-
 
 	/* check if current dbhdc_eff grows too much (case when there's thinning) */
 	/* this is checked to avoid unrealistic crown area increment */
@@ -91,15 +83,13 @@ void dbhdc_function ( cell_t *const c, const int layer, const int height, const 
 		s->value[DBHDC_EFF] = previous_dbhdc_eff + ( previous_dbhdc_eff * max_dbhdc_incr );
 	}
 
-    // ddalmo
-    //printf("DBHDC_EFF after check    = %f\n", s->value[DBHDC_EFF]);
 
 	/***************************************************************************************************/
 	//note test: 18 June 2018
 	//data obtained by:	Ritter and Nothdurft et al., 2018 forests
 	//dbhdcmax decreases as dbh increases
 
-#if 1
+#if 0
 
 	if ( s->value[PHENOLOGY] == 0.1 || s->value[PHENOLOGY] == 0.2 )
 	{
@@ -113,36 +103,36 @@ void dbhdc_function ( cell_t *const c, const int layer, const int height, const 
 #endif
 
 
-       // 5p6 addition
-       // check again the Ritter papers and re-did the equations
-       // @VS:  this function defines how fast the canopy can horizontally develop when DBH increase (it is suppose than when the
+       // 5p606 
+       // calibrate equation on literature data
+       // the equation defines how fast the canopy can horizontally develop when DBH increase (it is suppose than when the
        // the density is low), and it defines in turn the chance
        // for the regeneration layer to growh
 
-#if 0
+#if 1
 
-	if ( s->value[PHENOLOGY] == 0.1 || s->value[PHENOLOGY] == 0.2 )
+	if ( s->value[PHENOLOGY] == 0.1 || s->value[PHENOLOGY] == 0.2  )
 	{
-		s->value[DBHDCMAX] = 2.3298 * pow ( d->value , -0.643 );  //  the canopy_cover_projection increase less compared to the parameters set above
-
-		if (d->value < 10.)
-	        {
-
-		s->value[DBHDCMAX] = 0.9667* pow ( d->value , -0.287);
-		}
-	}
+	
+            //  s->value[DBHDCMAX] = 0.5639 * pow ( d->value , -0.285 );   //  5p605
+              
+                s->value[DBHDCMAX] = 0.4991 * pow ( d->value , -0.202 );   // Castanea Sativa (upper limit) 5p606
+                 
+            //     if (d->value < 10.)
+	    //    {
+	    //	s->value[DBHDCMAX] = 0.4991 * pow ( 10. ,  -0.202);  // 5p607 
+            //}
+	
+	    if (s->value[DBHDCMAX] < s->value[DBHDCMIN] )   s->value[DBHDCMAX] = s->value[DBHDCMIN] ;
+        }
 	else
 	{
 
-	//s->value[DBHDCMAX] = 0.5045 * pow ( d->value , -0.309 );  // Ritter's equation for conifer
+	 s->value[DBHDCMAX] = 0.55 * pow ( d->value , -0.309 );  // Ritter's equation for conifers 5p606
 
-	s->value[DBHDCMAX] = 0.55 * pow ( d->value , -0.309 );  // Ritter's equation for conifer
+	    if (s->value[DBHDCMAX] < s->value[DBHDCMIN] )   s->value[DBHDCMAX] = s->value[DBHDCMIN] ;
 
-	//	s->value[DBHDCMAX] = 0.8543 * pow ( d->value , -0.254 );  // correct this one for conifers
 	}
-
-
-
 
 #endif
 	/**************************************************************************************************/
@@ -155,8 +145,6 @@ void dbhdc_function ( cell_t *const c, const int layer, const int height, const 
 
 	}
 
-	 // ddalmo
-    //printf("DBHDC_EFF after check2    = %f\n", s->value[DBHDC_EFF]);
 
 	/************************************************************************************************************************/
 
