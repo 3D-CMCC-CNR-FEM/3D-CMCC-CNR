@@ -427,7 +427,11 @@ void reset_daily_class_variables(cell_t *const c)
 					s->value[F_SW] =                      0.;
 					s->value[F_PSI] =                     0.;
 					s->value[PHYS_MOD] =                  0.;
-
+					s->value[F_ACCL]   =                  0.;    //5p606
+					s->value[m_corr]  =                    1.;   //5p606
+					s->value[m_corr_sun]   =               1.;
+					s->value[m_corr_shade]  =              1.;
+					
 					/*****************************************/
 					/* reset daily carbon fluxes among pools */
 					s->value[C_TO_LEAF] =                 0.;
