@@ -68,6 +68,7 @@ typedef struct {
 	double Tbase_resp;                   /* T base temperature for respiration (°C) */
 	char Photo_accl;
 	char Resp_accl;                      /* acclimation of repiration must be 'on' or 'off' */
+//	char Cold_accl;                      /* acclimation of GPP from winter to spring must be 'on' or 'off' */    //ddalmo 29.04.24
 	char regeneration;                   /* regeneration must be 'on' or 'off' */
 	char management;                     /* management must be 'on' of 'off' */
 	char management_type;                /* optional: 0 ( default ) for bau, 1 for local */
