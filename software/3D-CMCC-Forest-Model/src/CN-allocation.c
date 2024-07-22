@@ -371,6 +371,38 @@ void carbon_allocation_new ( cell_t *const c, age_t *const a, species_t *const s
 	CHECK_CONDITION ( s->value[BRANCH_C],   < , ZERO );
 	CHECK_CONDITION ( s->value[CROOT_C],    < , ZERO );
 	CHECK_CONDITION ( s->value[FRUIT_C],    < , ZERO );
+	
+	// *********************************************************************
+	// TODO check here on LEAF C
+	
+	// Precision control for LEAF_C 
+        // i.e. when LEAF_C is very low, it forced to 0
+        // otherwise, if the LEAF_C value/ leaf_carbon is not exactly == 0, this leads the model to compute LAI_PROJ, and in cascade
+        // all the leaf-related processes (e.g.radiation, water interception) are carried, even if the growing season is over. */
+
+         // if ( (s->value[LEAF_C]) < CRIT_PREC & (s->value[LEAF_C]) > 0.)    // in modo che saltiamo quando arriva in inverno che e' 0.
+         //  { 
+        
+         ////   s->value[C_LEAF_TO_LITR]     += s->value[LEAF_C];
+            //s->value[TOTAL_C]             = s->value[TOTAL_C] - s->value[LEAF_C];
+            
+            // update pool
+            
+           // c-> leaf_carbon               = c-> leaf_carbon - (s->value[LEAF_C] * 1e6 / g_settings->sizeCell);
+          ////  s->value[LEAF_C]              = 0. ;
+            
+            // ned to fix C_TO_LEAF
+           
+            // TODO check if there are cases where this might lead to 
+            // inconsistency when defoliation occurs 
+            // i.e. if we need to force FROOT_C to 0  
+            
+            //   s->value[C_FROOT_TO_LITR]  += s->value[FROOT_C];
+            //   s->value[TOTAL_C]           = s->value[TOTAL_C] - s->value[FROOT_C];
+            //   c-> froot_carbon            = c-> froot_carbon - (s->value[FROOT_C]* 1e6 / g_settings->sizeCell);
+            //   s->value[FROOT_C]           = 0. ;     
+          // } 
+	
 
 	/*********************************************************************/
 
@@ -512,7 +544,7 @@ void carbon_allocation_new ( cell_t *const c, age_t *const a, species_t *const s
             s->value[TOTAL_C]             = s->value[TOTAL_C] - s->value[LEAF_C];
             
             // update pool
-            
+           //  c-> leaf_carbon               = c-> leaf_carbon - (s->value[LEAF_C] * 1e6 / g_settings->sizeCell);
             c-> leaf_carbon               = c-> leaf_carbon - (s->value[LEAF_C] * 1e6 / g_settings->sizeCell);
             s->value[LEAF_C]              = 0. ;
            
@@ -533,6 +565,43 @@ void carbon_allocation_new ( cell_t *const c, age_t *const a, species_t *const s
 	CHECK_CONDITION ( c->branch_carbon,  < , ZERO );
 	CHECK_CONDITION ( c->croot_carbon,   < , ZERO );
 	CHECK_CONDITION ( c->fruit_carbon,   < , ZERO );
+	
+	
+	#if 1
+	
+	// 5p606
+	// update tree level carbon pools
+	
+	
+					/* compute tree average C pools */
+					s->value[TREE_LEAF_C]                = (s->value[LEAF_C]             / (double)s->counter[N_TREE]);
+					s->value[TREE_STEM_C]                = (s->value[STEM_C]             / (double)s->counter[N_TREE]);
+					s->value[TREE_FROOT_C]               = (s->value[FROOT_C]            / (double)s->counter[N_TREE]);
+					s->value[TREE_CROOT_C]               = (s->value[CROOT_C]            / (double)s->counter[N_TREE]);
+					s->value[TREE_RESERVE_C]             = (s->value[RESERVE_C]          / (double)s->counter[N_TREE]);
+					s->value[TREE_BRANCH_C]              = (s->value[BRANCH_C]           / (double)s->counter[N_TREE]);
+					s->value[TREE_FRUIT_C]               = (s->value[FRUIT_C]            / (double)s->counter[N_TREE]);
+
+					s->value[TREE_STEM_SAPWOOD_C]        = (s->value[STEM_SAPWOOD_C]     / (double)s->counter[N_TREE]);
+					s->value[TREE_STEM_HEARTWOOD_C]      = (s->value[STEM_HEARTWOOD_C]   / (double)s->counter[N_TREE]);
+					s->value[TREE_CROOT_SAPWOOD_C]       = (s->value[CROOT_SAPWOOD_C]    / (double)s->counter[N_TREE]);
+					s->value[TREE_CROOT_HEARTWOOD_C]     = (s->value[CROOT_HEARTWOOD_C]  / (double)s->counter[N_TREE]);
+					s->value[TREE_BRANCH_SAPWOOD_C]      = (s->value[BRANCH_SAPWOOD_C]   / (double)s->counter[N_TREE]);
+					s->value[TREE_BRANCH_HEARTWOOD_C]    = (s->value[BRANCH_HEARTWOOD_C] / (double)s->counter[N_TREE]);
+					s->value[TREE_SAPWOOD_C]             = (s->value[TOT_SAPWOOD_C]      / (double)s->counter[N_TREE]);
+					s->value[TREE_HEARTWOOD_C]           = (s->value[TOT_HEARTWOOD_C]    / (double)s->counter[N_TREE]);
+
+					s->value[TREE_STEM_LIVEWOOD_C]       = (s->value[STEM_LIVEWOOD_C]    / (double)s->counter[N_TREE]);
+					s->value[TREE_STEM_DEADWOOD_C]       = (s->value[STEM_DEADWOOD_C]    / (double)s->counter[N_TREE]);
+					s->value[TREE_CROOT_LIVEWOOD_C]      = (s->value[CROOT_LIVEWOOD_C]   / (double)s->counter[N_TREE]);
+					s->value[TREE_CROOT_DEADWOOD_C]      = (s->value[CROOT_DEADWOOD_C]   / (double)s->counter[N_TREE]);
+					s->value[TREE_BRANCH_LIVEWOOD_C]     = (s->value[BRANCH_LIVEWOOD_C]  / (double)s->counter[N_TREE]);
+					s->value[TREE_BRANCH_DEADWOOD_C]     = (s->value[BRANCH_DEADWOOD_C]  / (double)s->counter[N_TREE]);
+					s->value[TREE_TOT_LIVEWOOD_C]        = (s->value[TOT_LIVEWOOD_C]     / (double)s->counter[N_TREE]);
+					s->value[TREE_TOT_DEADWOOD_C]        = (s->value[TOT_DEADWOOD_C]     / (double)s->counter[N_TREE]);
+
+ 
+    #endif
 
 }
 
