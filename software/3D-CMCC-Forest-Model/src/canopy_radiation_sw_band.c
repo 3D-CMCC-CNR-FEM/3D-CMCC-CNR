@@ -267,8 +267,9 @@ void canopy_radiation_sw_band(cell_t *const c, const int layer, const int height
 	/* note: we currently use approach for homogeneous canopies that improves representation when canopy is not closed: */
 	/* see method from Cannel and Grace, Can. J. For: Res. Vol. 23, 1993 [Eq.8]  */
 	/* see method from Duursma and Makela, Tree Phys: Vol. 27, 859-870, 2007 [Eq.4] */
-
-#if 1
+    
+        //5p606
+#if 0
 	//FIXME this is a very bad assumption (I know!!) to avoid that under low density gpp is too low
 	Light_trasm_frac       = exp ( - k * s->value[LAI_PROJ]) * s->value[DAILY_CANOPY_COVER_PROJ];
 	Light_trasm_frac_sun   = exp ( - k * s->value[LAI_SUN_PROJ]) * s->value[DAILY_CANOPY_COVER_PROJ];
