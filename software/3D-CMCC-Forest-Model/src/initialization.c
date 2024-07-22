@@ -93,6 +93,7 @@ void initialization_forest_class_C (cell_t *const c, const int height, const int
 	/* Chapman-Richards function */
 	/* for references see also: R. Pilli et al. Forest Ecology and Management 237 (2006) 583–593 */
 	/* note: this shouldn't be applied to saplings that are lower than 1.3 meter */
+	
 	h->value = DBH_ref + s->value[CRA] * pow (1. - exp ( - s->value[CRB] * d->value) , s->value[CRC]);
 
 	if ( h->value > s->value[CRA] )
