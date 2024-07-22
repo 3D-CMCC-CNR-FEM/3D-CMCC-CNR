@@ -919,6 +919,9 @@ static const char *sz_species_values[] =
 		"GROWTHTMAX",                 /* Maximum temperature for growth */
 		"GROWTHTOPT",                 /* Optimum temperature for growth */
 		"GROWTHSTART",                /* Thermic sum  value for starting growth in °C */
+		"TAU",                        /*  in d */   
+		"X0",                         /*  in °C */
+		"Smax",                       /*  in °C */
 		"MINDAYLENGTH",               /* Minimum day length for phenology */
 		"SWPOPEN",                    /* (MPa) Soil water potential open */
 		"SWPCLOSE",                   /* (MPa) Soil water potential close */
