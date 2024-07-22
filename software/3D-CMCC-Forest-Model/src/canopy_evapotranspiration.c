@@ -44,10 +44,33 @@ void gs_Jarvis (species_t *const s, const double gl_x, const double g_corr)
 	m_final_shade = s->value[F_LIGHT_SHADE] * s->value[F_SW] * s->value[F_T] * s->value[F_VPD] * s->value[F_AGE];
 
 	/* check */
-	if (m_final       < eps) m_final       = eps;
-	if (m_final_sun   < eps) m_final_sun   = eps;
-	if (m_final_shade < eps) m_final_shade = eps;
-
+	//if (m_final       < eps) m_final       = eps;
+	//if (m_final_sun   < eps) m_final_sun   = eps;
+	//if (m_final_shade < eps) m_final_shade = eps;
+	
+	//  Set m_corr to 0 when m_final is == eps 
+        //  this avoid having gpp values larger than 0 in winter 
+        // e.g. in boreal forests
+#if 1
+	
+        if (m_final       < eps) {m_final       = eps;
+                                  s->value[m_corr]= 0. ;
+                                  }
+	if (m_final_sun   < eps) {m_final_sun       = eps;
+                                  s->value[m_corr_sun]= 0.;
+                                  }
+	if (m_final_shade < eps) {m_final_shade       = eps;
+                                  s->value[m_corr_shade] =0.;
+                                  }
+        
+#else 
+         
+         s->value[m_corr]= 1.;
+         s->value[m_corr_sun]= 1.;
+         s->value[m_corr_shade] =1.;
+          
+#endif
+         
 	s->value[STOMATAL_CONDUCTANCE]       = gl_x * m_final       * g_corr;
 	s->value[STOMATAL_SUN_CONDUCTANCE]   = gl_x * m_final_sun   * g_corr;
 	s->value[STOMATAL_SHADE_CONDUCTANCE] = gl_x * m_final_shade * g_corr;
@@ -296,7 +319,7 @@ void canopy_evapotranspiration(cell_t *const c, const int layer, const int heigh
 				/* call Penman-Monteith function, returns e in kg/m2/s for transpiration and W/m2 for latent heat */
 				//fixme use correct net radiation
 				leaf_transp                 = Penman_Monteith ( meteo_daily, rv, rh, net_rad );
-				s->value[CANOPY_TRANSP_SUN] = leaf_transp *  ( transp_daylength_sec * s->value[LAI_SUN_PROJ] * s->value[DAILY_CANOPY_COVER_PROJ] );
+				s->value[CANOPY_TRANSP_SUN] = leaf_transp *  ( transp_daylength_sec * s->value[LAI_SUN_PROJ] ); //* s->value[DAILY_CANOPY_COVER_PROJ] );
 
 				/** LAI SHADE **/
 
@@ -315,9 +338,14 @@ void canopy_evapotranspiration(cell_t *const c, const int layer, const int heigh
 				/* call Penman-Monteith function, returns e in kg/m2/s for transpiration and W/m2 for latent heat*/
 				//fixme use correct net radiation
 				leaf_transp                   = Penman_Monteith ( meteo_daily, rv, rh, net_rad );
-				s->value[CANOPY_TRANSP_SHADE] = leaf_transp * ( transp_daylength_sec * s->value[LAI_SHADE_PROJ] * s->value[DAILY_CANOPY_COVER_PROJ] );
+				s->value[CANOPY_TRANSP_SHADE] = leaf_transp * ( transp_daylength_sec * s->value[LAI_SHADE_PROJ] ); //* s->value[DAILY_CANOPY_COVER_PROJ] );
 
 				/************************************************************************************/
+				
+				
+				s->value[CANOPY_TRANSP_SUN] = s->value[CANOPY_TRANSP_SUN] *s->value[m_corr_sun] ;
+				s->value[CANOPY_TRANSP_SHADE] = s->value[CANOPY_TRANSP_SHADE] *s->value[m_corr_shade] ;
+				
 				/* overall canopy */
 				s->value[CANOPY_TRANSP] = s->value[CANOPY_TRANSP_SUN] + s->value[CANOPY_TRANSP_SHADE];
 
@@ -446,7 +474,7 @@ void canopy_evapotranspiration(cell_t *const c, const int layer, const int heigh
 				/* call Penman-Monteith function, returns e in kg/m2/s for transpiration and W/m2 for latent heat */
 				//fixme use correct net radiation
 				leaf_transp                 = Penman_Monteith ( meteo_daily, rv, rh, net_rad );
-				s->value[CANOPY_TRANSP_SUN] = leaf_transp * ( transp_daylength_sec * s->value[LAI_SUN_PROJ] * s->value[DAILY_CANOPY_COVER_PROJ] );
+				s->value[CANOPY_TRANSP_SUN] = leaf_transp * ( transp_daylength_sec * s->value[LAI_SUN_PROJ] ); //* s->value[DAILY_CANOPY_COVER_PROJ] );
 
 				/** LAI SHADE **/
 
@@ -464,9 +492,14 @@ void canopy_evapotranspiration(cell_t *const c, const int layer, const int heigh
 				/* call Penman-Monteith function, returns e in kg/m2/s for transpiration and W/m2 for latent heat*/
 				//fixme use correct net radiation
 				leaf_transp                   = Penman_Monteith ( meteo_daily, rv, rh, net_rad );
-				s->value[CANOPY_TRANSP_SHADE] = leaf_transp * ( transp_daylength_sec * s->value[LAI_SHADE_PROJ] * s->value[DAILY_CANOPY_COVER_PROJ] );
+				s->value[CANOPY_TRANSP_SHADE] = leaf_transp * ( transp_daylength_sec * s->value[LAI_SHADE_PROJ] ); //* s->value[DAILY_CANOPY_COVER_PROJ] );
 
 				/************************************************************************************/
+				
+				
+				s->value[CANOPY_TRANSP_SUN] = s->value[CANOPY_TRANSP_SUN] *s->value[m_corr_sun] ;
+				s->value[CANOPY_TRANSP_SHADE] = s->value[CANOPY_TRANSP_SHADE] *s->value[m_corr_shade] ;
+				
 				/* overall canopy */
 				s->value[CANOPY_TRANSP] = s->value[CANOPY_TRANSP_SUN] + s->value[CANOPY_TRANSP_SHADE];
 
@@ -535,7 +568,7 @@ void canopy_evapotranspiration(cell_t *const c, const int layer, const int heigh
 			/* call Penman-Monteith function, returns e in kg/m2/s for transpiration and W/m2 for latent heat*/
 			//fixme use correct net radiation
 			leaf_transp                 = Penman_Monteith (meteo_daily, rv, rh, net_rad);
-			s->value[CANOPY_TRANSP_SUN] = leaf_transp * ( transp_daylength_sec * s->value[LAI_SUN_PROJ] * s->value[DAILY_CANOPY_COVER_PROJ] );
+			s->value[CANOPY_TRANSP_SUN] = leaf_transp * ( transp_daylength_sec * s->value[LAI_SUN_PROJ] ); //* s->value[DAILY_CANOPY_COVER_PROJ] );
 
 			/** LAI SHADE **/
 			/* Transpiration for LAI shade */
@@ -554,9 +587,14 @@ void canopy_evapotranspiration(cell_t *const c, const int layer, const int heigh
 
 			/* call Penman-Monteith function, returns e in kg/m2/s for transpiration and W/m2 for latent heat*/
 			leaf_transp                   = Penman_Monteith (meteo_daily, rv, rh, net_rad);
-			s->value[CANOPY_TRANSP_SHADE] = leaf_transp * ( transp_daylength_sec * s->value[LAI_SHADE_PROJ] * s->value[DAILY_CANOPY_COVER_PROJ] );
+			s->value[CANOPY_TRANSP_SHADE] = leaf_transp * ( transp_daylength_sec * s->value[LAI_SHADE_PROJ] ); //* s->value[DAILY_CANOPY_COVER_PROJ] );
 
 			/************************************************************************************/
+			
+			
+		        s->value[CANOPY_TRANSP_SUN] = s->value[CANOPY_TRANSP_SUN] *s->value[m_corr_sun] ;
+		        s->value[CANOPY_TRANSP_SHADE] = s->value[CANOPY_TRANSP_SHADE] *s->value[m_corr_shade] ;
+				
 			/* overall canopy */
 			s->value[CANOPY_TRANSP] = s->value[CANOPY_TRANSP_SUN] + s->value[CANOPY_TRANSP_SHADE];
 
@@ -586,6 +624,7 @@ void canopy_evapotranspiration(cell_t *const c, const int layer, const int heigh
 	/* in case it happens firstly down-regulate transpiration to soil water modifier
 	 * if it is not enough than superimpose to zero */
 	// TODO correct for the multiclass case. or set a proper priority/competition rule.
+	// NOTE in this case, all the cohort/class uptake from the same layer.
 	 
 	if ( s->value[CANOPY_TRANSP] > c->asw )
 	{
