@@ -2224,7 +2224,7 @@ void EOD_print_output_cell_level_ddalmo(cell_t *const c, const int day, const in
 										",FLIGHT"
 										",FAGE"
 										",FT"
-										",FT_ACCL"
+										//",FT_ACCL"
 										",FVPD"
 										",FN"
 										",FSW"
@@ -2416,7 +2416,7 @@ void EOD_print_output_cell_level_ddalmo(cell_t *const c, const int day, const in
 									s->value[F_LIGHT_MAKELA],
 									s->value[F_AGE],
 									s->value[F_T],
-									s->value[F_ACCL],
+									//s->value[F_ACCL],
 									s->value[F_VPD],
 									s->value[F_NUTR],
 									s->value[F_SW],
