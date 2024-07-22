@@ -32,6 +32,7 @@ enum {
 	, SETTINGS_TBASE_RESP        // ddalmo : currently this setting is not available in the ifle  OPTIONAL 
 	, SETTINGS_PHOTO_ACCL
 	, SETTINGS_RESP_ACCL
+	//, SETTINGS_COLD_ACCL         // 5p606
 	, SETTINGS_REGENERATION
 	, SETTINGS_MANAGEMENT
 	, SETTINGS_MANAGEMENT_TYPE  //ddalmo this value/setting is actually not reported in the setting file OPTIONAL 
@@ -107,6 +108,7 @@ const char* sz_settings[SETTINGS_COUNT] = {
 	, "TBASE_RESP"
 	, "PHOTO_ACCL"
 	, "RESP_ACCL"
+	//, "COLD_ACCL"   //5p606
 	, "REGENERATION"
 	, "MANAGEMENT"
 	, "MANAGEMENT_TYPE"
@@ -1145,6 +1147,15 @@ settings_t* settings_import(const char *const filename) {
 					s->Resp_accl = 1;
 				}
 			break;
+			
+			//5p606 TODO 
+			
+			//case SETTINGS_COLD_ACCL:
+			//	if ( ! string_compare_i(token, "on") ) {
+		//			s->Cold_accl = 1;
+		//		}
+		//	break;
+			
 
 			case SETTINGS_REGENERATION:
 				if ( ! string_compare_i(token, "on") ) {
