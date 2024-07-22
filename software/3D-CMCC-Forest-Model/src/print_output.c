@@ -2224,6 +2224,7 @@ void EOD_print_output_cell_level_ddalmo(cell_t *const c, const int day, const in
 										",FLIGHT"
 										",FAGE"
 										",FT"
+										",FT_ACCL"
 										",FVPD"
 										",FN"
 										",FSW"
@@ -2328,7 +2329,7 @@ void EOD_print_output_cell_level_ddalmo(cell_t *const c, const int day, const in
 					
 							logger(g_daily_log,",%6.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%d,"
 									"%d,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f"
-									",%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f"
+									",%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f"
 									",%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f",
 									s->value[GPP],
 									s->value[Av_TOT],
@@ -2415,6 +2416,7 @@ void EOD_print_output_cell_level_ddalmo(cell_t *const c, const int day, const in
 									s->value[F_LIGHT_MAKELA],
 									s->value[F_AGE],
 									s->value[F_T],
+									s->value[F_ACCL],
 									s->value[F_VPD],
 									s->value[F_NUTR],
 									s->value[F_SW],
@@ -2503,7 +2505,7 @@ void EOD_print_output_cell_level_ddalmo(cell_t *const c, const int day, const in
         }   // loop on layer     
 }
 
-
+// currently used in the 5p6 
 void EOD_print_output_cell_level_mc(cell_t *const c, const int day, const int month, const int year, const int years_of_simulation )
 {
 	int layer;
@@ -2635,6 +2637,7 @@ void EOD_print_output_cell_level_mc(cell_t *const c, const int day, const int mo
 										",FLIGHT"
 										",FAGE"
 										",FT"
+										",FT_ACCL"
 										",FVPD"
 										",FN"
 										",FSW"
@@ -2647,7 +2650,7 @@ void EOD_print_output_cell_level_mc(cell_t *const c, const int day, const int mo
                   if (!print_cell)
                   {  
 		  /* heading variables only at cell level */
-		  logger(g_daily_log,",gpp,npp,ar,hr,rsoil,reco,nee,nep,et,le,soil_evapo,snow_pack,asw,moist_ratio,iWue,"
+		  logger(g_daily_log,",gpp,npp,ar,hr,rsoil,reco,nee,nep,et,le,soil_evapo,snow_pack,asw,psi,moist_ratio,iWue,"
 				"litrC,litr1C,litr2C,litr3C,litr4C,deadwoodC,deadwood2C,deadwood3C,deadwood4C,soilC,soil1C,soil2C,soil3C,soil4C,"
 				"litrN,litr1N,litr2N,litr3N,litr4N,deadwoodN,deadwood2N,deadwood3N,deadwood4N,soilN,soil1N,soil2N,soil3N,soil4N,"
 				"Tsoil,Daylength");
@@ -2711,7 +2714,7 @@ void EOD_print_output_cell_level_mc(cell_t *const c, const int day, const int mo
 
 							logger(g_daily_log,",%6.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%d,"
 									"%d,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f"
-									",%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f"
+									",%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f"
 									",%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f",
 									s->value[GPP],
 									s->value[Av_TOT],
@@ -2798,6 +2801,7 @@ void EOD_print_output_cell_level_mc(cell_t *const c, const int day, const int mo
 									s->value[F_LIGHT_MAKELA],
 									s->value[F_AGE],
 									s->value[F_T],
+									s->value[F_ACCL], 
 									s->value[F_VPD],
 									s->value[F_NUTR],
 									s->value[F_SW],
@@ -2810,7 +2814,7 @@ void EOD_print_output_cell_level_mc(cell_t *const c, const int day, const int mo
           { 
 	  /* printing variables only at cell level */
 
-	  logger(g_daily_log, ",%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,"
+	  logger(g_daily_log, ",%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,"
 			"%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f",
 			c->daily_gpp,
 			c->daily_npp,
@@ -2825,6 +2829,7 @@ void EOD_print_output_cell_level_mc(cell_t *const c, const int day, const int mo
 			c->daily_soil_evapo,
 			c->snow_pack,
 			c->asw,
+			c->psi,   
 			c->soil_moist_ratio,
 			c->daily_iwue,
 			c->litrC,
