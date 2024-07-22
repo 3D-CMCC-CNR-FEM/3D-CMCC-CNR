@@ -17,7 +17,8 @@ extern logger_t* g_debug_log;
 //extern soil_settings_t *g_soil_settings;
 
 void modifiers(cell_t *const c, const int layer, const int height, const int dbh, const int age, const int species, const meteo_daily_t *const meteo_daily,
-		const meteo_annual_t *const meteo_annual)
+		const meteo_annual_t *const meteo_annual , const int month , const int day)     
+		
 {
 	double RelAge;
 
@@ -76,6 +77,13 @@ void modifiers(cell_t *const c, const int layer, const int height, const int dbh
 
 	static int modifier;
 	static int test_assimilation;
+            
+        double tau_acl      ; 
+        double S_acl_MAX    ; 
+        double XO           ;  
+        
+        double St_acl ;   
+        double  X_acl ; 
 
 	age_t *a;
 	species_t *s;
@@ -345,7 +353,7 @@ void modifiers(cell_t *const c, const int layer, const int height, const int dbh
 	{
 		if ( ( meteo_daily->tday <= s->value[GROWTHTMIN]) || (meteo_daily->tday >= s->value[GROWTHTMAX] ) )
 		{
-			s->value[F_T] = 0;
+			s->value[F_T] = 0.;
 		}
 		else
 		{
@@ -415,8 +423,68 @@ void modifiers(cell_t *const c, const int layer, const int height, const int dbh
 	/* check */
 	CHECK_CONDITION(s->value[F_AGE], >, 1.);
 	CHECK_CONDITION(s->value[F_AGE], <, ZERO);
+	
+	/********************************************************************************************/
+	
+	// Acclimatation factor to high temperature in spring, after dormance period
+	// ref. Mäkelä et al.2004, 2008 ; Luo et al 2023 (New Phytologist)
+	// Gennaretti et al.2017 (applied to T in Vcmax)
+	
+	//TODO add a flag in the settings file
+	//if ( g_settings->Cold_accl )
+	//{ 
+	tau_acl =   s->value[TAU]     ; 
+        S_acl_MAX = s->value[Smax]    ; 
+        XO  =       s->value[X0]      ;
+        
+        //CURRENTLY NOT USED
+#if 1
+	
+	s->value[F_ACCL] = 1. ;  
+	
+#else 
+
+	 if (c->doy == 1 )  
+	
+	 {
+
+	 s->value[F_ACCL] = 0. ;
+	 s->value[old_X_acl] = meteo_daily->tmin ;
+	
+	 }
+	 
+	 if ( c->doy > 1   && month < JULY ) 
+	 {
+
+         X_acl = s->value[old_X_acl]  + (1/tau_acl) *(meteo_daily->tmin - s->value[old_X_acl] ) ;
+         St_acl  = X_acl-XO ;
+         St_acl  = MAX(St_acl,0.)    ;
+            
+         s->value[F_ACCL] = St_acl/S_acl_MAX;
+         s->value[F_ACCL] = MIN(s->value[F_ACCL],1.) ;
+         
+         s->value[old_X_acl]  = X_acl;
+   
+ 	 } else {
+	 //old_St
+	 s->value[F_ACCL] = 1. ;    // at 1 january put the value to 1
+	 }
+
+#endif 
+	
+
+   //  }  //TODO end flag cold acclimatation
 
 	/********************************************************************************************/
+
+        //TODO add flag for N modifier
+        // currently not used
+	
+#if 1	
+	
+	s->value[F_NUTR] = 1. ;  
+	
+#else
 
 	/* SOIL NUTRIENT MODIFIER */
 	s->value[F_NUTR] = 1. - ( 1. - c->fn0 ) * pow ( ( 1. - c->fr), c->fnn );
@@ -424,7 +492,9 @@ void modifiers(cell_t *const c, const int layer, const int height, const int dbh
 
 	/* check */
 	CHECK_CONDITION( s->value[F_NUTR], >, 1 );
-	CHECK_CONDITION( s->value[F_NUTR], <, ZERO );
+	CHECK_CONDITION( s->value[F_NUTR], <, ZERO );	
+
+#endif
 
 	//test 25 nov 2016
 #if 0
@@ -458,15 +528,18 @@ void modifiers(cell_t *const c, const int layer, const int height, const int dbh
 	c->vwc = c-> asw/((c->soil_depth/100.)*1000.);
 
 	/* soil matric potential */
+	
 	c->psi = c->psi_sat * pow((c->vwc/c->vwc_sat), c->soil_b);
 
 
 	/* no water stress */
+	
 	if (c->psi > s->value[SWPOPEN])
 	{
 		s->value[F_PSI] = 1.;
 	}
 	/* full water stress */
+	
 	else if (c->psi <= s->value[SWPCLOSE])
 	{
 		/* forced to  0.3 to avoid zero values */
