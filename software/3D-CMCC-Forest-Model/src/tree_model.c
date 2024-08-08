@@ -365,71 +365,7 @@ int Tree_model_daily (matrix_t *const m, const int cell, const int day, const in
 							/* C productivity */
 							carbon_productivity                ( c, height, dbh, age, species );
 
-
-
-							if ( c->doy == ( IS_LEAP_YEAR ( c->years[year].year ) ? 366 : 365) )
-							{
-
-#if 1    //set to 1 . set to 0 only for testing purpose
-
-
-                                                             //if ( g_settings->management == MANAGEMENT_VAR || g_settings->management == MANAGEMENT_VAR1)
-                                                             if ( g_settings->management == MANAGEMENT_VAR)
-                                                             {
-
-                                                              // compute last year of available stand density data
-                                                              // (in the stand.txt file each layer or class has to have
-                                                              // the same number of stand density data)
-
-                                                              row = g_dataset->rows_count ;
-
-                                                              year_dens_fin = g_dataset->rows[row-1].year_stand;
-
-
-                                                                 if (c->years[year].year > year_dens_fin)
-                                                                 {
-
-
-                                                                   /* Mortality based on tree Age (LPJ) */
-									age_mortality        ( c, height, dbh, age, species );
-
-
-							           /* Mortality based on stochasticity */
-									stochastic_mortality ( c, height, dbh, age, species );
-
-                                                                  }
-
-                                                             }
-                                                             else
-                                                             {         // with management ON or OFF always compute mortality
-
-									/* Mortality based on tree Age (LPJ) */
-									age_mortality        ( c, height, dbh, age, species );
-
-
-									/* Mortality based on stochasticity */
-									stochastic_mortality ( c, height, dbh, age, species );
-							      }
-
-
-#else   // this option is wrongly formulated: to be excluded. use only for testing
-
-								/* ISIMIP: exclude age mortality function when management is "var"
-								//  and year < year start management */
-								if ( c->years[year].year > g_settings->year_start_management && g_settings->management != MANAGEMENT_VAR )
-								{
-									/* Mortality based on tree Age (LPJ) */
-									age_mortality        ( c, height, dbh, age, species );
-
-
-									/* Mortality based on stochasticity */
-									stochastic_mortality ( c, height, dbh, age, species );
-								}
-#endif
-							}
-
 							/* allocate daily carbon */
-
 
 							// carbon_allocation       ( c, a, s, day, month, year ); // old subroutine
 
@@ -485,6 +421,52 @@ int Tree_model_daily (matrix_t *const m, const int cell, const int day, const in
 								/* last day of the year */
 								if ( c->doy == ( IS_LEAP_YEAR ( c->years[year].year ) ? 366 : 365) )
 								{
+
+   									if ( g_settings->management == MANAGEMENT_VAR)
+                                    {
+
+                                        // compute last year of available stand density data
+                                        // (in the stand.txt file each layer or class has to have
+                                        // the same number of stand density data)
+
+                                        row = g_dataset->rows_count ;
+
+                                         year_dens_fin = g_dataset->rows[row-1].year_stand;
+
+
+                                        if (c->years[year].year > year_dens_fin)
+                                        {
+
+
+                                            /* Mortality based on tree Age (LPJ) */
+											age_mortality        ( c, height, dbh, age, species );
+
+
+							          		 /* Mortality based on stochasticity */
+											stochastic_mortality ( c, height, dbh, age, species );
+
+                                         }
+
+                                    }
+                                        else
+                                    {         // with management ON or OFF always compute mortality
+
+											/* Mortality based on tree Age (LPJ) */
+											age_mortality        ( c, height, dbh, age, species );
+
+
+											/* Mortality based on stochasticity */
+											stochastic_mortality ( c, height, dbh, age, species );
+							      	}
+
+
+									// update canopy cover projection 
+                                     
+                                    canopy_cover    ( c, height, dbh, age, species );
+                                    
+									/* update Leaf Area Index */
+									daily_lai             ( c, a, s );
+
 									/* above ground-below ground stocks */
 									abg_bgb_biomass ( c, height, dbh, age, species );
 
