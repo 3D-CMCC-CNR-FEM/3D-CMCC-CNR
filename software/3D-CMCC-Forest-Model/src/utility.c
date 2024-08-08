@@ -480,6 +480,26 @@ void reset_daily_class_variables(cell_t *const c)
 					s->value[CWD_TO_LITR2C] =             0.;
 					s->value[CWD_TO_LITR3C] =             0.;
 					s->value[CWD_TO_LITR4C] =             0.;
+                
+				    // any type of removal, but the tree-mortality/harvest
+
+                    s->value[LEAF_C_TO_REMOVE] =            0.;
+					s->value[FROOT_C_TO_REMOVE] =           0.;
+					s->value[FRUIT_C_TO_REMOVE] =           0.;
+					s->value[CROOT_C_TO_REMOVE] =           0.;
+					s->value[BRANCH_C_TO_REMOVE] =          0.;
+					s->value[LEAF_N_TO_REMOVE] =            0.;
+					s->value[FROOT_N_TO_REMOVE] =           0.;
+					s->value[FRUIT_N_TO_REMOVE] =           0.;
+					s->value[CROOT_N_TO_REMOVE] =           0.;
+					s->value[BRANCH_N_TO_REMOVE] =          0.;
+
+					s->value[CROOT_SAP_C_TO_REMOVE] =       0.;
+					s->value[BRANCH_SAP_C_TO_REMOVE] =      0.;
+
+					// to be included in the near future
+					//s->value[CROOT_SAP_N_TO_REMOVE] =       0.;
+					//s->value[BRANCH_SAP_N_TO_REMOVE] =      0.;
 
 					/* reset daily nitrogen fluxes */
 					s->value[NPP_gN_DEMAND] =             0.;
@@ -674,16 +694,16 @@ void reset_annual_class_variables(cell_t *const c)
 					s->value[CROWN_AREA] =                  0.;
 					s->value[CROWN_VOLUME] =                0.;
 
-					s->value[LEAF_C_TO_REMOVE] =            0.;
-					s->value[FROOT_C_TO_REMOVE] =           0.;
-					s->value[FRUIT_C_TO_REMOVE] =           0.;
-					s->value[CROOT_C_TO_REMOVE] =           0.;
-					s->value[BRANCH_C_TO_REMOVE] =          0.;
-					s->value[LEAF_N_TO_REMOVE] =            0.;
-					s->value[FROOT_N_TO_REMOVE] =           0.;
-					s->value[FRUIT_N_TO_REMOVE] =           0.;
-					s->value[CROOT_N_TO_REMOVE] =           0.;
-					s->value[BRANCH_N_TO_REMOVE] =          0.;
+					//s->value[LEAF_C_TO_REMOVE] =            0.;
+					//s->value[FROOT_C_TO_REMOVE] =           0.;
+					//s->value[FRUIT_C_TO_REMOVE] =           0.;
+					//s->value[CROOT_C_TO_REMOVE] =           0.;
+					//s->value[BRANCH_C_TO_REMOVE] =          0.;
+					//s->value[LEAF_N_TO_REMOVE] =            0.;
+					//s->value[FROOT_N_TO_REMOVE] =           0.;
+					//s->value[FRUIT_N_TO_REMOVE] =           0.;
+					//s->value[CROOT_N_TO_REMOVE] =           0.;
+					//s->value[BRANCH_N_TO_REMOVE] =          0.;
 
 
 					s->value[YEARLY_A_SUN] =                0.;

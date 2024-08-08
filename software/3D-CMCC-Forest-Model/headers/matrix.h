@@ -421,6 +421,9 @@ enum {
 	FRUIT_C_TO_REMOVE,                  /* (tC/cell/day) Daily Fruit to remove */
 	BRANCH_C_TO_REMOVE,                 /* (tC/cell/day) Annual Branch to remove */
 	CROOT_C_TO_REMOVE,                  /* (tC/cell/day) Annual Coarse root to remove */
+	BRANCH_SAP_C_TO_REMOVE,                 /* (tC/cell/day) Annual Branch to remove */
+	CROOT_SAP_C_TO_REMOVE,                  /* (tC/cell/day) Annual Coarse root to remove */
+
 	C_LEAF_TO_RESERVE,                  /* (tC/cell/day) Daily retranslocated C from Leaf pool to Reserve */
 	C_FROOT_TO_RESERVE,                 /* (tC/cell/day) Daily retranslocated C from Fine root pool to Reserve */
 	C_LEAF_TO_LITR,                     /* (tC/cell/day) Daily tC from Leaf pool to Litter */
