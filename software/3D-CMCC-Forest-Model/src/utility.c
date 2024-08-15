@@ -705,6 +705,14 @@ void reset_annual_class_variables(cell_t *const c)
 					//s->value[CROOT_N_TO_REMOVE] =           0.;
 					//s->value[BRANCH_N_TO_REMOVE] =          0.;
 
+                    // daily removal of leaf/froot/fruit for evergreen (constant for each day of the yr)
+					s->value[LEAF_FALL_C] =                  0.;
+					s->value[LEAF_FALL_N] =                  0.;
+					s->value[FROOT_FALL_C] =                  0.;
+					s->value[FROOT_FALL_N] =                  0.;
+					s->value[FRUIT_FALL_C] =                  0.;
+					s->value[FRUIT_FALL_N] =                  0.;
+
 
 					s->value[YEARLY_A_SUN] =                0.;
 					s->value[YEARLY_Av_SUN] =               0.;

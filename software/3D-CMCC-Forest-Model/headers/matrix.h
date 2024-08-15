@@ -424,6 +424,10 @@ enum {
 	BRANCH_SAP_C_TO_REMOVE,                 /* (tC/cell/day) Annual Branch to remove */
 	CROOT_SAP_C_TO_REMOVE,                  /* (tC/cell/day) Annual Coarse root to remove */
 
+	LEAF_FALL_C,                        //(tC/cell/day) Daily Leaf to remove -evergreen - constant for each day 
+	FROOT_FALL_C,                       //(tC/cell/day) Daily froot to remove -evergreen - constant for each day
+	FRUIT_FALL_C,                       //(tC/cell/day) Daily fruit to remove -evergreen - constant for each day
+
 	C_LEAF_TO_RESERVE,                  /* (tC/cell/day) Daily retranslocated C from Leaf pool to Reserve */
 	C_FROOT_TO_RESERVE,                 /* (tC/cell/day) Daily retranslocated C from Fine root pool to Reserve */
 	C_LEAF_TO_LITR,                     /* (tC/cell/day) Daily tC from Leaf pool to Litter */
@@ -683,6 +687,11 @@ enum {
 	FRUIT_N_TO_REMOVE,                  /* (tN/cell/day) Daily Fruit to remove */
 	BRANCH_N_TO_REMOVE,                 /* (tN/cell/day) Annual Branch to remove */
 	CROOT_N_TO_REMOVE,                  /* (tN/cell/day) Annual Coarse root to remove */
+
+	LEAF_FALL_N,                        //(tN/cell/day) Daily Leaf to remove -evergreen - constant for each day 
+	FROOT_FALL_N,                       //(tN/cell/day) Daily froot to remove -evergreen - constant for each day
+	FRUIT_FALL_N,                       //(tN/cell/day) Daily fruit to remove -evergreen - constant for each day
+
 	N_TO_CWD,                           /* (tN/cell/day) Daily Woody Nitrogen to Coarse Woody Debris */
 	N_LEAF_TO_LITR,                     /* (tN/cell/day) Daily Leaf Litter to Litter labile nitrogen pool */
 	N_FROOT_TO_LITR,                    /* (tN/cell/day) Daily Leaf Litter to Litter labile nitrogen pool */
