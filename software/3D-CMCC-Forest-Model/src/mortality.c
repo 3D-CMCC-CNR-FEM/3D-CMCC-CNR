@@ -234,36 +234,16 @@ int growth_efficiency_mortality ( cell_t *const c, const int height, const int d
 		tree_biomass_remove ( c, height, dbh, age, species, s->counter[DEAD_TREE], nat_man);
 
 		/*** update cell level carbon fluxes (gC/m2/day) ***/
-		c->daily_leaf_carbon        -= (s->value[C_LEAF_TO_LITR]   * 1e6 / g_settings->sizeCell);
-		c->daily_froot_carbon       -= (s->value[C_FROOT_TO_LITR]  * 1e6 / g_settings->sizeCell);
-		c->daily_stem_carbon        -= (s->value[C_STEM_TO_CWD]    * 1e6 / g_settings->sizeCell);
-		c->daily_croot_carbon       -= (s->value[C_CROOT_TO_CWD]   * 1e6 / g_settings->sizeCell);
-		c->daily_branch_carbon      -= (s->value[C_BRANCH_TO_CWD]  * 1e6 / g_settings->sizeCell);
-		//c->daily_reserve_carbon     -= (s->value[C_RESERVE_TO_CWD] * 1e6 / g_settings->sizeCell);
-		c->daily_reserve_carbon     -= (s->value[C_RESERVE_TO_LITR] * 1e6 / g_settings->sizeCell);    
-		c->daily_fruit_carbon       -= (s->value[C_FRUIT_TO_CWD]   * 1e6 / g_settings->sizeCell);
+		// c->daily_leaf_carbon        -= (s->value[C_LEAF_TO_LITR]   * 1e6 / g_settings->sizeCell);
+		//c->daily_froot_carbon       -= (s->value[C_FROOT_TO_LITR]  * 1e6 / g_settings->sizeCell);
+		//c->daily_stem_carbon        -= (s->value[C_STEM_TO_CWD]    * 1e6 / g_settings->sizeCell);
+		//c->daily_croot_carbon       -= (s->value[C_CROOT_TO_CWD]   * 1e6 / g_settings->sizeCell);
+		//c->daily_branch_carbon      -= (s->value[C_BRANCH_TO_CWD]  * 1e6 / g_settings->sizeCell);
+		////c->daily_reserve_carbon     -= (s->value[C_RESERVE_TO_CWD] * 1e6 / g_settings->sizeCell);
+		//c->daily_reserve_carbon     -= (s->value[C_RESERVE_TO_LITR] * 1e6 / g_settings->sizeCell);    
+		//c->daily_fruit_carbon       -= (s->value[C_FRUIT_TO_CWD]   * 1e6 / g_settings->sizeCell);
 
-		/*** update cell level carbon pools (tC/cell) ***/
-		c->leaf_carbon              -= (s->value[C_LEAF_TO_LITR]   * 1e6 / g_settings->sizeCell);
-		c->froot_carbon             -= (s->value[C_FROOT_TO_LITR]  * 1e6 / g_settings->sizeCell);
-		c->stem_carbon              -= (s->value[C_STEM_TO_CWD]    * 1e6 / g_settings->sizeCell);
-		c->branch_carbon            -= (s->value[C_BRANCH_TO_CWD]  * 1e6 / g_settings->sizeCell);
-		c->croot_carbon             -= (s->value[C_CROOT_TO_CWD]   * 1e6 / g_settings->sizeCell);
-		//c->reserve_carbon           -= (s->value[C_RESERVE_TO_CWD] * 1e6 / g_settings->sizeCell);
-		c->reserve_carbon           -= (s->value[C_RESERVE_TO_LITR] * 1e6 / g_settings->sizeCell);
-		c->fruit_carbon             -= (s->value[C_FRUIT_TO_CWD]   * 1e6 / g_settings->sizeCell);
-
-		/* check */
-		CHECK_CONDITION ( c->leaf_carbon,    < , ZERO );
-		CHECK_CONDITION ( c->froot_carbon,   < , ZERO );
-		CHECK_CONDITION ( c->stem_carbon,    < , ZERO );
-		CHECK_CONDITION ( c->branch_carbon,  < , ZERO );
-		CHECK_CONDITION ( c->croot_carbon,   < , ZERO );
-		CHECK_CONDITION ( c->reserve_carbon, < , ZERO );
-		CHECK_CONDITION ( c->fruit_carbon,   < , ZERO );
-
-
-                //FIXME : to update the cell level N pools too!
+        //FIXME : to update the cell level N pools too!
 
 		/* litter fluxes and pools */
 		littering             ( c, s );
