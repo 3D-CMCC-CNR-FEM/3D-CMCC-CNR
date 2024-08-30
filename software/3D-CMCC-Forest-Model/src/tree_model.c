@@ -410,9 +410,6 @@ int Tree_model_daily (matrix_t *const m, const int cell, const int day, const in
 								/* update Leaf Area Index */
 								daily_lai             ( c, a, s );
 
-								/* litter fluxes and pools */
-								littering             ( c, s );
-
 								/* tree level dendrometry */
 								dendrometry_old       ( c, layer, height, dbh, age, species, year );
 
@@ -466,6 +463,9 @@ int Tree_model_daily (matrix_t *const m, const int cell, const int day, const in
                                     
 									/* update Leaf Area Index */
 									daily_lai             ( c, a, s );
+
+									/* litter fluxes and pools */
+								    littering             ( c, s );
 
 									/* above ground-below ground stocks */
 									abg_bgb_biomass ( c, height, dbh, age, species );
