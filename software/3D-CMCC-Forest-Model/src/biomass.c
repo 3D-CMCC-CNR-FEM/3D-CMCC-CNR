@@ -187,10 +187,195 @@ void tree_biomass_remove (cell_t *const c, const int height, const int dbh, cons
 {
 	species_t *s;
 	s = &c->heights[height].dbhs[dbh].ages[age].species[species];
+	double branch_perc_remove;  
+
+	branch_perc_remove = 1. ;  // can be provided externally or species-specific
 
 	logger(g_debug_log, "\n* TREE BIOMASS REMOVE *\n");
 
 	/******************************************************************************************/
+    /* update class carbon pools */
+#if 1
+    
+	s->value[LEAF_C]    -= (s->value[TREE_LEAF_C]    * tree_remove);
+	s->value[FROOT_C]   -= (s->value[TREE_FROOT_C]   * tree_remove);
+
+	s->value[STEM_C]      -= (s->value[TREE_STEM_C]    * tree_remove);
+	s->value[CROOT_C]     -= (s->value[TREE_CROOT_C]   * tree_remove);
+	s->value[BRANCH_C]    -= (s->value[TREE_BRANCH_C]  * tree_remove);
+
+	s->value[RESERVE_C]   -= (s->value[TREE_RESERVE_C] * tree_remove);
+	s->value[FRUIT_C]     -= (s->value[TREE_FRUIT_C]   * tree_remove);
+
+	/* sapwood and heartwood */
+
+	s->value[STEM_SAPWOOD_C]     -= (s->value[TREE_STEM_SAPWOOD_C]     * tree_remove);
+	s->value[CROOT_SAPWOOD_C]    -= (s->value[TREE_CROOT_SAPWOOD_C]    * tree_remove);
+	s->value[BRANCH_SAPWOOD_C]   -= (s->value[TREE_BRANCH_SAPWOOD_C]   * tree_remove);
+	s->value[STEM_HEARTWOOD_C]   -= (s->value[TREE_STEM_HEARTWOOD_C]   * tree_remove);
+	s->value[CROOT_HEARTWOOD_C]  -= (s->value[TREE_CROOT_HEARTWOOD_C]  * tree_remove);
+	s->value[BRANCH_HEARTWOOD_C] -= (s->value[TREE_BRANCH_HEARTWOOD_C] * tree_remove);
+
+	/* livewood and deadwood */
+
+	s->value[STEM_LIVEWOOD_C]    -= (s->value[TREE_STEM_LIVEWOOD_C]     * tree_remove);
+	s->value[CROOT_LIVEWOOD_C]   -= (s->value[TREE_CROOT_LIVEWOOD_C]    * tree_remove);
+	s->value[BRANCH_LIVEWOOD_C]  -= (s->value[TREE_BRANCH_LIVEWOOD_C]   * tree_remove);
+	s->value[STEM_DEADWOOD_C]    -= (s->value[TREE_STEM_DEADWOOD_C]     * tree_remove);
+	s->value[CROOT_DEADWOOD_C]   -= (s->value[TREE_CROOT_DEADWOOD_C]    * tree_remove);
+	s->value[BRANCH_DEADWOOD_C]  -= (s->value[TREE_BRANCH_DEADWOOD_C]   * tree_remove);
+
+	// update class_C carbon pools
+
+    // update cell level C and N pools
+   
+	/*** update cell level carbon pools (tC/cell) ***/
+	c->leaf_carbon              -= ((s->value[TREE_LEAF_C]    * tree_remove)  * 1e6 / g_settings->sizeCell);
+	c->froot_carbon             -= ((s->value[TREE_FROOT_C]    * tree_remove)  * 1e6 / g_settings->sizeCell);
+	c->stem_carbon              -= ((s->value[TREE_STEM_C]    * tree_remove)   * 1e6 / g_settings->sizeCell);
+	c->branch_carbon            -= ((s->value[TREE_BRANCH_C]    * tree_remove)  * 1e6 / g_settings->sizeCell);
+	c->croot_carbon             -= ((s->value[TREE_CROOT_C]    * tree_remove)  * 1e6 / g_settings->sizeCell);
+	c->reserve_carbon           -= ((s->value[TREE_RESERVE_C]    * tree_remove) * 1e6 / g_settings->sizeCell);
+	c->fruit_carbon             -= ((s->value[TREE_FRUIT_C]    * tree_remove)  * 1e6 / g_settings->sizeCell);
+
+	/* check */
+	CHECK_CONDITION ( c->leaf_carbon,    < , ZERO );
+	CHECK_CONDITION ( c->froot_carbon,   < , ZERO );
+	CHECK_CONDITION ( c->stem_carbon,    < , ZERO );
+	CHECK_CONDITION ( c->branch_carbon,  < , ZERO );
+	CHECK_CONDITION ( c->croot_carbon,   < , ZERO );
+	CHECK_CONDITION ( c->reserve_carbon, < , ZERO );
+	CHECK_CONDITION ( c->fruit_carbon,   < , ZERO );
+
+#endif
+	/******************************************************************************************/
+
+#if 1 
+
+/* carbon to litter fluxes */
+
+ // Aggregate the fluxes toward CWD pool 
+
+	if ( ! nat_man )
+	{
+		/* natural mortality */
+
+    	s->value[C_LEAF_TO_LITR]     += (s->value[TREE_LEAF_C]    * tree_remove);
+	    s->value[C_FROOT_TO_LITR]    += (s->value[TREE_FROOT_C]   * tree_remove);
+        s->value[C_RESERVE_TO_LITR]   += (s->value[TREE_RESERVE_C] * tree_remove);
+
+ 	  
+       /* carbon to cwd fluxes */
+	s->value[C_STEM_TO_CWD]      += (s->value[TREE_STEM_C]    * tree_remove);
+	s->value[C_CROOT_TO_CWD]     += (s->value[TREE_CROOT_C]   * tree_remove);
+	s->value[C_BRANCH_TO_CWD]    += (s->value[TREE_BRANCH_C]  * tree_remove);
+	s->value[C_FRUIT_TO_CWD]     += (s->value[TREE_FRUIT_C]   * tree_remove);
+
+	/******************************************************************************************/
+
+	/* sapwood and heartwood */
+	/* note: this mostly differentiates the 5.4. to 5.5 (and subsequests) versions */
+
+	s->value[C_STEM_SAPWOOD_TO_CWD]     += (s->value[TREE_STEM_SAPWOOD_C]     * tree_remove);
+	s->value[C_CROOT_SAPWOOD_TO_CWD]    += (s->value[TREE_CROOT_SAPWOOD_C]    * tree_remove);
+	s->value[C_BRANCH_SAPWOOD_TO_CWD]   += (s->value[TREE_BRANCH_SAPWOOD_C]   * tree_remove);
+	s->value[C_STEM_HEARTWOOD_TO_CWD]   += (s->value[TREE_STEM_HEARTWOOD_C]   * tree_remove);
+	s->value[C_CROOT_HEARTWOOD_TO_CWD]  += (s->value[TREE_CROOT_HEARTWOOD_C]  * tree_remove);
+	s->value[C_BRANCH_HEARTWOOD_TO_CWD] += (s->value[TREE_BRANCH_HEARTWOOD_C] * tree_remove);
+
+	/******************************************************************************************/
+
+	/* livewood and deadwood */
+
+	s->value[C_STEM_LIVEWOOD_TO_CWD]    += (s->value[TREE_STEM_LIVEWOOD_C]     * tree_remove);
+	s->value[C_CROOT_LIVEWOOD_TO_CWD]   += (s->value[TREE_CROOT_LIVEWOOD_C]    * tree_remove);
+	s->value[C_BRANCH_LIVEWOOD_TO_CWD]  += (s->value[TREE_BRANCH_LIVEWOOD_C]   * tree_remove);
+	s->value[C_STEM_DEADWOOD_TO_CWD]    += (s->value[TREE_STEM_DEADWOOD_C]     * tree_remove);
+	s->value[C_CROOT_DEADWOOD_TO_CWD]   += (s->value[TREE_CROOT_DEADWOOD_C]    * tree_remove);
+	s->value[C_BRANCH_DEADWOOD_TO_CWD]  += (s->value[TREE_BRANCH_DEADWOOD_C]   * tree_remove);
+
+    /* overall litter */
+    
+	s->value[C_TO_LITR]          += (s->value[TREE_LEAF_C]    * tree_remove) + (s->value[TREE_FROOT_C]    * tree_remove) +(s->value[TREE_RESERVE_C] * tree_remove);
+ 
+     /* overall cwd */
+
+    s->value[C_TO_CWD]  += (s->value[TREE_STEM_C]   + 
+	                        s->value[TREE_CROOT_C]  +
+							s->value[TREE_BRANCH_C] +
+							s->value[TREE_FRUIT_C] ) * tree_remove ;
+   
+    #if 0   // at some point we perhaps need to differentiate the litter flux for evergreen and deciduous
+
+		if ( s->value[PHENOLOGY] == 0.1 || s->value[PHENOLOGY] == 0.2 )
+		{
+			
+		}
+		else
+		{
+			
+		}
+    #endif 
+
+    }
+	else  // management related mortality 
+    {
+
+        s->value[C_LEAF_TO_LITR]     += (s->value[TREE_LEAF_C]    * tree_remove);
+	    s->value[C_FROOT_TO_LITR]    += (s->value[TREE_FROOT_C]   * tree_remove);
+        s->value[C_RESERVE_TO_LITR]   += (s->value[TREE_RESERVE_C] * tree_remove);
+
+ 	  
+       /* carbon to cwd fluxes */
+	s->value[C_CROOT_TO_CWD]     += (s->value[TREE_CROOT_C]   * tree_remove);
+	s->value[C_BRANCH_TO_CWD]    += (s->value[TREE_BRANCH_C]  * tree_remove)* (1.-branch_perc_remove);
+	s->value[C_FRUIT_TO_CWD]     += (s->value[TREE_FRUIT_C]   * tree_remove);
+
+	/******************************************************************************************/
+
+	/* sapwood and heartwood */
+	/* note: this mostly differentiates the 5.4. to 5.5 (and subsequests) versions */
+
+	s->value[C_CROOT_SAPWOOD_TO_CWD]    += (s->value[TREE_CROOT_SAPWOOD_C]    * tree_remove);
+	s->value[C_BRANCH_SAPWOOD_TO_CWD]   += (s->value[TREE_BRANCH_SAPWOOD_C]   * tree_remove)* (1.-branch_perc_remove);
+	s->value[C_CROOT_HEARTWOOD_TO_CWD]  += (s->value[TREE_CROOT_HEARTWOOD_C]  * tree_remove);
+	s->value[C_BRANCH_HEARTWOOD_TO_CWD] += (s->value[TREE_BRANCH_HEARTWOOD_C] * tree_remove)* (1.-branch_perc_remove);
+
+	/******************************************************************************************/
+
+	/* livewood and deadwood */
+
+	s->value[C_CROOT_LIVEWOOD_TO_CWD]   += (s->value[TREE_CROOT_LIVEWOOD_C]    * tree_remove);
+	s->value[C_BRANCH_LIVEWOOD_TO_CWD]  += (s->value[TREE_BRANCH_LIVEWOOD_C]   * tree_remove)* (1.-branch_perc_remove);
+	s->value[C_CROOT_DEADWOOD_TO_CWD]   += (s->value[TREE_CROOT_DEADWOOD_C]    * tree_remove);
+	s->value[C_BRANCH_DEADWOOD_TO_CWD]  += (s->value[TREE_BRANCH_DEADWOOD_C]   * tree_remove)* (1.-branch_perc_remove);
+
+    /* overall litter */
+    
+	s->value[C_TO_LITR]          += (s->value[TREE_LEAF_C]    * tree_remove) + (s->value[TREE_FROOT_C]    * tree_remove) +(s->value[TREE_RESERVE_C] * tree_remove);
+ 
+     /* overall cwd */
+
+    s->value[C_TO_CWD]  += (s->value[TREE_CROOT_C]  +
+							s->value[TREE_BRANCH_C]* (1.-branch_perc_remove) +
+							s->value[TREE_FRUIT_C] ) * tree_remove ;
+
+	}
+	/******************************************************************************************/
+	/* accounting for harvested/thinned wood products (HWP) */
+
+	if ( s->counter[THINNING_HAPPENS] == 1 || s->counter[HARVESTING_HAPPENS] == 1 )   // TODO include the condition nat_man=1  
+	{
+		/* compute woody biomass removed (tC/ha/yr) */
+		s->value[C_HWP]          += (s->value[TREE_STEM_C] + s->value[TREE_BRANCH_C]*branch_perc_remove)* tree_remove;
+		s->value[CUM_C_HWP]      += s->value[C_HWP];
+
+		/* compute stem volume removed (m3/ha/yr) */
+		s->value[VOLUME_HWP]     += s->value[TREE_VOLUME] * tree_remove;
+		s->value[CUM_VOLUME_HWP] += s->value[TREE_VOLUME] * tree_remove;
+	}
+
+#else  //5p5 and 5p6
 
 	/* carbon to litter fluxes */
 	s->value[C_LEAF_TO_LITR]     += (s->value[TREE_LEAF_C]    * tree_remove);
@@ -244,38 +429,7 @@ void tree_biomass_remove (cell_t *const c, const int height, const int dbh, cons
 
 	s->value[C_BRANCH_DEADWOOD_TO_CWD]  += (s->value[TREE_BRANCH_DEADWOOD_C]   * tree_remove);
 
-	/******************************************************************************************/
-    /* update class carbon pools */
-
-	s->value[LEAF_C]    -= (s->value[TREE_LEAF_C]    * tree_remove);
-	s->value[FROOT_C]   -= (s->value[TREE_FROOT_C]   * tree_remove);
-
-	s->value[STEM_C]      -= (s->value[TREE_STEM_C]    * tree_remove);
-	s->value[CROOT_C]     -= (s->value[TREE_CROOT_C]   * tree_remove);
-	s->value[BRANCH_C]    -= (s->value[TREE_BRANCH_C]  * tree_remove);
-
-	s->value[RESERVE_C]   -= (s->value[TREE_RESERVE_C] * tree_remove);
-	s->value[FRUIT_C]     -= (s->value[TREE_FRUIT_C]   * tree_remove);
-
-	/* sapwood and heartwood */
-
-	s->value[STEM_SAPWOOD_C]     -= (s->value[TREE_STEM_SAPWOOD_C]     * tree_remove);
-	s->value[CROOT_SAPWOOD_C]    -= (s->value[TREE_CROOT_SAPWOOD_C]    * tree_remove);
-	s->value[BRANCH_SAPWOOD_C]   -= (s->value[TREE_BRANCH_SAPWOOD_C]   * tree_remove);
-	s->value[STEM_HEARTWOOD_C]   -= (s->value[TREE_STEM_HEARTWOOD_C]   * tree_remove);
-	s->value[CROOT_HEARTWOOD_C]  -= (s->value[TREE_CROOT_HEARTWOOD_C]  * tree_remove);
-	s->value[BRANCH_HEARTWOOD_C] -= (s->value[TREE_BRANCH_HEARTWOOD_C] * tree_remove);
-
-	/* livewood and deadwood */
-
-	s->value[STEM_LIVEWOOD_C]    -= (s->value[TREE_STEM_LIVEWOOD_C]     * tree_remove);
-	s->value[CROOT_LIVEWOOD_C]   -= (s->value[TREE_CROOT_LIVEWOOD_C]    * tree_remove);
-	s->value[BRANCH_LIVEWOOD_C]  -= (s->value[TREE_BRANCH_LIVEWOOD_C]   * tree_remove);
-	s->value[STEM_DEADWOOD_C]    -= (s->value[TREE_STEM_DEADWOOD_C]     * tree_remove);
-	s->value[CROOT_DEADWOOD_C]   -= (s->value[TREE_CROOT_DEADWOOD_C]    * tree_remove);
-	s->value[BRANCH_DEADWOOD_C]  -= (s->value[TREE_BRANCH_DEADWOOD_C]   * tree_remove);
-
-
+	
 	// Aggregate the fluxes toward CWD pool 
 
 	if ( ! nat_man )
@@ -394,6 +548,7 @@ void tree_biomass_remove (cell_t *const c, const int height, const int dbh, cons
 //	s->value[YEARLY_C_TO_CROOT_LIVEWOOD]  -= ((s->value[YEARLY_C_TO_CROOT_LIVEWOOD]  / s->counter[N_TREE]) * tree_remove);
 //	s->value[YEARLY_C_TO_BRANCH_LIVEWOOD] -= ((s->value[YEARLY_C_TO_BRANCH_LIVEWOOD] / s->counter[N_TREE]) * tree_remove);
 
+#endif
 	/******************************************************************************************/
 
 	/* nitrogen to litter pool */
