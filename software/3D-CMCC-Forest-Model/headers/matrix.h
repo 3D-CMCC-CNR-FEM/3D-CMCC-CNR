@@ -432,12 +432,13 @@ enum {
 	C_FROOT_TO_RESERVE,                 /* (tC/cell/day) Daily retranslocated C from Fine root pool to Reserve */
 	C_LEAF_TO_LITR,                     /* (tC/cell/day) Daily tC from Leaf pool to Litter */
 	C_FROOT_TO_LITR,                    /* (tC/cell/day) Daily tC from Fine root pool to Soil */
+	C_RESERVE_TO_LITR,                   /* (tC/cell/day) Daily tC from Reserve pool to litter pool */
 	C_BRANCH_TO_RESERVE,                /* (tC/cell/day) Daily tC from Branch pool to Litter */
 	C_CROOT_TO_RESERVE,                 /* (tC/cell/day) Daily tC from Coarse root pool to Litter */
 	C_STEM_TO_CWD,                      /* (tC/cell/day) Daily tC from Stem pool to Coarse Woody Debris */
 	C_CROOT_TO_CWD,                     /* (tC/cell/day) Daily tC from Coarse root pool to Coarse Woody Debris */
 	C_BRANCH_TO_CWD,                    /* (tC/cell/day) Daily tC from Branch pool to Coarse Woody Debris */
-	C_RESERVE_TO_CWD,                   /* (tC/cell/day) Daily tC from Reserve pool to Coarse Woody Debris */
+	//C_RESERVE_TO_CWD,                   /* (tC/cell/day) Daily tC from Reserve pool to Coarse Woody Debris */
 	C_FRUIT_TO_CWD,                     /* (tC/cell/day) Daily tC from Fruit pool to Coarse Woody Debris */
 	C_STEM_LIVEWOOD_TO_CWD,             /* (tC/cell/day) Daily tC from Stem livewood to Coarse Woody Debris */
 	C_CROOT_LIVEWOOD_TO_CWD,            /* (tC/cell/day) Daily tC from Coarse root livewood to Coarse Woody Debris */
