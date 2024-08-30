@@ -192,8 +192,6 @@ void tree_biomass_remove (cell_t *const c, const int height, const int dbh, cons
 
 	/******************************************************************************************/
 
-	/* update class carbon pools */
-
 	/* carbon to litter fluxes */
 	s->value[C_LEAF_TO_LITR]     += (s->value[TREE_LEAF_C]    * tree_remove);
 
@@ -247,6 +245,38 @@ void tree_biomass_remove (cell_t *const c, const int height, const int dbh, cons
 	s->value[C_BRANCH_DEADWOOD_TO_CWD]  += (s->value[TREE_BRANCH_DEADWOOD_C]   * tree_remove);
 
 	/******************************************************************************************/
+    /* update class carbon pools */
+
+	s->value[LEAF_C]    -= (s->value[TREE_LEAF_C]    * tree_remove);
+	s->value[FROOT_C]   -= (s->value[TREE_FROOT_C]   * tree_remove);
+
+	s->value[STEM_C]      -= (s->value[TREE_STEM_C]    * tree_remove);
+	s->value[CROOT_C]     -= (s->value[TREE_CROOT_C]   * tree_remove);
+	s->value[BRANCH_C]    -= (s->value[TREE_BRANCH_C]  * tree_remove);
+
+	s->value[RESERVE_C]   -= (s->value[TREE_RESERVE_C] * tree_remove);
+	s->value[FRUIT_C]     -= (s->value[TREE_FRUIT_C]   * tree_remove);
+
+	/* sapwood and heartwood */
+
+	s->value[STEM_SAPWOOD_C]     -= (s->value[TREE_STEM_SAPWOOD_C]     * tree_remove);
+	s->value[CROOT_SAPWOOD_C]    -= (s->value[TREE_CROOT_SAPWOOD_C]    * tree_remove);
+	s->value[BRANCH_SAPWOOD_C]   -= (s->value[TREE_BRANCH_SAPWOOD_C]   * tree_remove);
+	s->value[STEM_HEARTWOOD_C]   -= (s->value[TREE_STEM_HEARTWOOD_C]   * tree_remove);
+	s->value[CROOT_HEARTWOOD_C]  -= (s->value[TREE_CROOT_HEARTWOOD_C]  * tree_remove);
+	s->value[BRANCH_HEARTWOOD_C] -= (s->value[TREE_BRANCH_HEARTWOOD_C] * tree_remove);
+
+	/* livewood and deadwood */
+
+	s->value[STEM_LIVEWOOD_C]    -= (s->value[TREE_STEM_LIVEWOOD_C]     * tree_remove);
+	s->value[CROOT_LIVEWOOD_C]   -= (s->value[TREE_CROOT_LIVEWOOD_C]    * tree_remove);
+	s->value[BRANCH_LIVEWOOD_C]  -= (s->value[TREE_BRANCH_LIVEWOOD_C]   * tree_remove);
+	s->value[STEM_DEADWOOD_C]    -= (s->value[TREE_STEM_DEADWOOD_C]     * tree_remove);
+	s->value[CROOT_DEADWOOD_C]   -= (s->value[TREE_CROOT_DEADWOOD_C]    * tree_remove);
+	s->value[BRANCH_DEADWOOD_C]  -= (s->value[TREE_BRANCH_DEADWOOD_C]   * tree_remove);
+
+
+	// Aggregate the fluxes toward CWD pool 
 
 	if ( ! nat_man )
 	{
