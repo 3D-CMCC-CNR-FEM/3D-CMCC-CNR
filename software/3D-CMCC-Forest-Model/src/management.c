@@ -46,7 +46,7 @@ static int harvesting (cell_t *const c, const int height, const int dbh, const i
 	tree_biomass_remove ( c, height, dbh, age, species, s->counter[N_TREE], nat_man );
 
         // update cell level C and N pools
-
+    #if 0
 	/*** update cell level carbon pools (tC/cell) ***/
 	c->leaf_carbon              -= (s->value[C_LEAF_TO_LITR]   * 1e6 / g_settings->sizeCell);
 	c->froot_carbon             -= (s->value[C_FROOT_TO_LITR]  * 1e6 / g_settings->sizeCell);
@@ -64,7 +64,7 @@ static int harvesting (cell_t *const c, const int height, const int dbh, const i
 	CHECK_CONDITION ( c->croot_carbon,   < , ZERO );
 	CHECK_CONDITION ( c->reserve_carbon, < , ZERO );
 	CHECK_CONDITION ( c->fruit_carbon,   < , ZERO );
-
+   #endif
         //FIXME : update the cell level N pools too!
 
 	/* remove completely all trees */
