@@ -542,6 +542,7 @@ enum {
 	CUM_C_HWP,                          /* (tC/cell) cumulated harvested woody products removed from stand */
 	VOLUME_HWP,                         /* (m3/cell/yr) annual volume harvested woody products removed from stand */
 	CUM_VOLUME_HWP,                     /* (m3/cell) annual volume harvested woody products removed from stand */
+    
 
 	C_STEM_TO_HWP,                      /* (tC/cell/yr) annual harvested woody products removed from stand as stem */
 	C_BRANCH_TO_HWP,                    /* (tC/cell/yr) annual harvested woody products removed from stand as branch*/
@@ -1200,6 +1201,8 @@ typedef struct
 	double daily_branch_aut_resp;                                         /* (gC/m2/day) daily branch and bark aut resp at cell level */
 	double daily_froot_aut_resp;                                          /* (gC/m2/day) daily fine root aut resp at cell level */
 	double daily_croot_aut_resp;                                          /* (gC/m2/day) daily coarse root aut resp at cell level */
+    double annual_hwp;                         // (tC/cell/yr) cell level annual harvested woody products removed from stand */
+
 
 	/* tree carbon pools */
 	double leaf_carbon;                                                   /* (gC/m2) leaf carbon at cell level */
@@ -1217,6 +1220,7 @@ typedef struct
 	double branch_dead_wood_carbon;                                       /* (gC/m2) branch dead wood carbon at cell level */
 	double reserve_carbon;                                                /* (gC/m2) reserve at cell level */
 	double fruit_carbon;                                                  /* (gC/m2) fruit at cell level */
+  
 
 	/* old tree carbon pools (used for mass balance) */
 	double old_leaf_carbon;
