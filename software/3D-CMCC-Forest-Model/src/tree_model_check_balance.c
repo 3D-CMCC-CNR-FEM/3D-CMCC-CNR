@@ -163,6 +163,7 @@ int check_tree_class_carbon_mass_balance ( cell_t *const c, const int layer, con
 
 	/* DAILY CHECK ON CLASS LEVEL CARBON MASS BALANCE */
 	/* check complete tree level carbon mass balance */
+	// contribution from thinning and harvest has to included
 
 /* sum of biomass sources */
 
@@ -175,8 +176,16 @@ int check_tree_class_carbon_mass_balance ( cell_t *const c, const int layer, con
 			s->value[C_STEM_TO_CWD]                       +
 			s->value[C_CROOT_TO_CWD]                      +
 			s->value[C_RESERVE_TO_LITR]                   +
-			s->value[C_FRUIT_TO_CWD]                      ;
+			s->value[C_FRUIT_TO_CWD]                      +
+			s->value[C_STEM_TO_HWP]                       +
+			s->value[C_BRANCH_TO_HWP]                     ;
 
+
+    // set to zero the harvested fluxes (management happens only the first day of the year)
+   
+    s->value[C_STEM_TO_HWP]   = 0. ;
+	s->value[C_BRANCH_TO_HWP] = 0. ; 
+    
 	/* sum of current storage */
 
 	s->value[TREEC_STORE] = s->value[LEAF_C] +
