@@ -108,6 +108,26 @@ void littering ( cell_t *const c, species_t *const s )
 	/* check */
 	CHECK_CONDITION ( c->froot_litr1C + c->froot_litr2C + c->froot_litr3C + c->froot_litr4C , == , c->froot_litrC + eps );
 
+    // reserve 
+/*** compute researve litter carbon fluxes (tC/sizecell/day) ****/
+	s->value[RESERVE_TO_LITRC]             = s->value[C_RESERVE_TO_LITR];
+	s->value[RESERVE_TO_LITR1C]            = s->value[C_RESERVE_TO_LITR] ;
+
+	/*** update cell-level leaf litter carbon fluxes (gC/m2/day) ****/
+	//c->daily_leaf_to_litrC             += s->value[LEAF_TO_LITRC]       * 1e6 / g_settings->sizeCell;
+	//c->daily_leaf_to_litr1C            += s->value[LEAF_TO_LITR1C]      * 1e6 / g_settings->sizeCell;
+
+	/* check */
+	//CHECK_CONDITION ( c->daily_leaf_to_litr1C + c->daily_leaf_to_litr2C + c->daily_leaf_to_litr3C + c->daily_leaf_to_litr4C , == , c->daily_leaf_to_litrC + eps );
+
+	/*** compute cell-level leaf litter carbon pools (gC/m2) ***/
+	c->reserve_litrC                      += s->value[RESERVE_TO_LITRC]       * 1e6 / g_settings->sizeCell;
+	c->reserve_litr1C                     += s->value[RESERVE_TO_LITR1C]      * 1e6 / g_settings->sizeCell;
+
+	/* check */
+	//CHECK_CONDITION ( c->leaf_litr1C + c->leaf_litr2C + c->leaf_litr3C + c->leaf_litr4C , == , c->leaf_litrC + eps );
+
+
 	/*********************************************************************************************************************************/
 	/*** deadwood nitrogen ***/
 
