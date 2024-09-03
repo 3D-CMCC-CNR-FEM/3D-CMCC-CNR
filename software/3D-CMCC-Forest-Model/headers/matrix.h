@@ -762,6 +762,8 @@ enum {
 	/* litter and soil flux */
 	LEAF_TO_LITRC,                      /* (tC/cell/day) leaf litter  C flux */
 	LEAF_TO_LITR1C,                     /* (tC/cell/day) leaf litter labile C flux */
+	RESERVE_TO_LITRC,                      /* (tC/cell/day) reserve litter  C flux */
+	RESERVE_TO_LITR1C,                     /* (tC/cell/day) reserve litter labile C flux */
 	LEAF_TO_LITR2C,                     /* (tC/cell/day) leaf litter unshielded cell/dayulose C flux */
 	LEAF_TO_LITR3C,                     /* (tC/cell/day) leaf litter shielded cell/dayulose C flux */
 	LEAF_TO_LITR4C,                     /* (tC/cell/day) leaf litter lignin C flux */
