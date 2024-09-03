@@ -481,6 +481,9 @@ void reset_daily_class_variables(cell_t *const c)
 					s->value[CWD_TO_LITR2C] =             0.;
 					s->value[CWD_TO_LITR3C] =             0.;
 					s->value[CWD_TO_LITR4C] =             0.;
+					s->value[RESERVE_TO_LITRC] =             0.;
+					s->value[RESERVE_TO_LITR1C] =            0.;
+
                 
 				    // any type of removal, but the tree-mortality/harvest
 
