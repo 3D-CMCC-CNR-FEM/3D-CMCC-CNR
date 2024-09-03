@@ -543,6 +543,9 @@ enum {
 	VOLUME_HWP,                         /* (m3/cell/yr) annual volume harvested woody products removed from stand */
 	CUM_VOLUME_HWP,                     /* (m3/cell) annual volume harvested woody products removed from stand */
 
+	C_STEM_TO_HWP,                      /* (tC/cell/yr) annual harvested woody products removed from stand as stem */
+	C_BRANCH_TO_HWP,                    /* (tC/cell/yr) annual harvested woody products removed from stand as branch*/
+
 	OLD_RESERVE_C,    /* TO REMOVE */   /* (tC/cell) Old reserve carbon pool */
 
 	/* per tree in tC */
