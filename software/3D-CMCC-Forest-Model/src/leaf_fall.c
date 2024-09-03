@@ -73,12 +73,12 @@ void leaffall_deciduous ( cell_t *const c, const int height, const int dbh, cons
 		s->value[LEAF_FALL_N]    = previousLeafN - currentLeafN;
 
 		/* update fine root carbon */
-		s->value[FROOT_FALL_C]  = ( s->value[FROOT_C] * s->value[LEAF_C_TO_REMOVE]) / s->value[LEAF_C];
-		s->value[FROOT_FALL_N]   = ( s->value[FROOT_N] * s->value[LEAF_N_TO_REMOVE]) / s->value[LEAF_N];
+		s->value[FROOT_FALL_C]  = ( s->value[FROOT_C] * s->value[LEAF_FALL_C] ) / s->value[LEAF_C];
+		s->value[FROOT_FALL_N]   = ( s->value[FROOT_N] * s->value[LEAF_FALL_N] ) / s->value[LEAF_N];
 
 		/* update fruit carbon */
-		s->value[FRUIT_FALL_C]  = ( s->value[FRUIT_C] * s->value[LEAF_C_TO_REMOVE]) / s->value[LEAF_C];
-		s->value[FRUIT_FALL_N] = ( s->value[FRUIT_N] * s->value[LEAF_N_TO_REMOVE]) / s->value[LEAF_N];
+		s->value[FRUIT_FALL_C]  = ( s->value[FRUIT_C] * s->value[LEAF_FALL_C] ) / s->value[LEAF_C];
+		s->value[FRUIT_FALL_N] = ( s->value[FRUIT_N] * s->value[LEAF_FALL_N] ) / s->value[LEAF_N];
 	}
 	else
 	{
@@ -167,7 +167,6 @@ void leaffall_evergreen ( cell_t *const c, const int height, const int dbh, cons
 void leaffall (species_t *const s)
 {
     
-
     // compute amount of leaf/fruit/froot that has to be removed
 	
 	s->value[LEAF_C_TO_REMOVE]  += s->value[LEAF_FALL_C]   ;
