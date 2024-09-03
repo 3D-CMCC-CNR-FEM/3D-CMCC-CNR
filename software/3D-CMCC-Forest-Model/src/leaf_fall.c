@@ -211,7 +211,8 @@ void leaffall (species_t *const s)
 	// FIXME: in case it happens. And all the fluxes to litr and reserve should be updated
 	if ( s->value[LEAF_C] < s->value[LEAF_C_TO_REMOVE] )
 	{
-		s->value[LEAF_C_TO_REMOVE]        = s->value[LEAF_C]; 
+		s->value[LEAF_C_TO_REMOVE]        = s->value[LEAF_C];
+		printf("Warning: s->value[LEAF_C] < s->value[LEAF_C_TO_REMOVE] \n"); 
 		
 	}
 	if ( s->value[FROOT_C] < s->value[FROOT_C_TO_REMOVE] )
