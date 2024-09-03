@@ -228,11 +228,12 @@ int check_cell_carbon_mass_balance(cell_t *const c)
 	/* DAILY CHECK ON CELL LEVEL CARBON MASS BALANCE */
 	/* check complete cell level carbon mass balance */
 
-	/* sum of sources */
+	/* sum of sources/input */
 	c->cell_carbon_in    = c->daily_gpp;
 
-	/* sum of sinks */
-	c->cell_carbon_out   = c->daily_aut_resp + c->daily_het_resp;
+	/* sum of output */
+	c->cell_carbon_out   = c->daily_aut_resp + c->daily_het_resp + c->annual_hwp;
+
 
 	/* sum of current storage */
 	c->cell_carbon_store = c->leaf_carbon +
@@ -245,6 +246,11 @@ int check_cell_carbon_mass_balance(cell_t *const c)
 			c->litrC          +
 			c->soilC          ;
 
+    // after the first day of the year
+    // set to 0 
+
+	c->annual_hwp = 0.;
+
 	/* check carbon pool balance */
 	c->cell_carbon_balance = c->cell_carbon_in - c->cell_carbon_out - ( c->cell_carbon_store - c->cell_carbon_old_store );
 
@@ -256,10 +262,11 @@ int check_cell_carbon_mass_balance(cell_t *const c)
 		error_log("DOS = %d\n", c->dos);
 		error_log("\nin\n");
 		error_log("daily_gpp_carbon   = %f gC/m2/day\n",     c->daily_gpp);
-		error_log("\nout\n");
+		error_log("\noutput\n");
 		error_log("daily_aut_resp     = %f gC/m2/day\n", c->daily_aut_resp);
 		error_log("daily_het_resp     = %f gC/m2/day\n", c->daily_het_resp);
-		error_log("\nstore\n");
+		error_log("daily_hwp_fluxes     = %f gC/m2/day\n", c->annual_hwp);
+		error_log("\n net storage \n");
 		error_log("leaf_carbon        = %f gC/m2\n",     c->leaf_carbon   - c->old_leaf_carbon);
 		error_log("froot_carbon       = %f gC/m2\n",     c->froot_carbon  - c->old_froot_carbon);
 		error_log("croot_carbon       = %f gC/m2\n",     c->croot_carbon  - c->old_croot_carbon);
@@ -270,6 +277,7 @@ int check_cell_carbon_mass_balance(cell_t *const c)
 		error_log("soil_carbon        = %f gC/m2\n",     c->soilC         - c->old_soilC);
 		error_log("\ncarbon in        = %f gC/m2\n",     c->cell_carbon_in);
 		error_log("carbon out         = %f gC/m2\n",     c->cell_carbon_out);
+		error_log("previous carbon store = %f gC/m2\n",  c->cell_carbon_old_store);
 		error_log("delta carbon store = %f gC/m2\n",     c->cell_carbon_store - c->cell_carbon_old_store);
 		error_log("carbon_balance     = %f gC/m2\n",     c->cell_carbon_balance);
 		error_log("...FATAL ERROR in 'Cell_model_daily' carbon mass balance (gC/m2/day) (exit)\n");
