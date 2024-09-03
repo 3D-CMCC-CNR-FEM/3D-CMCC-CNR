@@ -259,6 +259,7 @@ void reset_annual_cell_variables(cell_t *const c)
 	c->annual_het_resp =                0.;
 	c->annual_nee =                     0.;
 	c->annual_nep =                     0.;
+	c->annual_hwp =                     0.;
 }
 void reset_daily_layer_variables(cell_t *const c)
 {
