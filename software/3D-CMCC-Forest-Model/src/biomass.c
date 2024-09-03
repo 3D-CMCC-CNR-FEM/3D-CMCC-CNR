@@ -212,20 +212,20 @@ void tree_biomass_remove (cell_t *const c, const int height, const int dbh, cons
 	s->value[STEM_SAPWOOD_C]     -= (s->value[TREE_STEM_SAPWOOD_C]     * tree_remove);
 	s->value[CROOT_SAPWOOD_C]    -= (s->value[TREE_CROOT_SAPWOOD_C]    * tree_remove);
 	s->value[BRANCH_SAPWOOD_C]   -= (s->value[TREE_BRANCH_SAPWOOD_C]   * tree_remove);
-	s->value[STEM_HEARTWOOD_C]   -= (s->value[TREE_STEM_HEARTWOOD_C]   * tree_remove);
-	s->value[CROOT_HEARTWOOD_C]  -= (s->value[TREE_CROOT_HEARTWOOD_C]  * tree_remove);
-	s->value[BRANCH_HEARTWOOD_C] -= (s->value[TREE_BRANCH_HEARTWOOD_C] * tree_remove);
 
 	/* livewood and deadwood */
 
 	s->value[STEM_LIVEWOOD_C]    -= (s->value[TREE_STEM_LIVEWOOD_C]     * tree_remove);
 	s->value[CROOT_LIVEWOOD_C]   -= (s->value[TREE_CROOT_LIVEWOOD_C]    * tree_remove);
 	s->value[BRANCH_LIVEWOOD_C]  -= (s->value[TREE_BRANCH_LIVEWOOD_C]   * tree_remove);
-	s->value[STEM_DEADWOOD_C]    -= (s->value[TREE_STEM_DEADWOOD_C]     * tree_remove);
-	s->value[CROOT_DEADWOOD_C]   -= (s->value[TREE_CROOT_DEADWOOD_C]    * tree_remove);
-	s->value[BRANCH_DEADWOOD_C]  -= (s->value[TREE_BRANCH_DEADWOOD_C]   * tree_remove);
 
-	// update class_C carbon pools
+    /*** update heartwood and dead carbon mass pools **/
+	s->value[STEM_HEARTWOOD_C]         = s->value[STEM_C]   - s->value[STEM_SAPWOOD_C];
+	s->value[STEM_DEADWOOD_C]          = s->value[STEM_C]   - s->value[STEM_LIVEWOOD_C];
+	s->value[CROOT_HEARTWOOD_C]        = s->value[CROOT_C]  - s->value[CROOT_SAPWOOD_C];
+	s->value[CROOT_DEADWOOD_C]         = s->value[CROOT_C]  - s->value[CROOT_LIVEWOOD_C];
+	s->value[BRANCH_HEARTWOOD_C]       = s->value[BRANCH_C] - s->value[BRANCH_SAPWOOD_C];
+	s->value[BRANCH_DEADWOOD_C]        = s->value[BRANCH_C] - s->value[BRANCH_LIVEWOOD_C];
 
     // update cell level C and N pools
    
@@ -260,9 +260,9 @@ void tree_biomass_remove (cell_t *const c, const int height, const int dbh, cons
 	{
 		/* natural mortality */
 
-    	s->value[C_LEAF_TO_LITR]     += (s->value[TREE_LEAF_C]    * tree_remove);
-	    s->value[C_FROOT_TO_LITR]    += (s->value[TREE_FROOT_C]   * tree_remove);
-        s->value[C_RESERVE_TO_LITR]   += (s->value[TREE_RESERVE_C] * tree_remove);
+    s->value[C_LEAF_TO_LITR]     += (s->value[TREE_LEAF_C]    * tree_remove);
+	s->value[C_FROOT_TO_LITR]    += (s->value[TREE_FROOT_C]   * tree_remove);
+    s->value[C_RESERVE_TO_LITR]   += (s->value[TREE_RESERVE_C] * tree_remove);
 
  	  
        /* carbon to cwd fluxes */
@@ -270,6 +270,7 @@ void tree_biomass_remove (cell_t *const c, const int height, const int dbh, cons
 	s->value[C_CROOT_TO_CWD]     += (s->value[TREE_CROOT_C]   * tree_remove);
 	s->value[C_BRANCH_TO_CWD]    += (s->value[TREE_BRANCH_C]  * tree_remove);
 	s->value[C_FRUIT_TO_CWD]     += (s->value[TREE_FRUIT_C]   * tree_remove);
+
 
 	/******************************************************************************************/
 
@@ -321,12 +322,14 @@ void tree_biomass_remove (cell_t *const c, const int height, const int dbh, cons
 	else  // management related mortality 
     {
 
-        s->value[C_LEAF_TO_LITR]     += (s->value[TREE_LEAF_C]    * tree_remove);
-	    s->value[C_FROOT_TO_LITR]    += (s->value[TREE_FROOT_C]   * tree_remove);
-        s->value[C_RESERVE_TO_LITR]   += (s->value[TREE_RESERVE_C] * tree_remove);
+    // in first approximation we assume all reserve pool goes into litter.
+
+    s->value[C_LEAF_TO_LITR]     += (s->value[TREE_LEAF_C]    * tree_remove);
+	s->value[C_FROOT_TO_LITR]    += (s->value[TREE_FROOT_C]   * tree_remove);
+    s->value[C_RESERVE_TO_LITR]   += (s->value[TREE_RESERVE_C] * tree_remove);
 
  	  
-       /* carbon to cwd fluxes */
+    /* carbon to cwd fluxes */
 	s->value[C_CROOT_TO_CWD]     += (s->value[TREE_CROOT_C]   * tree_remove);
 	s->value[C_BRANCH_TO_CWD]    += (s->value[TREE_BRANCH_C]  * tree_remove)* (1.-branch_perc_remove);
 	s->value[C_FRUIT_TO_CWD]     += (s->value[TREE_FRUIT_C]   * tree_remove);
