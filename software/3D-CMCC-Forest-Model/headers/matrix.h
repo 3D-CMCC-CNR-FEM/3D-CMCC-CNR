@@ -1420,6 +1420,8 @@ typedef struct
 	double litr4C;                                                        /* (gC/m2) litter lignin carbon */
 	double leaf_litrC;                                                    /* (gC/m2) leaf total litter carbon */
 	double leaf_litr1C;                                                   /* (gC/m2) leaf litter labile carbon */
+	double reserve_litrC;                                                    /* (gC/m2) reserve total litter carbon */
+	double reserve_litr1C;                                                   /* (gC/m2) reserve litter labile carbon */
 	double leaf_litr2C;                                                   /* (gC/m2) leaf litter unshielded cellulose carbon */
 	double leaf_litr3C;                                                   /* (gC/m2) leaf litter shielded cellulose carbon */
 	double leaf_litr4C;                                                   /* (gC/m2) leaf litter lignin carbon */
