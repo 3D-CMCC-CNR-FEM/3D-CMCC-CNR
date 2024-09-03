@@ -5,6 +5,8 @@
  *      Author: alessio
  */
 
+// NOTE : CURRENTLY NOT USED
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -19,6 +21,9 @@ extern settings_t* g_settings;
 
 void carbon_balance (cell_t *const c, const int height, const int dbh, const int age, const int species)
 {
+
+	// note: currently not used.
+
 	species_t *s;
 	s = &c->heights[height].dbhs[dbh].ages[age].species[species];
 
@@ -29,14 +34,14 @@ void carbon_balance (cell_t *const c, const int height, const int dbh, const int
 	s->value[STEM_C]     -= (s->value[C_STEM_TO_CWD]);
 	s->value[CROOT_C]    -= (s->value[C_CROOT_TO_CWD]);
 	s->value[BRANCH_C]   -= (s->value[C_BRANCH_TO_CWD]);
-	s->value[RESERVE_C]  -= (s->value[C_RESERVE_TO_CWD]);
+	s->value[RESERVE_C]  -= (s->value[C_RESERVE_TO_LITR]);
 	s->value[FRUIT_C]    -= (s->value[C_FRUIT_TO_CWD]);
 	s->value[LITR_C]     += (s->value[C_LEAF_TO_LITR]     +
 			s->value[C_FROOT_TO_LITR]);
 	s->value[CWD_C]      += (s->value[C_STEM_TO_CWD] +
 			s->value[C_CROOT_TO_CWD]                 +
 			s->value[C_BRANCH_TO_CWD]                +
-			s->value[C_RESERVE_TO_CWD]               +
+					s->value[C_RESERVE_TO_LITR]               +
 			s->value[C_FRUIT_TO_CWD]);
 
 	/* check */
