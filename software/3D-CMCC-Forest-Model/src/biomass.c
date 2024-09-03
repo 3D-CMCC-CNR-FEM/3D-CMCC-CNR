@@ -373,6 +373,11 @@ void tree_biomass_remove (cell_t *const c, const int height, const int dbh, cons
 		s->value[C_HWP]          += (s->value[TREE_STEM_C] + s->value[TREE_BRANCH_C]*branch_perc_remove)* tree_remove;
 		s->value[CUM_C_HWP]      += s->value[C_HWP];
 
+        s->value[C_STEM_TO_HWP]   +=   (s->value[TREE_STEM_C])* tree_remove;
+		s->value[C_BRANCH_TO_HWP] +=   (s->value[TREE_BRANCH_C]*branch_perc_remove)* tree_remove;
+
+		c->annual_hwp += (s->value[TREE_STEM_C] + s->value[TREE_BRANCH_C]*branch_perc_remove)* tree_remove;
+ 
 		/* compute stem volume removed (m3/ha/yr) */
 		s->value[VOLUME_HWP]     += s->value[TREE_VOLUME] * tree_remove;
 		s->value[CUM_VOLUME_HWP] += s->value[TREE_VOLUME] * tree_remove;
