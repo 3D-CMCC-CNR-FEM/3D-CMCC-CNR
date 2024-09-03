@@ -398,22 +398,13 @@ int Tree_model_daily (matrix_t *const m, const int cell, const int day, const in
 								/* water use efficiency */
 								water_use_efficiency  ( c, height, dbh, age, species, day, month, year );
 
-                                                               // update canopy cover projection considering the
-                                                               // number of living trees after natural mortality
-
-                                                                 if ( c->doy == ( IS_LEAP_YEAR ( c->years[year].year ) ? 366 : 365) )
-	                                                         {
-                                                                  canopy_cover    ( c, height, dbh, age, species );
-                                                                 }
-
-
 								/* update Leaf Area Index */
 								daily_lai             ( c, a, s );
 
 								/* tree level dendrometry */
 								dendrometry_old       ( c, layer, height, dbh, age, species, year );
 
-								/** END OF YEAR **/
+								/** IF END OF YEAR **/
 
 								/* last day of the year */
 								if ( c->doy == ( IS_LEAP_YEAR ( c->years[year].year ) ? 366 : 365) )
@@ -464,9 +455,6 @@ int Tree_model_daily (matrix_t *const m, const int cell, const int day, const in
 									/* update Leaf Area Index */
 									daily_lai             ( c, a, s );
 
-									/* litter fluxes and pools */
-								    littering             ( c, s );
-
 									/* above ground-below ground stocks */
 									abg_bgb_biomass ( c, height, dbh, age, species );
 
@@ -477,6 +465,9 @@ int Tree_model_daily (matrix_t *const m, const int cell, const int day, const in
 									annual_tree_increment ( c, height, dbh, age, species, year );
 								}
 
+								/* litter fluxes and pools */
+								    littering             ( c, s );
+
 								/** check for fluxes and mass balance closure at the tree class level **/
 
 								logger(g_debug_log, "\n**TREE CLASS LEVEL BALANCE**\n");
@@ -485,7 +476,7 @@ int Tree_model_daily (matrix_t *const m, const int cell, const int day, const in
 								/* 1 */ if ( ! check_tree_class_radiation_flux_balance ( c, layer, height, dbh, age, species ) ) return 0;
 
 								/* check for carbon flux balance closure */
-								/* 2 */ if ( ! check_tree_class_carbon_flux_balance    ( c, layer, height, dbh, age, species ) ) return 0;
+								 /* 2 */ if ( ! check_tree_class_carbon_flux_balance    ( c, layer, height, dbh, age, species ) ) return 0;
 
 								/* check for nitrogen flux balance closure */
 								/* 3 */ //fixme if ( ! check_tree_class_nitrogen_flux_balance  ( c, layer, height, dbh, age, species ) ) return 0;
@@ -494,7 +485,7 @@ int Tree_model_daily (matrix_t *const m, const int cell, const int day, const in
 								/* 4 */ if ( ! check_tree_class_water_flux_balance     ( c, layer, height, dbh, age, species ) ) return 0;
 
 								/* check for carbon mass balance closure */
-								/* 5 */ if ( ! check_tree_class_carbon_mass_balance    ( c, layer, height, dbh, age, species ) ) return 0;
+								  /* 5 */ if ( ! check_tree_class_carbon_mass_balance    ( c, layer, height, dbh, age, species ) ) return 0;
 
 								/* check for nitrogen mass balance closure */
 								/* 6 */  //fixme if ( ! check_tree_class_nitrogen_mass_balance  ( c, layer, height, dbh, age, species ) ) return 0;
