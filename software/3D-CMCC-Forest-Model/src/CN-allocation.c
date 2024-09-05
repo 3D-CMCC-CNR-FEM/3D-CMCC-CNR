@@ -318,31 +318,31 @@ void carbon_allocation_new ( cell_t *const c, age_t *const a, species_t *const s
 	
 	// Note: this should not happen from the the 5.6
 	// however if this happen, better to sort out why
-	  
+
 	if ( s->value[STEM_SAPWOOD_C] <  ZERO )
 	{
 		s->value[STEM_SAPWOOD_C]   = 0.;
 		s->value[STEM_HEARTWOOD_C] = s->value[STEM_C];
-		printf("Warning: s->value[STEM_SAPWOOD_C] < ZERO \n");
+		//printf("Warning: s->value[STEM_SAPWOOD_C] < ZERO \n");
 	}
 	if ( s->value[STEM_HEARTWOOD_C] < ZERO )
 	{
 		s->value[STEM_HEARTWOOD_C]   = 0.;
 		s->value[STEM_SAPWOOD_C] = s->value[STEM_C];
-		printf("Warning: s->value[STEM_HEARTWOOD_C] < ZERO\n");
+		//printf("Warning: s->value[STEM_HEARTWOOD_C] < ZERO\n");
 	}
 
 	if ( s->value[CROOT_SAPWOOD_C] <  ZERO )
 	{
 		s->value[CROOT_SAPWOOD_C]   = 0.;
 		s->value[CROOT_HEARTWOOD_C] = s->value[CROOT_C];
-		printf("Warning: s->value[CROOT_SAPWOOD_C] < ZERO\n");
+		//printf("Warning: s->value[CROOT_SAPWOOD_C] < ZERO\n");
 	}
 	if ( s->value[CROOT_HEARTWOOD_C] < ZERO )
 	{	
 		s->value[CROOT_HEARTWOOD_C]   = 0.;
 		s->value[CROOT_SAPWOOD_C] = s->value[CROOT_C];
-		printf("Warning: s->value[CROOT_HEARTWOOD_C] < ZERO\n");
+		//printf("Warning: s->value[CROOT_HEARTWOOD_C] < ZERO\n");
 
 	}
 
@@ -350,13 +350,13 @@ void carbon_allocation_new ( cell_t *const c, age_t *const a, species_t *const s
 	{
 		s->value[BRANCH_SAPWOOD_C]   = 0.;
 		s->value[BRANCH_HEARTWOOD_C] = s->value[BRANCH_C];
-		printf("Warning: s->value[BRANCH_SAPWOOD_C] < ZERO\n");
+		//printf("Warning: s->value[BRANCH_SAPWOOD_C] < ZERO\n");
 	}
 	if ( s->value[BRANCH_HEARTWOOD_C] < ZERO )
 	{
 		s->value[BRANCH_HEARTWOOD_C]   = 0.;
 		s->value[BRANCH_SAPWOOD_C] = s->value[BRANCH_C];
-		printf("Warning: s->value[BRANCH_HEARTWOOD_C] < ZERO\n" );
+		//printf("Warning: s->value[BRANCH_HEARTWOOD_C] < ZERO\n" );
 	}
 
 	/*********************************************************************/

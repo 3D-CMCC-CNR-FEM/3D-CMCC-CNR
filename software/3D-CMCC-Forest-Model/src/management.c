@@ -167,15 +167,15 @@ int forest_management (cell_t *const c, const int day, const int month, const in
 					}
 					else if ( (MANAGEMENT_VAR == g_settings->management) || (MANAGEMENT_VAR1 == g_settings->management) )
 					{
-					                       // compute last year of available stand density data
-					                       // it works with one layer/specie only
-                                                              row = g_dataset->rows_count ;
+					        // compute last year of available stand density data
+					        // it works with one layer/specie only
 
-                                                              year_dens_fin = g_dataset->rows[row-1].year_stand;
+                            row = g_dataset->rows_count ;
 
+                            year_dens_fin = g_dataset->rows[row-1].year_stand;
 
-                                                                // if (c->years[year].year > year_dens_fin)
-                                                                 //{
+                            // if (c->years[year].year > year_dens_fin)
+                            //{
 						/* management forced by stand data */  // if data are available
 						// if ( year )
 						if ( year && c->years[year].year <= year_dens_fin)
@@ -598,6 +598,8 @@ void thinning (cell_t *const c, const int height, const int dbh, const int age, 
 
 	s = &c->heights[height].dbhs[dbh].ages[age].species[species];
 
+	//printf("** IN THINNING  **\n");
+					
 	/* thinning function based on basal area */
 
 	//TODO
@@ -707,10 +709,6 @@ void thinning (cell_t *const c, const int height, const int dbh, const int age, 
 	CHECK_CONDITION(s->counter[N_TREE], <, ZERO );
 
 	/*********************************************************************************************************************************************************************/
-
-	/* Total class C at the end */
-	s->value[TOTAL_C]    = s->value[LEAF_C] + s->value[CROOT_C] + s->value[FROOT_C] + s->value[STEM_C] + s->value[BRANCH_C] + s->value[RESERVE_C];
-
 	/* update stand trees */
 	c->n_trees          -= trees_to_remove;
 	c->annual_dead_tree += trees_to_remove;
@@ -730,6 +728,7 @@ void prescribed_thinning (cell_t *const c, const int height, const int dbh, cons
 
 	assert(g_dataset);
 
+    //printf("** IN PRESCRIBED_THINNING **\n");
 
 	for ( row = 0; row < g_dataset->rows_count; ++row )
 	{
@@ -755,8 +754,14 @@ void prescribed_thinning (cell_t *const c, const int height, const int dbh, cons
 
 					c->heights[height].dbhs[dbh].ages[age].species[species].counter[N_TREE] = g_dataset->rows[row].n;
 
+                    /* update stand trees */
+	                c->n_trees           -= tree_remove;
+	                c->annual_dead_tree += tree_remove;
+
 					// added on 7 September 2017
 					// with 'var1' model gets also changes in dbh and height
+					// on september 2024 it has been removed the option VAR1 as prescribing DBH 
+					// would imply correcting the allocation of carbon from and to stem.
 					if ( MANAGEMENT_VAR1 == g_settings->management )
 					{
 						c->heights[height].value = g_dataset->rows[row].height;

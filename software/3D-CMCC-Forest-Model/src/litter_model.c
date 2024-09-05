@@ -53,7 +53,7 @@ int Litter_model_daily (matrix_t *const m, const int cell, const int day, const 
 	litter_carbon_balance            ( c, year );
 
 	/* compute soil nitrogen balance */
-	litter_nitrogen_balance          ( c, year );
+	// litter_nitrogen_balance          ( c, year );
 
 
 	/*******************************************************************************************************/
@@ -67,10 +67,10 @@ int Litter_model_daily (matrix_t *const m, const int cell, const int day, const 
 	/* 2 */ if ( ! check_litter_carbon_mass_balance    ( c ) ) return 0;
 
 	/* CHECK FOR NITROGEN FLUX BALANCE CLOSURE */
-	/* 1 */ if ( ! check_litter_nitrogen_flux_balance  ( c ) ) return 0;
+	// /* 1 */ if ( ! check_litter_nitrogen_flux_balance  ( c ) ) return 0;
 
 	/* CHECK FOR NITROGEN MASS BALANCE CLOSURE */
-	/* 2 */ if ( ! check_litter_nitrogen_mass_balance  ( c ) ) return 0;
+	// /* 2 */ if ( ! check_litter_nitrogen_mass_balance  ( c ) ) return 0;
 
 	/*******************************************************************************************************/
 

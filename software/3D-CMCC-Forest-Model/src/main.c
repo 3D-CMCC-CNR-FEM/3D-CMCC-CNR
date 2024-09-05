@@ -1652,7 +1652,7 @@ int main(int argc, char *argv[]) {
 					/* summary on soil data */
 					soil_summary       ( matrix, matrix->cells );
 
-					/* if spin up on */
+					/* if spin up off */
 					if ( ! g_settings->spinup )
 					{
 						if( LANDUSE_F == g_soil_settings->landuse )
@@ -1901,19 +1901,18 @@ int main(int argc, char *argv[]) {
 					}
 					else
 					{
-						//printf("ok cell_model (x=%d,y=%d) (%02d-%02d-%d)\n"
-						//		, matrix->cells[cell].x
-						//		, matrix->cells[cell].y
-						//		, day+1, month+1, year+g_settings->year_start
-						//);
+						printf("ok cell_model (x=%d,y=%d) (%02d-%02d-%d)\n"
+								, matrix->cells[cell].x
+								, matrix->cells[cell].y
+								, day+1, month+1, year+g_settings->year_start
+						);
 					}
 					/*************************************************************************/
-
 					/******************************************************************************/
 					/* print daily output */
 					//EOD_print_output_cell_level (&matrix->cells[cell], day, month, year, years_of_simulation );
                                        //EOD_print_output_cell_level_ddalmo (&matrix->cells[cell], day, month, year, years_of_simulation );
-                                        EOD_print_output_cell_level_mc(&matrix->cells[cell], day, month, year, years_of_simulation );
+                    EOD_print_output_cell_level_mc(&matrix->cells[cell], day, month, year, years_of_simulation );
 					 EOD_print_output_soil_cell_level (&matrix->cells[cell], day, month, year, years_of_simulation );
 
 					/* reset daily variables once printed */

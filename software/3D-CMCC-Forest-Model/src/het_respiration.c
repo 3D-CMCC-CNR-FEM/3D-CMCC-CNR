@@ -57,7 +57,7 @@ void soil_heterotrophic_respiration ( cell_t *const c, const meteo_daily_t *cons
 	c->daily_soil_het_resp = c->daily_soil1_het_resp + c->daily_soil2_het_resp + c->daily_soil3_het_resp + c->daily_soil4_het_resp;
 
 	/*******************************************************************************************************************************/
-
+	
 	/* total heterotrophic respiraton */
 
 	/* daily */

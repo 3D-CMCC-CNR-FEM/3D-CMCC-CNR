@@ -196,7 +196,7 @@ void tree_biomass_remove (cell_t *const c, const int height, const int dbh, cons
 	/******************************************************************************************/
     /* update class carbon pools */
 #if 1
-    
+  
 	s->value[LEAF_C]    -= (s->value[TREE_LEAF_C]    * tree_remove);
 	s->value[FROOT_C]   -= (s->value[TREE_FROOT_C]   * tree_remove);
 
@@ -260,17 +260,18 @@ void tree_biomass_remove (cell_t *const c, const int height, const int dbh, cons
 	{
 		/* natural mortality */
 
+		//printf("** in TREE BIOMASS REMOVE : natural mortality ** \n");
+
     s->value[C_LEAF_TO_LITR]     += (s->value[TREE_LEAF_C]    * tree_remove);
 	s->value[C_FROOT_TO_LITR]    += (s->value[TREE_FROOT_C]   * tree_remove);
     s->value[C_RESERVE_TO_LITR]   += (s->value[TREE_RESERVE_C] * tree_remove);
 
- 	  
+
        /* carbon to cwd fluxes */
 	s->value[C_STEM_TO_CWD]      += (s->value[TREE_STEM_C]    * tree_remove);
 	s->value[C_CROOT_TO_CWD]     += (s->value[TREE_CROOT_C]   * tree_remove);
 	s->value[C_BRANCH_TO_CWD]    += (s->value[TREE_BRANCH_C]  * tree_remove);
 	s->value[C_FRUIT_TO_CWD]     += (s->value[TREE_FRUIT_C]   * tree_remove);
-
 
 	/******************************************************************************************/
 
@@ -305,7 +306,7 @@ void tree_biomass_remove (cell_t *const c, const int height, const int dbh, cons
 	                        s->value[TREE_CROOT_C]  +
 							s->value[TREE_BRANCH_C] +
 							s->value[TREE_FRUIT_C] ) * tree_remove ;
-   
+	
     #if 0   // at some point we perhaps need to differentiate the litter flux for evergreen and deciduous
 
 		if ( s->value[PHENOLOGY] == 0.1 || s->value[PHENOLOGY] == 0.2 )
@@ -322,6 +323,8 @@ void tree_biomass_remove (cell_t *const c, const int height, const int dbh, cons
 	else  // management related mortality 
     {
 
+
+    //printf("** in TREE BIOMASS REMOVE : management related mortality ** \n");
     // in first approximation we assume all reserve pool goes into litter.
 
     s->value[C_LEAF_TO_LITR]     += (s->value[TREE_LEAF_C]    * tree_remove);
@@ -378,6 +381,8 @@ void tree_biomass_remove (cell_t *const c, const int height, const int dbh, cons
 
 		c->annual_hwp += ((s->value[TREE_STEM_C] + s->value[TREE_BRANCH_C]*branch_perc_remove)* tree_remove * 1e6 / g_settings->sizeCell);
  
+        //printf(" daily_hwp_fluxes     = %f gC/m2/day\n", c->annual_hwp);
+  
 		/* compute stem volume removed (m3/ha/yr) */
 		s->value[VOLUME_HWP]     += s->value[TREE_VOLUME] * tree_remove;
 		s->value[CUM_VOLUME_HWP] += s->value[TREE_VOLUME] * tree_remove;

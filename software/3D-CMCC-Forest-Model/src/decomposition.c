@@ -293,6 +293,7 @@ void litter_decomposition (cell_t *const c, const meteo_daily_t *const meteo_dai
 		/* carbon */
 		c->daily_litr4_het_resp   = pot_litr4C_loss * RFL4S3;
 		c->daily_litr4C_to_soil3C = pot_litr4C_loss * ( 1. - RFL4S3 );
+	
 		/* nitrogen */
 		if ( c->litr4N > 0. ) c->daily_litr4N_to_soil3N = pot_litr4C_loss / cn_litr4;
 		else                  c->daily_litr4N_to_soil3N = 0.;

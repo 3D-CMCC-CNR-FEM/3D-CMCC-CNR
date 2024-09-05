@@ -438,7 +438,7 @@ int Tree_model_daily (matrix_t *const m, const int cell, const int day, const in
                                     }
                                         else
                                     {         // with management ON or OFF always compute mortality
-
+	
 											/* Mortality based on tree Age (LPJ) */
 											age_mortality        ( c, height, dbh, age, species );
 
