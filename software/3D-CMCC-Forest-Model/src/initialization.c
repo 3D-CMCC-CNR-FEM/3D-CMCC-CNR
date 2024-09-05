@@ -941,6 +941,8 @@ void initialization_forest_class_litter (cell_t *const c, const int height, cons
 		{
 			//note:this must be initialized although to a minimum value to avoid model crashes
 			s->value[CWD_LITRC]  = 0.001;
+			s->value[CWD_LITRC]  = 10.;  // ddalmo rough estimates for the forest Mg C /ha
+			s->value[CWD_LITRC]  = 3.;  // we use this value to initialize the litter pool Mg C /ha
 		}
 		else
 		{
@@ -1211,16 +1213,18 @@ void initialization_cell_soil_biochem (cell_t *const c)
 	/* initialize soil carbon */
 	if ( ! c->init_soil_C || c->init_soil_C == NO_DATA )
 	{
-		c->soilC      = 0.001;
+		//c->soilC      = 0.001;
+		c->soilC      = 0.;
 	}
 	else
 	{
 		c->soilC      = c->init_soil_C;
 	}
-	c->soil1C         = 0.001;
-	c->soil2C         = 0.001;
-	c->soil3C         = 0.001;
-	c->soil4C         = 0.001;
+
+    c->soil1C         = 0.;
+	c->soil2C         = 0.;
+	c->soil3C         = 0.;
+	c->soil4C         = 0.;
 
 	/* initialize soil nitrogen */
 	if ( ! c->init_soil_N || c->init_soil_N == NO_DATA )
