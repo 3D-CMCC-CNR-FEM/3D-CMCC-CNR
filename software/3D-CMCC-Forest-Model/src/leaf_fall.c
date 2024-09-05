@@ -83,7 +83,7 @@ void leaffall_deciduous ( cell_t *const c, const int height, const int dbh, cons
 	else
 	{
 		/* last day of litterfall, special case to guarantee that pools go to 0.0 */
-
+	
 		logger(g_debug_log, "Last day of leaf fall\n");
 
 		//assumption: last day of leaf fall all carbon goes to litter and cwd with no retranslocation
@@ -97,9 +97,8 @@ void leaffall_deciduous ( cell_t *const c, const int height, const int dbh, cons
 
 		/* last day of leaf fall remove all fruits */
 		s->value[FRUIT_FALL_C]   = s->value[FRUIT_C];
-		s->value[FRUIT_FALL_C]   = s->value[FRUIT_N];
-
-
+		s->value[FRUIT_FALL_N]   = s->value[FRUIT_N];
+  
 	}
 
 	
@@ -185,6 +184,7 @@ void leaffall (species_t *const s)
 	s->value[C_LEAF_TO_LITR]      += s->value[LEAF_FALL_C]   * ( 1. - C_FRAC_TO_RETRANSL );
 	s->value[C_FROOT_TO_LITR]     += s->value[FROOT_FALL_C]   * ( 1. - C_FRAC_TO_RETRANSL );
 	s->value[C_FRUIT_TO_CWD]      += s->value[FRUIT_FALL_C];
+	s->value[C_TO_CWD]            += s->value[FRUIT_FALL_C];
 
 	s->value[C_TO_RESERVE]        += ((s->value[LEAF_FALL_C]   * C_FRAC_TO_RETRANSL) + (s->value[FROOT_FALL_C]  * C_FRAC_TO_RETRANSL));
 	logger(g_debug_log, "C_TO_RESERVE       = %f\n", s->value[C_TO_RESERVE]);
@@ -223,6 +223,7 @@ void leaffall (species_t *const s)
 	if ( s->value[FRUIT_C] < s->value[FRUIT_C_TO_REMOVE] )
 	{
 		s->value[FRUIT_C_TO_REMOVE]  = s->value[FRUIT_C]; 
+
 	}
 
 	/* check */
