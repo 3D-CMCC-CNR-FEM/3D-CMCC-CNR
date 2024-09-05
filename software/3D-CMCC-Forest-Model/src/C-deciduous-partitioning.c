@@ -115,6 +115,8 @@ void daily_C_deciduous_partitioning (cell_t *const c, const int layer, const int
 	/* "...species-specific minimum pool (of NSC) sizes of stored C may be necessary to avoid catastrophic xylem failure" 
 	   Sala et al., 2012, Tree Physiology */ 
 
+	   	 printf("ddalmo : sono in DECIDUOUS PARTITIONING **************** \n");
+
 	switch ( s->phenology_phase )
 	{
 	/************************************************************/
@@ -178,7 +180,7 @@ void daily_C_deciduous_partitioning (cell_t *const c, const int layer, const int
 			/* update carbon flux */
 			s->value[C_TO_LEAF]        = s->value[C_RESERVE_TO_LEAF_BUDBURST];
 			s->value[C_TO_FROOT]       = s->value[C_RESERVE_TO_FROOT_BUDBURST];
-			s->value[C_TO_RESERVE]     = npp_to_alloc - s->value[C_RESERVE_TO_BUDBURST];
+			s->value[C_TO_RESERVE]     += npp_to_alloc - s->value[C_RESERVE_TO_BUDBURST];
 
 			/**********************************************************************/
 			/* check for leaf C > max leaf C */
@@ -206,7 +208,7 @@ void daily_C_deciduous_partitioning (cell_t *const c, const int layer, const int
 		else
 		{
 			logger(g_debug_log, "Allocating only into reserve pool (special case thinning happens on)\n");
-			s->value[C_TO_RESERVE] = npp_to_alloc;
+			s->value[C_TO_RESERVE] += npp_to_alloc;
 		}
 		/**********************************************************************/
 
@@ -248,7 +250,7 @@ void daily_C_deciduous_partitioning (cell_t *const c, const int layer, const int
 
 				/* allocating into c pools */
 				/* note: for references see: Potter et al., 1993; Schwalm and Ek 2004 */
-				s->value[C_TO_RESERVE]   = (npp_to_alloc * pL);
+				s->value[C_TO_RESERVE]   += (npp_to_alloc * pL);
 				s->value[C_TO_CROOT]     = (npp_to_alloc * pR);
 				s->value[C_TO_STEM]      = (npp_to_alloc * pS) * ( 1. - s->value[FRACBB] );
 				s->value[C_TO_BRANCH]    = (npp_to_alloc * pS) * s->value[FRACBB];
@@ -260,7 +262,7 @@ void daily_C_deciduous_partitioning (cell_t *const c, const int layer, const int
 				logger(g_debug_log, "allocating into reserve\n");
 
 				/* allocating into c pools */
-				s->value[C_TO_RESERVE]     = npp_to_alloc;
+				s->value[C_TO_RESERVE]     += npp_to_alloc;
 			}
 		}
 		else  // npp < 0
@@ -270,7 +272,7 @@ void daily_C_deciduous_partitioning (cell_t *const c, const int layer, const int
 				logger(g_debug_log, "Consuming reserve pool (negative NPP)\n");
 
 				/* consuming reserve carbon pools */
-				s->value[C_TO_RESERVE]     = npp_to_alloc;
+				s->value[C_TO_RESERVE]     += npp_to_alloc;
 			}
 			else
 			{
@@ -285,8 +287,10 @@ void daily_C_deciduous_partitioning (cell_t *const c, const int layer, const int
 				logger(g_debug_log, "Defoliation (negative NPP)\n");
 				/* note: see Jaquet et al., 2014 Tree Phys. */
 
+				// NOTE AND FIXME : check if also fine roots goes under defoliation
+
 				/* consuming reserve carbon pools */
-				s->value[C_TO_RESERVE]     = npp_to_alloc;
+				s->value[C_TO_RESERVE]     += npp_to_alloc;
 
 				/* special case when DEFOLIATION happens */
 
@@ -331,7 +335,7 @@ void daily_C_deciduous_partitioning (cell_t *const c, const int layer, const int
 		/* allocating into c pools */
 		/* including retranslocated C */
 
-		s->value[C_TO_RESERVE] = npp_to_alloc ;
+		s->value[C_TO_RESERVE] += npp_to_alloc ;
 
 		/* leaf fall */
 		leaffall_deciduous( c, height, dbh, age, species );
@@ -343,7 +347,7 @@ void daily_C_deciduous_partitioning (cell_t *const c, const int layer, const int
 		logger(g_debug_log, "consuming reserve pool\n");
 
 		/* allocating into c pools */
-		s->value[C_TO_RESERVE] = npp_to_alloc;
+		s->value[C_TO_RESERVE] += npp_to_alloc;
 
 		break;
 		/**********************************************************************/

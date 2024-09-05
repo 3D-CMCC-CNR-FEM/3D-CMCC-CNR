@@ -350,7 +350,7 @@ void daily_C_evergreen_partitioning (cell_t *const c, const int layer, const int
 				}
 				else
 				{
-					s->value[C_TO_RESERVE] = npp_to_alloc;
+					s->value[C_TO_RESERVE] += npp_to_alloc;
 
 				}
 			}
@@ -416,7 +416,7 @@ void daily_C_evergreen_partitioning (cell_t *const c, const int layer, const int
 		else
 		{
 			logger(g_debug_log, "Allocating only into reserve pool (low reserves, positive NPP)\n");
-			s->value[C_TO_RESERVE] = npp_to_alloc;
+			s->value[C_TO_RESERVE] += npp_to_alloc;
 		}
 	}
 	else
@@ -426,7 +426,7 @@ void daily_C_evergreen_partitioning (cell_t *const c, const int layer, const int
 
 		/* consuming reserve carbon pools */
 
-		s->value[C_TO_RESERVE]     = npp_to_alloc;
+		s->value[C_TO_RESERVE]     += npp_to_alloc;
 
 
 #if 0 //TODO to be tested
