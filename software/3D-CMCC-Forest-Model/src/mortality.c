@@ -43,6 +43,9 @@ void self_thinning_mortality (cell_t *const c, const int layer, const int year)
 
 	nat_man = 0;
 
+
+    //printf("** IN SELF THINNING MORTALITY **\n");
+
 	/* "First, large plants suppress small plants.
 	 * The result is a “hierarchy of dominance and suppression” in which the smaller plants
 	 * are at an accumulating disadvantage and finally die".
@@ -223,6 +226,7 @@ int growth_efficiency_mortality ( cell_t *const c, const int height, const int d
 
 	if( s->value[RESERVE_C] < 0 )
 	{
+		//printf("** IN GROWTH EFFICIENCY MORTALITY **\n");
 		printf("growth efficiency mortality species %s!!!\n", s->name);
 
 		/* reset to zero n_trees */
@@ -316,6 +320,9 @@ void age_mortality ( cell_t *const c, const int height, const int dbh, const int
 	nat_man = 0;
 
 	a = &c->heights[height].dbhs[dbh].ages[age];
+
+	//printf("** IN AGE RELATED MORTALITY **\n");
+
 	// ALESSIOR
 	//if ( ! a ) return;
 	s = &a->species[species];
@@ -382,6 +389,7 @@ void stochastic_mortality ( cell_t *const c, const int height, const int dbh, co
 	/* stochastic mortality factor which considers that (see BIOME-BGC) a stochastic mortality happens
 	 * BUT for reasons differet (e.g. pests) to age mortality factor */
 
+    //printf("** IN STOCHASTIC MORTALITY **\n");
 
 	age_t *a;
 	species_t *s;
@@ -452,13 +460,12 @@ void self_pruning ( cell_t *const c, const int height, const int dbh, const int 
 
 	logger(g_debug_log, "\n\n*****SELF PRUNING*****\n");
 
+	//printf(" ** IN SELF_PRUNING ** \n");
+
 	/* reduce proportionally branch biomass to the crown area reduction */
 
 	/* compute FRACTION in crown area reduction for self-pruning */
 	self_pruning_ratio = current / old;
-
-	 // ddalmo
-			 //printf("self_pruning_ratio %f\n", self_pruning_ratio);
 
 	/* check for precision control */
 	if ( self_pruning_ratio > 1. ) self_pruning_ratio = 1.;
@@ -469,13 +476,11 @@ void self_pruning ( cell_t *const c, const int height, const int dbh, const int 
 	/* remove biomass from branch */
 	// values do not have to sum up but computed ex novo
 
-	s->value[BRANCH_C_TO_REMOVE]             = ( s->value[BRANCH_C]           * ( 1. - self_pruning_ratio ) );
+	s->value[BRANCH_C_TO_REMOVE]             += ( s->value[BRANCH_C] * ( 1. - self_pruning_ratio ) );
 
 	/* adding to BRANCH C transfer pools */
-	s->value[C_BRANCH_TO_RESERVE]            = s->value[BRANCH_C_TO_REMOVE]   * C_FRAC_TO_RETRANSL;
-
-	s->value[C_BRANCH_TO_CWD]                += s->value[BRANCH_C_TO_REMOVE]   * ( 1. - C_FRAC_TO_RETRANSL );
-
+	s->value[C_BRANCH_TO_RESERVE]            = ( s->value[BRANCH_C] * ( 1. - self_pruning_ratio ) )  * C_FRAC_TO_RETRANSL;
+	s->value[C_BRANCH_TO_CWD]                += ( s->value[BRANCH_C] * ( 1. - self_pruning_ratio ) )   * ( 1. - C_FRAC_TO_RETRANSL );
 
 	/* adding BRANCH SAPWOOD and HEARTWOOD to CWD */
 	// TODO to keep it simple we assume the retranslocation occurrs from heartwood too
@@ -489,8 +494,7 @@ void self_pruning ( cell_t *const c, const int height, const int dbh, const int 
 
 	/* adding to reserve and CWD pool */
 	s->value[C_TO_RESERVE]                   += s->value[C_BRANCH_TO_RESERVE];
-	s->value[C_TO_CWD]                       += s->value[C_BRANCH_TO_CWD];
-
+	s->value[C_TO_CWD]                       +=  ( s->value[BRANCH_C] * ( 1. - self_pruning_ratio ) )   * ( 1. - C_FRAC_TO_RETRANSL );
 
 	/** nitrogen **/
 	// TODO include Live-dead-hart-sap wood pool too
@@ -499,7 +503,7 @@ void self_pruning ( cell_t *const c, const int height, const int dbh, const int 
 	s->value[BRANCH_N_TO_REMOVE]             = ( s->value[BRANCH_N]           * ( 1. - self_pruning_ratio ) );
 
 	/* adding to BRANCH_N C transfer pools */
-	s->value[N_BRANCH_TO_RESERVE]            = s->value[BRANCH_N_TO_REMOVE]   * N_FRAC_TO_RETRANSL;
+	s->value[N_BRANCH_TO_RESERVE]            = ( s->value[BRANCH_N]           * ( 1. - self_pruning_ratio ) )  * N_FRAC_TO_RETRANSL;
 	s->value[N_BRANCH_TO_CWD]                += s->value[BRANCH_N_TO_REMOVE]   * ( 1. - N_FRAC_TO_RETRANSL );
 
 	s->value[N_TO_RESERVE]                   += s->value[N_BRANCH_TO_RESERVE];
@@ -509,13 +513,11 @@ void self_pruning ( cell_t *const c, const int height, const int dbh, const int 
 	/** carbon **/
 
 	/* remove biomass from coarse root */
-	s->value[CROOT_C_TO_REMOVE]             = ( s->value[CROOT_C]             * ( 1. - self_pruning_ratio ) );
-
+	s->value[CROOT_C_TO_REMOVE]             += ( s->value[CROOT_C]             * ( 1. - self_pruning_ratio ) );
 
 	/* adding to CROOT_C transfer pools */
-	s->value[C_CROOT_TO_RESERVE]            = s->value[CROOT_C_TO_REMOVE]     * C_FRAC_TO_RETRANSL;
-	s->value[C_CROOT_TO_CWD]                += s->value[CROOT_C_TO_REMOVE]     * ( 1. - C_FRAC_TO_RETRANSL );;
-
+	s->value[C_CROOT_TO_RESERVE]            = ( s->value[CROOT_C] * ( 1. - self_pruning_ratio ) )     * C_FRAC_TO_RETRANSL;
+	s->value[C_CROOT_TO_CWD]                += ( s->value[CROOT_C]* ( 1. - self_pruning_ratio ) )   * ( 1. - C_FRAC_TO_RETRANSL );
 
 	/* adding CROOT_C SAPWOOD and HEARTWOOD to CWD */
 	s->value[C_CROOT_SAPWOOD_TO_CWD]        += ( s->value[CROOT_SAPWOOD_C]     * ( 1. - self_pruning_ratio ) )* ( 1. - C_FRAC_TO_RETRANSL );
@@ -524,10 +526,9 @@ void self_pruning ( cell_t *const c, const int height, const int dbh, const int 
 	s->value[C_CROOT_LIVEWOOD_TO_CWD]      += ( s->value[CROOT_LIVEWOOD_C]   * ( 1. - self_pruning_ratio ) ) * ( 1. - C_FRAC_TO_RETRANSL );
 	s->value[C_CROOT_DEADWOOD_TO_CWD]      += ( s->value[CROOT_DEADWOOD_C] * ( 1. - self_pruning_ratio ) ) * ( 1. - C_FRAC_TO_RETRANSL );
 
-
 	/* adding to reserve and CWD pool */
 	s->value[C_TO_RESERVE]                  += s->value[C_CROOT_TO_RESERVE];
-	s->value[C_TO_CWD]                      += s->value[C_CROOT_TO_CWD];
+	s->value[C_TO_CWD]                      += ( s->value[CROOT_C]* ( 1. - self_pruning_ratio ) )   * ( 1. - C_FRAC_TO_RETRANSL );
 
 	/** nitrogen **/
         // TODO include Live-dead-hart-sap wood pool too
