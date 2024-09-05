@@ -168,56 +168,6 @@ int check_cell_carbon_flux_balance(cell_t *const c)
 	{
 		logger(g_debug_log, "...ok 'Cell_model_daily' carbon balance\n");
 	}
-
-	/***************************************************************************************************************/
-//
-//	/* sum of carbon sources */
-//	in = c->daily_gpp;
-//
-//	/* sum of carbon sinks */
-//	out = c->daily_maint_resp + c->daily_growth_resp  + c->daily_het_resp;
-//
-//	/* sum of current carbon storage */
-//	store = c->daily_leaf_carbon   + c->daily_stem_carbon +
-//			c->daily_froot_carbon  + c->daily_croot_carbon +
-//			c->daily_branch_carbon + c->daily_reserve_carbon +
-//			c->daily_fruit_carbon  + c->daily_to_litrC +
-//			c->daily_to_soilC;
-//
-//	balance = in - out - store;
-//
-//	if ( fabs( balance ) > eps )
-//	{
-//		logger(g_debug_log, "\nCELL CARBON FLUX BALANCE\n");
-//
-//		error_log("DOY = %d\n", c->doy);
-//		error_log("\nin\n");
-//		error_log("c->daily_gpp                = %f gC/m2/day\n", c->daily_gpp);
-//		error_log("\nout\n");
-//		error_log("c->daily_tot_aut_resp       = %f gC/m2/day\n", c->daily_maint_resp + c->daily_growth_resp);
-//		error_log("c->daily_tot_het_resp       = %f gC/m2/day\n", c->daily_het_resp);
-//		error_log("\nstore\n");
-//		error_log("c->daily_leaf_carbon        = %f gC/m2/day\n", c->daily_leaf_carbon);
-//		error_log("c->daily_stem_carbon        = %f gC/m2/day\n", c->daily_stem_carbon);
-//		error_log("c->daily_fine_root_carbon   = %f gC/m2/day\n", c->daily_froot_carbon);
-//		error_log("c->daily_coarse_root_carbon = %f gC/m2/day\n", c->daily_croot_carbon);
-//		error_log("c->daily_branch_carbon      = %f gC/m2/day\n", c->daily_branch_carbon);
-//		error_log("c->daily_reserve_carbon     = %f gC/m2/day\n", c->daily_reserve_carbon);
-//		error_log("c->daily_litrC              = %f gC/m2/day\n", c->daily_to_litrC);
-//		error_log("c->daily_soilC              = %f gC/m2/day\n", c->daily_to_soilC);
-//		error_log("\ncarbon in                 = %f gC/m2/day\n", in);
-//		error_log("carbon out                  = %f gC/m2/day\n", out);
-//		error_log("carbon store                = %f gC/m2/day\n", store);
-//		error_log("carbon_balance              = %f gC/m2/day\n",balance);
-//		error_log("...FATAL ERROR in 'Cell_model_daily' carbon flux balance (second) (exit)\n");
-//		CHECK_CONDITION(fabs( balance ), > , eps);
-//
-//		return 0;
-//	}
-//	else
-//	{
-//		logger(g_debug_log, "...ok carbon balance\n");
-//	}
 	/* ok */
 	return 1;
 }
@@ -225,6 +175,7 @@ int check_cell_carbon_flux_balance(cell_t *const c)
 int check_cell_carbon_mass_balance(cell_t *const c)
 {
 
+	
 	/* DAILY CHECK ON CELL LEVEL CARBON MASS BALANCE */
 	/* check complete cell level carbon mass balance */
 
@@ -232,8 +183,8 @@ int check_cell_carbon_mass_balance(cell_t *const c)
 	c->cell_carbon_in    = c->daily_gpp;
 
 	/* sum of output */
-	c->cell_carbon_out   = c->daily_aut_resp + c->daily_het_resp + c->annual_hwp;
 
+    c->cell_carbon_out   = c->daily_aut_resp + c->annual_hwp + c->daily_het_resp ;
 
 	/* sum of current storage */
 	c->cell_carbon_store = c->leaf_carbon +
@@ -244,18 +195,15 @@ int check_cell_carbon_mass_balance(cell_t *const c)
 			c->reserve_carbon +
 			c->fruit_carbon   +
 			c->litrC          +
-			c->soilC          ;
-
-    // after the first day of the year
-    // set to 0 
-
-	c->annual_hwp = 0.;
+			c->cwd_C          +
+		    c->soilC          ;
 
 	/* check carbon pool balance */
 	c->cell_carbon_balance = c->cell_carbon_in - c->cell_carbon_out - ( c->cell_carbon_store - c->cell_carbon_old_store );
 
 	/* check for carbon mass balance closure */
-	if ( ( fabs( c->cell_carbon_balance ) > 1e3 ) && ( c->dos > 1 ) )
+	// if ( ( fabs( c->cell_carbon_balance ) > 1e3 ) && ( c->dos > 1 ) )
+	if ( ( fabs( c->cell_carbon_balance ) > eps ) && ( c->dos > 1 ) )
 	{
 		logger(g_debug_log, "\nCELL LEVEL CARBON MASS BALANCE\n");
 
@@ -268,16 +216,18 @@ int check_cell_carbon_mass_balance(cell_t *const c)
 		error_log("daily_hwp_fluxes     = %f gC/m2/day\n", c->annual_hwp);
 		error_log("\n net storage \n");
 		error_log("leaf_carbon        = %f gC/m2\n",     c->leaf_carbon   - c->old_leaf_carbon);
+		error_log("reserve_carbon        = %f gC/m2\n",     c->reserve_carbon   - c->old_reserve_carbon);
 		error_log("froot_carbon       = %f gC/m2\n",     c->froot_carbon  - c->old_froot_carbon);
 		error_log("croot_carbon       = %f gC/m2\n",     c->croot_carbon  - c->old_croot_carbon);
 		error_log("stem_carbon        = %f gC/m2\n",     c->stem_carbon   - c->old_stem_carbon);
-		error_log("branch_carbon      = %f gC/m2\n",     c->branch_carbon - c->old_reserve_carbon);
+		error_log("branch_carbon      = %f gC/m2\n",     c->branch_carbon - c->old_branch_carbon);
 		error_log("fruit_carbon       = %f gC/m2\n",     c->fruit_carbon  - c->old_fruit_carbon);
 		error_log("litr_carbon        = %f gC/m2\n",     c->litrC         - c->old_litrC);
 		error_log("soil_carbon        = %f gC/m2\n",     c->soilC         - c->old_soilC);
 		error_log("\ncarbon in        = %f gC/m2\n",     c->cell_carbon_in);
 		error_log("carbon out         = %f gC/m2\n",     c->cell_carbon_out);
 		error_log("previous carbon store = %f gC/m2\n",  c->cell_carbon_old_store);
+		error_log("current carbon store = %f gC/m2\n",  c->cell_carbon_store);
 		error_log("delta carbon store = %f gC/m2\n",     c->cell_carbon_store - c->cell_carbon_old_store);
 		error_log("carbon_balance     = %f gC/m2\n",     c->cell_carbon_balance);
 		error_log("...FATAL ERROR in 'Cell_model_daily' carbon mass balance (gC/m2/day) (exit)\n");
@@ -296,8 +246,14 @@ int check_cell_carbon_mass_balance(cell_t *const c)
 		c->old_fruit_carbon   = c->fruit_carbon;
 		c->old_litrC          = c->litrC;
 		c->old_soilC          = c->soilC;
+		c->old_cwd_C          = c->cwd_C;
 		c->cell_carbon_old_store = c->cell_carbon_store;
 		logger(g_debug_log, "...ok in 'Cell_model_daily' carbon mass balance (gC/m2/day)\n");
+
+         // after the first day of the year
+		// set to 0 (this works only if management is applied the first day of the year)
+	    c->annual_hwp = 0.;
+
 	}
 	/* ok */
 	return 1;
