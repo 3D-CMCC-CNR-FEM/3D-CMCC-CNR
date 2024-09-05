@@ -102,6 +102,8 @@ void reset_daily_cell_variables(cell_t *const c)
 	c->daily_froot_to_litr2C =          0.;
 	c->daily_froot_to_litr3C =          0.;
 	c->daily_froot_to_litr4C =          0.;
+	c->daily_reserve_to_litrC =            0.;
+	c->daily_reserve_to_litr1C =           0.;
 	c->daily_cwd_to_litrC =             0.;
 	c->daily_cwd_to_litr2C =            0.;
 	c->daily_cwd_to_litr3C =            0.;
