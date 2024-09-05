@@ -115,8 +115,6 @@ void daily_C_deciduous_partitioning (cell_t *const c, const int layer, const int
 	/* "...species-specific minimum pool (of NSC) sizes of stored C may be necessary to avoid catastrophic xylem failure" 
 	   Sala et al., 2012, Tree Physiology */ 
 
-	   	 printf("ddalmo : sono in DECIDUOUS PARTITIONING **************** \n");
-
 	switch ( s->phenology_phase )
 	{
 	/************************************************************/
