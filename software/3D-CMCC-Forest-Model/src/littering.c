@@ -32,14 +32,6 @@ void littering ( cell_t *const c, species_t *const s )
 	/* check */
 	CHECK_CONDITION ( s->value[CWD_TO_LITR2C] + s->value[CWD_TO_LITR3C] + s->value[CWD_TO_LITR4C] , == , s->value[CWD_TO_LITRC] + eps );
 
-	/*** update cell-level cwd carbon fluxes (gC/m2/day) ****/
-	c->daily_cwd_to_litrC         += s->value[CWD_TO_LITRC]   * 1e6 / g_settings->sizeCell;
-	c->daily_cwd_to_litr2C        += s->value[CWD_TO_LITR2C]  * 1e6 / g_settings->sizeCell;
-	c->daily_cwd_to_litr3C        += s->value[CWD_TO_LITR3C]  * 1e6 / g_settings->sizeCell;
-	c->daily_cwd_to_litr4C        += s->value[CWD_TO_LITR4C]  * 1e6 / g_settings->sizeCell;
-	/* check */
-	CHECK_CONDITION ( c->daily_cwd_to_litr2C + c->daily_cwd_to_litr3C + c->daily_cwd_to_litr4C , == , c->daily_cwd_to_litrC + eps );
-
 	/*** compute cell-level cwd carbon pools (gC/m2) ***/
 	c->cwd_C                      += s->value[CWD_TO_LITRC]   * 1e6 / g_settings->sizeCell;
 	c->cwd_2C                     += s->value[CWD_TO_LITR2C]  * 1e6 / g_settings->sizeCell;
@@ -114,8 +106,8 @@ void littering ( cell_t *const c, species_t *const s )
 	s->value[RESERVE_TO_LITR1C]            = s->value[C_RESERVE_TO_LITR] ;
 
 	/*** update cell-level leaf litter carbon fluxes (gC/m2/day) ****/
-	//c->daily_leaf_to_litrC             += s->value[LEAF_TO_LITRC]       * 1e6 / g_settings->sizeCell;
-	//c->daily_leaf_to_litr1C            += s->value[LEAF_TO_LITR1C]      * 1e6 / g_settings->sizeCell;
+	c->daily_reserve_to_litrC             += s->value[RESERVE_TO_LITRC]       * 1e6 / g_settings->sizeCell;
+	c->daily_reserve_to_litr1C            += s->value[RESERVE_TO_LITR1C]      * 1e6 / g_settings->sizeCell;
 
 	/* check */
 	//CHECK_CONDITION ( c->daily_leaf_to_litr1C + c->daily_leaf_to_litr2C + c->daily_leaf_to_litr3C + c->daily_leaf_to_litr4C , == , c->daily_leaf_to_litrC + eps );
