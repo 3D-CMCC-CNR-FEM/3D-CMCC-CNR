@@ -232,8 +232,6 @@ void carbon_allocation_new ( cell_t *const c, age_t *const a, species_t *const s
 
 	/***************************************************************************************/
 	/***************************************************************************************/
-
-
 	/* stem sapwood */
 	s->value[STEM_SAPWOOD_C]          += ( s->value[C_TO_STEM]);
 	/* live stem */
@@ -258,7 +256,7 @@ void carbon_allocation_new ( cell_t *const c, age_t *const a, species_t *const s
 	s->value[C_TO_CROOT]   -= s->value[CROOT_C_TO_REMOVE];
 	s->value[C_TO_BRANCH]  -= s->value[BRANCH_C_TO_REMOVE];
 	s->value[C_TO_FRUIT]   -= s->value[FRUIT_C_TO_REMOVE];
-	
+
 	/***************************************************************************************/
 	/***************************************************************************************/
 
@@ -284,7 +282,7 @@ void carbon_allocation_new ( cell_t *const c, age_t *const a, species_t *const s
 	s->value[BRANCH_C]    += s->value[C_TO_BRANCH];
 	s->value[RESERVE_C]   += s->value[C_TO_RESERVE];
 	s->value[FRUIT_C]     += s->value[C_TO_FRUIT];
- 
+
 	/*** update live carbon mass pools **/
 	s->value[TOT_LIVEWOOD_C]           = ( s->value[STEM_LIVEWOOD_C] + s->value[CROOT_LIVEWOOD_C] + s->value[BRANCH_LIVEWOOD_C] );
 	s->value[TOT_SAPWOOD_C]            = ( s->value[STEM_SAPWOOD_C]  + s->value[CROOT_SAPWOOD_C]  + s->value[BRANCH_SAPWOOD_C] );
@@ -325,7 +323,7 @@ void carbon_allocation_new ( cell_t *const c, age_t *const a, species_t *const s
 	{
 		s->value[STEM_SAPWOOD_C]   = 0.;
 		s->value[STEM_HEARTWOOD_C] = s->value[STEM_C];
-		printf("Warning: s->value[STEM_SAPWOOD_C] < ZERO\n");
+		printf("Warning: s->value[STEM_SAPWOOD_C] < ZERO \n");
 	}
 	if ( s->value[STEM_HEARTWOOD_C] < ZERO )
 	{
@@ -358,7 +356,7 @@ void carbon_allocation_new ( cell_t *const c, age_t *const a, species_t *const s
 	{
 		s->value[BRANCH_HEARTWOOD_C]   = 0.;
 		s->value[BRANCH_SAPWOOD_C] = s->value[BRANCH_C];
-		printf("Warning: s->value[BRANCH_HEARTWOOD_C] < ZERO\n");
+		printf("Warning: s->value[BRANCH_HEARTWOOD_C] < ZERO\n" );
 	}
 
 	/*********************************************************************/
@@ -394,8 +392,6 @@ void carbon_allocation_new ( cell_t *const c, age_t *const a, species_t *const s
 		/* special case for fruit */
 		s->value[MAX_FRUIT_C] += s->value[C_TO_FRUIT];
 	}
-
-
     // Compute Reserve-pool variables
 
     if ( s->value[RESERVE_C] > s->value[MAX_ANN_RESERVE_C])
@@ -461,17 +457,30 @@ void carbon_allocation_new ( cell_t *const c, age_t *const a, species_t *const s
             c-> leaf_carbon               = c-> leaf_carbon - (s->value[LEAF_C] * 1e6 / g_settings->sizeCell);
             s->value[LEAF_C]              = 0. ;
            
+         } 
+
+        if ( (s->value[FROOT_C]) < CRIT_PREC & (s->value[FROOT_C]) > 0. )  
+         { 
+
             // TODO check if there are cases where this might lead to 
             // inconsistency when defoliation occurs 
             // i.e. if we need to force FROOT_C to 0  
             
-            //   s->value[C_FROOT_TO_LITR]  += s->value[FROOT_C];
-            //   s->value[TOTAL_C]           = s->value[TOTAL_C] - s->value[FROOT_C];
-            //   c-> froot_carbon            = c-> froot_carbon - (s->value[FROOT_C]* 1e6 / g_settings->sizeCell);
-            //   s->value[FROOT_C]           = 0. ;     
+               s->value[C_FROOT_TO_LITR]  += s->value[FROOT_C];
+               s->value[TOTAL_C]           = s->value[TOTAL_C] - s->value[FROOT_C];
+               c-> froot_carbon            = c-> froot_carbon - (s->value[FROOT_C]* 1e6 / g_settings->sizeCell);
+               s->value[FROOT_C]           = 0. ;    
+			   
          } 
 
-		
+        if ( (s->value[FRUIT_C]) < CRIT_PREC & (s->value[FRUIT_C]) > 0.  )  
+         { 
+			   s->value[C_FRUIT_TO_CWD]  += s->value[FRUIT_C];
+			   s->value[C_TO_CWD]        += s->value[FRUIT_C];
+               s->value[TOTAL_C]           -=  s->value[FRUIT_C];
+               c-> fruit_carbon            -= (s->value[FRUIT_C]* 1e6 / g_settings->sizeCell);
+               s->value[FRUIT_C]           = 0. ;     
+         } 
 
 	/* check */
 	CHECK_CONDITION ( c->leaf_carbon,    < , ZERO );
@@ -480,7 +489,6 @@ void carbon_allocation_new ( cell_t *const c, age_t *const a, species_t *const s
 	CHECK_CONDITION ( c->branch_carbon,  < , ZERO );
 	CHECK_CONDITION ( c->croot_carbon,   < , ZERO );
 	CHECK_CONDITION ( c->fruit_carbon,   < , ZERO );
-	
 	
 	// 5p606
 	// update tree level carbon pools
