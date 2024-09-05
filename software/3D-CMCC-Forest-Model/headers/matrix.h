@@ -1232,6 +1232,7 @@ typedef struct
 	double old_fruit_carbon;
 	double old_litrC;
 	double old_soilC;
+	double old_cwd_C;
 
 	/* nitrogen fluxes */
 	double daily_leaf_nitrogen;                                           /* (gN/m2/day) daily nitrogen assimilated to c pool at cell level */
@@ -1356,6 +1357,8 @@ typedef struct
 	double daily_froot_to_litr2C;                                         /* (gC/m2/day) daily fine root to litter unshelded cellulose carbon pool at cell level */
 	double daily_froot_to_litr3C;                                         /* (gC/m2/day) daily fine root to litter shelded cellulose carbon pool at cell level */
 	double daily_froot_to_litr4C;                                         /* (gC/m2/day) daily fine root to litter lignin carbon pool at cell level */
+	double daily_reserve_to_litrC;                                          /* (gC/m2/day) daily reserve to litter  carbon pool at cell level */
+	double daily_reserve_to_litr1C;                                          /* (gC/m2/day) daily reserve to litter labile carbon pool at cell level */
 	double daily_to_litrC;                                                /* (gC/m2/day) daily balance of carbon to litter carbon pool at cell level */
 	double daily_to_litr1C;                                               /* (gC/m2/day) daily balance of carbon to litter labile carbon pool at cell level */
 	double daily_to_litr2C;                                               /* (gC/m2/day) daily balance of carbon to litter unshelded cellulose carbon pool at cell level */
