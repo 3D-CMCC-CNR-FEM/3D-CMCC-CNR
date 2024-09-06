@@ -148,13 +148,14 @@ void leaffall_evergreen ( cell_t *const c, const int height, const int dbh, cons
 			//s->value[FRUIT_C_TO_REMOVE]   = (s->value[FRUIT_C] * (1. / s->value[CONES_LIFE_SPAN])) / days_for_leaffall;
 			//s->value[FRUIT_N_TO_REMOVE]   = (s->value[FRUIT_N] * (1. / s->value[CONES_LIFE_SPAN])) / days_for_leaffall;
 		  
-		    // check if there are inconsistency such has removing more than available fruit C
-		    s->value[FRUIT_FALL_C]    = MAX(s->value[FRUIT_C],fruit_C_aux);
-			s->value[FRUIT_FALL_N]   = fruit_N_aux;  // TODO check this.
-			//s->value[FRUIT_N_TO_REMOVE]   = MAX( s->value[FRUIT_N],fruit_N_aux);
 		
 		}
 
+        
+		// check if there are inconsistency such as removing more than available fruit C
+		s->value[FRUIT_FALL_C]   = MIN(s->value[FRUIT_C],fruit_C_aux);
+		s->value[FRUIT_FALL_N]   = fruit_N_aux;  // TODO check this.
+		//s->value[FRUIT_N_TO_REMOVE]   = MAX( s->value[FRUIT_N],fruit_N_aux);
 
 	}
 
@@ -172,6 +173,14 @@ void leaffall (species_t *const s)
 	s->value[FROOT_C_TO_REMOVE] += s->value[FROOT_FALL_C]  ;
 	s->value[FRUIT_C_TO_REMOVE] += s->value[FRUIT_FALL_C]  ;
 
+	printf("ddalmo in leaffall species %s!!!\n", s->name);
+
+    printf("ddalmo in leaffall C_s->value[FRUIT_C_TO_REMOVE]     = %0.10f tC/cell/day\n", s->value[FRUIT_C_TO_REMOVE]);
+		
+    printf("ddalmo in leaffall s->value[FRUIT_FALL_C]    = %0.10f tC/cell/day\n",s->value[FRUIT_FALL_C]);
+	
+   printf("ddalmo in leaffall s->value[FRUIT_C]    = %0.10f tC/cell/day\n",s->value[FRUIT_C]);
+	
 	s->value[LEAF_N_TO_REMOVE]  += s->value[LEAF_FALL_N]   ;
 	s->value[FROOT_N_TO_REMOVE] += s->value[FROOT_FALL_N]  ;
 	s->value[FRUIT_N_TO_REMOVE] += s->value[FRUIT_FALL_N]  ;
