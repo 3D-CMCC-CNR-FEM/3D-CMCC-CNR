@@ -27,7 +27,7 @@ void specific_leaf_area ( const age_t *const a, species_t *const s )
 	/* convert SLA from m2/kgDM -> m2/kgC */
 	s->value[SLA_AVG] *= GC_GDM;
 
-
+     //printf("s->value[SLA_AVG]   = %g\n", s->value[SLA_AVG1]  );
 }
 
 void daily_lai (cell_t *const c, age_t *const a, species_t *const s)
