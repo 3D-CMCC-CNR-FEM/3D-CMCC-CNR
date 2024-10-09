@@ -320,7 +320,8 @@ void canopy_evapotranspiration(cell_t *const c, const int layer, const int heigh
 				//fixme use correct net radiation
 				leaf_transp                 = Penman_Monteith ( meteo_daily, rv, rh, net_rad );
 				s->value[CANOPY_TRANSP_SUN] = leaf_transp *  ( transp_daylength_sec * s->value[LAI_SUN_PROJ] ); //* s->value[DAILY_CANOPY_COVER_PROJ] );
-
+                //s->value[CANOPY_TRANSP_SUN] = leaf_transp *  ( transp_daylength_sec * s->value[LAI_SUN_PROJ] )* s->value[DAILY_CANOPY_COVER_PROJ] ;
+				
 				/** LAI SHADE **/
 
 				/* resistance for shaded canopy fraction */
@@ -339,6 +340,7 @@ void canopy_evapotranspiration(cell_t *const c, const int layer, const int heigh
 				//fixme use correct net radiation
 				leaf_transp                   = Penman_Monteith ( meteo_daily, rv, rh, net_rad );
 				s->value[CANOPY_TRANSP_SHADE] = leaf_transp * ( transp_daylength_sec * s->value[LAI_SHADE_PROJ] ); //* s->value[DAILY_CANOPY_COVER_PROJ] );
+                //s->value[CANOPY_TRANSP_SHADE] = leaf_transp * ( transp_daylength_sec * s->value[LAI_SHADE_PROJ] )* s->value[DAILY_CANOPY_COVER_PROJ] ;
 
 				/************************************************************************************/
 				
@@ -475,6 +477,7 @@ void canopy_evapotranspiration(cell_t *const c, const int layer, const int heigh
 				//fixme use correct net radiation
 				leaf_transp                 = Penman_Monteith ( meteo_daily, rv, rh, net_rad );
 				s->value[CANOPY_TRANSP_SUN] = leaf_transp * ( transp_daylength_sec * s->value[LAI_SUN_PROJ] ); //* s->value[DAILY_CANOPY_COVER_PROJ] );
+               //s->value[CANOPY_TRANSP_SUN] = leaf_transp * ( transp_daylength_sec * s->value[LAI_SUN_PROJ] )* s->value[DAILY_CANOPY_COVER_PROJ] ;
 
 				/** LAI SHADE **/
 
@@ -493,6 +496,7 @@ void canopy_evapotranspiration(cell_t *const c, const int layer, const int heigh
 				//fixme use correct net radiation
 				leaf_transp                   = Penman_Monteith ( meteo_daily, rv, rh, net_rad );
 				s->value[CANOPY_TRANSP_SHADE] = leaf_transp * ( transp_daylength_sec * s->value[LAI_SHADE_PROJ] ); //* s->value[DAILY_CANOPY_COVER_PROJ] );
+                //s->value[CANOPY_TRANSP_SHADE] = leaf_transp * ( transp_daylength_sec * s->value[LAI_SHADE_PROJ])* s->value[DAILY_CANOPY_COVER_PROJ];
 
 				/************************************************************************************/
 				
@@ -569,7 +573,7 @@ void canopy_evapotranspiration(cell_t *const c, const int layer, const int heigh
 			//fixme use correct net radiation
 			leaf_transp                 = Penman_Monteith (meteo_daily, rv, rh, net_rad);
 			s->value[CANOPY_TRANSP_SUN] = leaf_transp * ( transp_daylength_sec * s->value[LAI_SUN_PROJ] ); //* s->value[DAILY_CANOPY_COVER_PROJ] );
-
+          // s->value[CANOPY_TRANSP_SUN] = leaf_transp * ( transp_daylength_sec * s->value[LAI_SUN_PROJ] )* s->value[DAILY_CANOPY_COVER_PROJ] ;
 			/** LAI SHADE **/
 			/* Transpiration for LAI shade */
 
@@ -588,7 +592,7 @@ void canopy_evapotranspiration(cell_t *const c, const int layer, const int heigh
 			/* call Penman-Monteith function, returns e in kg/m2/s for transpiration and W/m2 for latent heat*/
 			leaf_transp                   = Penman_Monteith (meteo_daily, rv, rh, net_rad);
 			s->value[CANOPY_TRANSP_SHADE] = leaf_transp * ( transp_daylength_sec * s->value[LAI_SHADE_PROJ] ); //* s->value[DAILY_CANOPY_COVER_PROJ] );
-
+  //s->value[CANOPY_TRANSP_SHADE] = leaf_transp * ( transp_daylength_sec * s->value[LAI_SHADE_PROJ] )* s->value[DAILY_CANOPY_COVER_PROJ];
 			/************************************************************************************/
 			
 			
