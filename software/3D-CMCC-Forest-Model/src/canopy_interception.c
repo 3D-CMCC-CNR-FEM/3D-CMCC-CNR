@@ -27,6 +27,8 @@ void canopy_interception(cell_t *const c, const int layer, const int height, con
 	l = &c->tree_layers[layer];
 	s = &c->heights[height].dbhs[dbh].ages[age].species[species];
 
+	//printf(" c->canopy_int_cell_height_class_counter %d\n",c->canopy_int_cell_height_class_counter);
+
 	/* it computes canopy rain interception with a slightly different rationale used for canopy radiation absorption */
 	/* note: it is still used cause rainfall is considered always vertical from zenith angle */
 
