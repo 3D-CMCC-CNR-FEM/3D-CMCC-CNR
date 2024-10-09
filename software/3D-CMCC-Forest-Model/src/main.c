@@ -119,41 +119,46 @@ static const char banner[] = "\n#"PROGRAM_FULL_NAME"\n"
 #endif
 		 */
 		"(use -h parameter for more information)\n\n"
-		"The "PROGRAM_FULL_NAME" has been developed by:\n"
-		"Alessio Collalti [alessio.collalti@cnr.it, alessio.collalti@isafom.cnr.it],\n"
-		"Alessio Ribeca [alessio.ribeca@cmcc.it]\n"
-		"Carlo Trotta [trottacarlo@unitus.it]\n"
-		"Corrado Biondo [@CMCC]\n"
-		"Gina Marano [gina.marano@unina.it]\n"
-		"Giorgio Matteucci [giorgio.matteucci@isafom.cnr.it]\n"
-		"Daniela Dalmonech [daniela.dalmonech@isafom.cnr.it]\n"
-		"National Research Council of Italy (CNR),\n"
-		"Institute for Agricultural and Forestry Systems in the Mediterranean(ISAFOM),\n"
+		"The "PROGRAM_FULL_NAME" has been developed and maintained by:\n"
+		"Alessio Collalti [alessio.collalti@cnr.it],\n"
+		"Daniela Dalmonech [daniela.dalmonech@cnr.it]\n"
+		"of the Forest Modelling Laboratory [https://www.forest-modelling-lab.com/]\n"
+		"at the National Research Council of Italy (CNR),\n"
+		"at the Institute for Agricultural and Forestry Systems in the Mediterranean(ISAFOM),\n"
 		"Via della Madonna Alta, 128, 06128 - Perugia (PG), Italy\n"
-		"\n"
-		"and \n"
-		"Tuscia University (UNITUS),\n"
-		"Department for innovation in biological, agro-food and forest systems (DIBAF),\n"
-		"Forest Ecology Lab\n"
-		"Programmers: Alessio Collalti - Alessio Ribeca - Carlo Trotta  \n"
+		"programmer: Alessio Ribeca [alessio.ribeca@cmcc.it] (versions 5p1-5p5) \n"
 		"\n"
 		"\"DISCLAIMER\"\n"
-		"CNR-UNITUS\n"
-		"accepts no responsibility for the use of the 3D-CMCC-CNR FEM in\n"
+		"CNR\n"
+		"accepts no responsibility for the use of the 3D-CMCC-FEM in\n"
 		"the form supplied or as subsequently modified by third parties.\n"
-		"CNR and UNITUS disclaims liability for all losses,\n"
+		"CNR disclaims liability for all losses,\n"
 		"damages and costs incurred by any person as a result of relying on this software.\n"
-		"Use of this software assumes agreement to this condition of use.\n"
+		"Use of this software assumes agreement to this condition of use [https://github.com/Forest-Modelling-Lab/3D-CMCC-FEM].\n"
 		"Removal of this statement violates the spirit in which 3D-CMCC-FEM,\n"
-		"was released by CNR-UNITUS.\n"
+		"was released by Forest Modelling Laboratory at CNR.\n"
 		"for more information see:\n"
-		"-Collalti et al., 2014 Ecological Modelling,\n"
-		"-Collalti et al., 2016 Geoscientific Model Development\n"
-		"-Marconi  et al., 2017 Forests\n"
-		"-Collalti et al., 2017 Forest@\n"
-		"-Collalti et al., 2018 Journal of Advances in Earth System Modeling\n"
-		"-Collalti et al., 2019a Ecological Applications\n"
-		"-Collalti et al., 2019b Global Change Biology\n"
+		"Published (peer-reviewed papers)\n"
+		"-Collalti    et al., 2014 Ecological Modelling,\n"
+		"-Collalti    et al., 2016 Geoscientific Model Development\n"
+		"-Marconi     et al., 2017 Forests\n"
+		"-Collalti    et al., 2017 Forest@\n"
+		"-Collalti    et al., 2018 Journal of Advances in Earth System Modeling\n"
+		"-Collalti    et al., 2019 Ecological Applications\n"
+		"-Collalti    et al., 2020 Global Change Biology\n"
+		"-Merganičová et al., 2019 Tree Physiology\n"
+		"-Dalmonech   et al., 2022 Agricoltural and Forest Meteorology\n"
+		"-Mahnken     et al., 2022 Global Change Biology\n"
+		"-Testolin    et al., 2023 Science of the Total Environment\n"
+		"-Dalmonech   et al., 2024 European Journal of Remote Sensing\n"	
+		"-Vangi       et al., 2024 Forests\n"
+		"-Grünig      et al., 2024 Data in Brief\n"
+		"-Vangi       et al., 2024 Journal of Environmental Management\n"
+		"-Morichetti  et al., 2024 Forests\n"
+		"and the Technical and Theoretical User Guides\n"
+		"-Collalti    et al., 2023 [https://www.forest-modelling-lab.com/downloads]\n"
+		"-Collalti    et al., 2024 [https://www.forest-modelling-lab.com/downloads]"
+	
 		"--------------------------------------------------------------------------------\n";
 static const char msg_input_path[]					=	"input path = %s\n";
 static const char msg_parameterization_path[]		=	"parameterization path = %s\n";
@@ -1901,19 +1906,24 @@ int main(int argc, char *argv[]) {
 					}
 					else
 					{
-						printf("ok cell_model (x=%d,y=%d) (%02d-%02d-%d)\n"
-								, matrix->cells[cell].x
-								, matrix->cells[cell].y
+						//printf("ok cell_model (x=%d,y=%d) (%02d-%02d-%d)\n"
+						//		, matrix->cells[cell].x
+						//		, matrix->cells[cell].y
+						//		, day+1, month+1, year+g_settings->year_start
+						//);
+								printf("ok cell_model BALANCE CLOSURE (%02d-%02d-%d)\n"
 								, day+1, month+1, year+g_settings->year_start
 						);
+
 					}
 					/*************************************************************************/
 					/******************************************************************************/
 					/* print daily output */
 					//EOD_print_output_cell_level (&matrix->cells[cell], day, month, year, years_of_simulation );
                                        //EOD_print_output_cell_level_ddalmo (&matrix->cells[cell], day, month, year, years_of_simulation );
-                    EOD_print_output_cell_level_mc(&matrix->cells[cell], day, month, year, years_of_simulation );
-					 EOD_print_output_soil_cell_level (&matrix->cells[cell], day, month, year, years_of_simulation );
+                      // mc = multiclass                   
+				      EOD_print_output_cell_level_mc(&matrix->cells[cell], day, month, year, years_of_simulation );
+					 //EOD_print_output_soil_cell_level (&matrix->cells[cell], day, month, year, years_of_simulation );
 
 					/* reset daily variables once printed */
 					reset_daily_class_variables ( &matrix->cells[cell] );
@@ -1926,10 +1936,12 @@ int main(int argc, char *argv[]) {
 					if ( current_doy == matrix->cells[cell].doy )
 					{
 						/* print monthly output */
+
 						//EOM_print_output_cell_level( &matrix->cells[cell], month, year, years_of_simulation );
                                                //EOM_print_output_cell_level_ddalmo( &matrix->cells[cell], month, year, years_of_simulation );
-                                               EOM_print_output_cell_level_mc( &matrix->cells[cell], month, year, years_of_simulation );
-						EOM_print_output_soil_cell_level( &matrix->cells[cell], month, year, years_of_simulation );
+                           // mc = multiclass
+						   EOM_print_output_cell_level_mc( &matrix->cells[cell], month, year, years_of_simulation );
+						 //EOM_print_output_soil_cell_level( &matrix->cells[cell], month, year, years_of_simulation );
 
 						reset_monthly_class_variables ( &matrix->cells[cell] );
 						reset_monthly_layer_variables ( &matrix->cells[cell] );
@@ -1946,8 +1958,9 @@ int main(int argc, char *argv[]) {
 
 						//EOY_print_output_cell_level( &matrix->cells[cell], year, years_of_simulation );
                                                //EOY_print_output_cell_level_ddalmo( &matrix->cells[cell], year, years_of_simulation );
-                                               EOY_print_output_cell_level_mc( &matrix->cells[cell], year, years_of_simulation );
-						EOY_print_output_soil_cell_level( &matrix->cells[cell], year, years_of_simulation );
+                            // mc = multiclass
+							EOY_print_output_cell_level_mc( &matrix->cells[cell], year, years_of_simulation );
+						 //EOY_print_output_soil_cell_level( &matrix->cells[cell], year, years_of_simulation );
 
 						reset_annual_class_variables ( &matrix->cells[cell] );
 						reset_annual_layer_variables ( &matrix->cells[cell] );
