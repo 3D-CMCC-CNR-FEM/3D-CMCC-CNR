@@ -141,8 +141,10 @@ int Tree_model_daily (matrix_t *const m, const int cell, const int day, const in
 
 	}
 
+	 //printf(" in tree model c->tree_layers_count             = %d \n ", c->tree_layers_count);
+
 	/* daily forest structure*/
-	daily_forest_structure ( c,  meteo_daily);
+	daily_forest_structure ( c,  meteo_daily, year);
 
 	/* print forest cell data */
 	print_daily_forest_data ( c );
@@ -158,11 +160,17 @@ int Tree_model_daily (matrix_t *const m, const int cell, const int day, const in
 	qsort ( c->heights, c->heights_count, sizeof (height_t), sort_by_heights_desc );
 #endif
 
+ //printf(" c->tree_layers_count             = %d \n ", c->tree_layers_count);
+
+
 	/* loop on each cell layers starting from highest to lower */
 	for ( layer = c->tree_layers_count -1 ; layer >= 0; --layer )
 	{
 		/* assign shortcut */
 		l = &m->cells[cell].tree_layers[layer];
+
+		//printf(" IN TREE_DAILY   layer              = %d  \n",  layer );
+
 
 		logger(g_debug_log,"*****************************************************************************\n"
 				"                                layer = %d                                 \n"
@@ -173,6 +181,12 @@ int Tree_model_daily (matrix_t *const m, const int cell, const int day, const in
 		/* loop on each heights starting from highest to lower */
 		for ( height = 0; height <  c->heights_count; ++height )
 		{
+
+			//printf(" BEGINNING CYCLE height              = %d  \n", height);
+		    //printf(" c->heights_count              = %d \n ", c->heights_count);
+			//printf(" l->layer_z             = %d \n ", l->layer_z);
+            //printf("in TREE DAILY  c->heights[height] %g,\n",c->heights[height].value);
+
 			/* assign shortcut */
 			h = &m->cells[cell].heights[height];
 
@@ -187,6 +201,9 @@ int Tree_model_daily (matrix_t *const m, const int cell, const int day, const in
 
 			if( h->height_z == l->layer_z )
 			{
+
+				//printf(" TREE HEIGHT CLASS MATCH CELL LAYER \n");
+
 				logger(g_debug_log,"*****************************************************************************\n"
 						"                              height = %f                              \n"
 						"*****************************************************************************\n", h->value);
@@ -226,10 +243,20 @@ int Tree_model_daily (matrix_t *const m, const int cell, const int day, const in
 							/* assign shortcut */
 							s = &m->cells[cell].heights[height].dbhs[dbh].ages[age].species[species];
 
+							//printf(" IN TREE MODEL SPECIES  %s!!!\n", s->name);
+
 							logger(g_debug_log,"*****************************************************************************\n"
 									"*                              species = %s                         *\n"
 									"*****************************************************************************\n", s->name);
 							/**********************************/
+
+                          // printf("in TREE DAILY  HEIGHT %g,\n",c->heights[height].value);
+						//	printf("in TREE DAILY  AGE %d,\n",c->heights[height].dbhs[dbh].ages[age].value);
+						//	printf("in TREE DAILY  DBH  %g,\n",c->heights[height].dbhs[dbh].value);
+						  //  printf("in TREE DAILY  NTREE  %d,\n",s->counter[N_TREE]);
+
+                             // printf("in TREE DAILY  CROWN_AREA_PROJ  %g,\n", s->value[CROWN_AREA_PROJ]);
+                             
 
 
 							/* counter for class days, months and years of simulation */
@@ -379,6 +406,10 @@ int Tree_model_daily (matrix_t *const m, const int cell, const int day, const in
 							/* Mortality based on growth efficiency */
 							/* note: when it happens the overall class is removed */
 
+                            //printf("BEFORE mortaliy GEff  height              = %d  \n", height);
+							//	 printf("BEFORE mortaliy GEff  m->cells[cell].heights_count               = %d \n ", m->cells[cell].heights_count);
+								 
+
 							if ( ! growth_efficiency_mortality ( c, height, dbh, age, species ) )
 							{
 
@@ -401,9 +432,15 @@ int Tree_model_daily (matrix_t *const m, const int cell, const int day, const in
 								/* update Leaf Area Index */
 								daily_lai             ( c, a, s );
 
+								  //printf("in TREE  **** DAILY  LAI  %g,\n", s->value[LAI_PROJ]);
+
 								/* tree level dendrometry */
 								dendrometry_old       ( c, layer, height, dbh, age, species, year );
 
+								
+                                 
+								
+								
 								/** IF END OF YEAR **/
 
 								/* last day of the year */
@@ -492,13 +529,43 @@ int Tree_model_daily (matrix_t *const m, const int cell, const int day, const in
 							}
 							else
 							{
+
+								 
 								//FIXME here model should remove class just after have checked that the balances are closed
 								//so model has to include c fluxes that go out to litter and cwd
-								if ( height >= m->cells[cell].heights_count ) goto height_end;
+
+                                // printf("in mortaliy GEff  height              = %d  \n", height);
+								// printf("in mortaliy GEff  m->cells[cell].heights_count               = %d \n ", m->cells[cell].heights_count);
+								//printf(" in mortaliy GEff c->tree_layers_count             = %d \n ", c->tree_layers_count);
+
+                                 c->GREFFMORT_HAPPENS = 1 ;
+								// printf(" in mortaliy GEff c->GREFFMORT_HAPPENS            = %d \n ", c->GREFFMORT_HAPPENS);
+
+
+								//printf("in mortaliy GEff  height              = %d  \n", height);
+								// printf("in mortaliy GEff  m->cells[cell].heights_count               = %d \n ", m->cells[cell].heights_count);
+                                 // annual_forest_structure ( c, year );
+                                 
+								  
+								if ( height >= m->cells[cell].heights_count ) 
+								   { 
+									//printf("GO TO HEIGHT END  \n ") ;
+									goto height_end; 
+									}
 								if ( dbh >= m->cells[cell].heights[height].dbhs_count ) goto dbh_end;
 								if ( age >= m->cells[cell].heights[height].dbhs[dbh].ages_count ) goto age_end;
 								//if ( species >= m->cells[cell].heights[height].dbhs[dbh].ages[age].species_count ) goto species_end;
+							    
+								 height = height -1 ;  // per poter procedere alle classi di altezze piu' basse 
+								 
+								 //c->cell_heights_count --;
+								//l->layer_n_height_class =  l->layer_n_height_class -1 ;
+								//l->layer_height_class_counter --;
+								
+
 							}
+
+							
 							/****************************************************************************************************************************************/
 							/****************************************************************************************************************************************/
 						}
@@ -511,6 +578,11 @@ int Tree_model_daily (matrix_t *const m, const int cell, const int day, const in
 				logger(g_debug_log, "****************END OF DBH CLASS***************\n");
 			}
 		}
+		//printf(" FINITO GIRO SULLE ALTEZZE  \n");
+		// printf(" height              = %d  \n", height);
+		//printf(" m->cells[cell].heights_count               = %d \n ", m->cells[cell].heights_count);
+								 
+
 		height_end:
 		logger(g_debug_log, "****************END OF HEIGHT CLASS***************\n");
 	}
