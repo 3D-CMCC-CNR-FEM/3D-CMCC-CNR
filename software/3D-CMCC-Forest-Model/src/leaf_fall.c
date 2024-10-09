@@ -35,7 +35,7 @@ void leaffall_deciduous ( cell_t *const c, const int height, const int dbh, cons
 		/* assign Maximum LAI values at the beginning of the sigmoid shape */
 		s->value[MAX_LAI_LEAFFALL_PROJ] = s->value[LAI_PROJ];
 
-		 printf("in LEAF_FALL AT THE BEGINNING   **** MAX_LAI_LEAFFALL_PROJ  %g,\n", s->value[LAI_PROJ]);
+		 // printf("in LEAF_FALL AT THE BEGINNING   **** MAX_LAI_LEAFFALL_PROJ  %g,\n", s->value[LAI_PROJ]);
 
 		/* assign senescence doy */
 		s->counter[SENESCENCE_DAY_ONE] = c->doy;
@@ -52,12 +52,12 @@ void leaffall_deciduous ( cell_t *const c, const int height, const int dbh, cons
 				/(s->counter[DAYS_LEAFFALL] / (log(9. * s->counter[DAYS_LEAFFALL] / 2. + s->counter[SENESCENCE_DAY_ONE]) -
 						log(.11111111111))))));
   
-     printf("in LEAF FALLLLLL  s->value[MAX_LAI_LEAFFALL_PROJ] %g,\n",s->value[MAX_LAI_LEAFFALL_PROJ]);
-      printf("in LEAF FALLLLLL  s->counter[DAYS_LEAFFALL] %d,\n",s->counter[DAYS_LEAFFALL]);
-     printf("in LEAF FALLLLLL  s->counter[SENESCENCE_DAY_ONE]%d,\n",s->counter[SENESCENCE_DAY_ONE]);
-     printf("in LEAF FALLLLLL  c->doy %d,\n",c->doy);
+     //printf("in LEAF FALLLLLL  s->value[MAX_LAI_LEAFFALL_PROJ] %g,\n",s->value[MAX_LAI_LEAFFALL_PROJ]);
+     // printf("in LEAF FALLLLLL  s->counter[DAYS_LEAFFALL] %d,\n",s->counter[DAYS_LEAFFALL]);
+     //printf("in LEAF FALLLLLL  s->counter[SENESCENCE_DAY_ONE]%d,\n",s->counter[SENESCENCE_DAY_ONE]);
+     //printf("in LEAF FALLLLLL  c->doy %d,\n",c->doy);
 
-     printf("in LEAF FALLLLLL  currentLai  %g,\n",currentLai );
+     //printf("in LEAF FALLLLLL  currentLai  %g,\n",currentLai );
 		/* check */
  
                 // force current LAI to 0 if the leaf C has been forced to 0 (leafC < 1 mg C m-2) (and hence previous LAI)
