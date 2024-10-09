@@ -2529,7 +2529,7 @@ void EOD_print_output_cell_level_mc(cell_t *const c, const int day, const int mo
 		print_header = 1;
 
 	
-                      	logger(g_daily_log, "X,Y,YEAR,MONTH,DAY");
+                logger(g_daily_log, "X,Y,YEAR,MONTH,DAY");
   
 			
 					/* heading for layers */
@@ -2661,6 +2661,9 @@ void EOD_print_output_cell_level_mc(cell_t *const c, const int day, const int mo
 													
 					
 	}
+
+	if ( c->heights_count )    //
+	{
 							
 	/*****************************************************************************************************/
 
@@ -2670,6 +2673,8 @@ void EOD_print_output_cell_level_mc(cell_t *const c, const int day, const int mo
 	/* print class level values */
 	for ( layer = c->tree_layers_count - 1; layer >= 0; --layer )
 	{
+
+	 //printf(" **************************************IN PRINT OUTPUT layer             = %d \n ", layer );
                
 		qsort(c->heights, c->heights_count, sizeof(height_t), sort_by_heights_desc);
 
@@ -2677,7 +2682,7 @@ void EOD_print_output_cell_level_mc(cell_t *const c, const int day, const int mo
 		{
 			if( layer == c->heights[height].height_z )
 			{
-				
+			
 
 				for ( dbh = c->heights[height].dbhs_count - 1; dbh >= 0; --dbh )
 				{
@@ -2881,7 +2886,114 @@ void EOD_print_output_cell_level_mc(cell_t *const c, const int day, const int mo
 		}
 		
 	  
-        }   // loop on layer     
+        }   // loop on layer    
+		} else {
+
+		// no forest	
+
+			/* print class level values */
+
+
+         /* values */
+        logger(g_daily_log, "%d,%d,%d,%d,%d", c->x, c->y, c->years[year].year, month + 1, day + 1);
+
+        /* print layer */
+		logger(g_daily_log,",%d", 0);
+
+		/* print height */
+		logger(g_daily_log,",%g", 0.0); 
+							
+		/* print dbh */
+		logger(g_daily_log,",%g", 0.0);
+
+        /* print age */
+		logger(g_daily_log,",%d", 0);
+
+		/* print species name */
+		logger(g_daily_log,",%s", "noone");
+
+		/* print management */
+		logger(g_daily_log,",%s", "T");
+
+		/* print variables at layer-class level */
+
+		logger(g_daily_log,",%6.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%d,"
+				"%d,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f"
+				",%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f"
+				",%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f",
+				0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
+				0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
+				0,0,
+                0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
+				0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
+                0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
+				0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
+                0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
+				0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
+                0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0);
+                                                                  
+                                                                /************************************************************************/
+        
+          if (!print_cell)
+          { 
+	  /* printing variables only at cell level */
+
+	  logger(g_daily_log, ",%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,"
+			"%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f",
+			0.0,
+			0.0,
+			0.0,
+			c->daily_het_resp,
+			c->daily_soil_resp,
+			c->daily_r_eco,
+			c->daily_nee,
+			0.0,
+			0.0,
+			c->daily_lh_flux,
+			c->daily_soil_evapo,
+			c->snow_pack,
+			c->asw,
+			c->psi,   
+			c->soil_moist_ratio,
+			0.0,
+			c->litrC,
+			c->litr1C,
+			c->litr2C,
+			c->litr3C,
+			c->litr4C,
+			c->cwd_C,
+			c->cwd_2C,
+			c->cwd_3C,
+			c->cwd_4C,
+			c->soilC,
+			c->soil1C,
+			c->soil2C,
+			c->soil3C,
+			c->soil4C,
+			c->litrN,
+			c->litr1N,
+			c->litr2N,
+			c->litr3N,
+			c->litr4N,
+			c->cwd_N,
+			c->cwd_2N,
+			c->cwd_3N,
+			c->cwd_4N,
+			c->soilN,
+			c->soil1N,
+			c->soil2N,
+			c->soil3N,
+			c->soil4N,
+			c->years[year].m[month].d[day].tsoil,
+			c->years[year].m[month].d[day].daylength
+	   );
+           }
+	   /************************************************************************/
+           /* end heading */
+	   logger(g_daily_log,"\n");   
+                                                                  
+                                                            
+	}		 
 }
 void EOD_cell_msg(void)
 {
@@ -3480,8 +3592,8 @@ void EOM_print_output_cell_level_mc(cell_t *const c, const int month, const int 
 	//logger ( g_monthly_log, "%d,%d,%d,%d", c->x, c->y, c->years[year].year, month +1 );
 	
 	
-	//if ( c->heights_count )    //FIXME only used if we want to print info at cell level when there are more than one class only
-	//{
+	if ( c->heights_count )   
+	{
 	
 	/* print class level values */
         for ( layer = c->tree_layers_count - 1; layer >= 0; --layer )
@@ -3592,8 +3704,59 @@ void EOM_print_output_cell_level_mc(cell_t *const c, const int month, const int 
 
        } //loop layer
        
-   // } // check on height_count   
+    } else { // check on height_count
+	// no more forest, all the DBH classes died
+												
+	/* values */
+    logger ( g_monthly_log, "%d,%d,%d,%d", c->x, c->y, c->years[year].year, month +1 );
+         	
+    /* print layer */
+	logger(g_monthly_log,",%d", 0);
+
+	/* print height */
+	logger(g_monthly_log,",%g", 0.0);
+				
+	/* print dbh */
+	logger(g_monthly_log,",%g", 0.0);
+					
+	/* print age */
+	logger(g_monthly_log,",%d", 0);
+
+    // print species name */
+	logger(g_monthly_log,",%s", "noone");
+
+	/* print management */
+	logger(g_monthly_log,",%s", "T");
+
+	/* print variables at layer-class level */
+	logger(g_monthly_log,",%6.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%d,%3.4f,%3.4f,%3.4f,%3.4f"
+		",%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f",
+									0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
+									0,
+									0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0);
+									/************************************************************************/
+
+        if (!print_cell)
+                 { 
+               /* printing variables only at cell level */
+		logger(g_monthly_log, ",%3.4f,%3.4f,%3.4f",
+				0.0,
+				0.0,
+				0.0);
+
+ 	logger(g_monthly_log, ",%3.2f,%3.2f,%3.2f,%3.2f",
+			c->monthly_et,
+			c->monthly_lh_flux,
+			c->asw,
+			0.0);
+        }
+        /* end print */
+	logger(g_monthly_log,"\n");	
+
+	}   
 }
+
+
 void EOM_cell_msg(void)
 {
 	if ( g_monthly_log )
@@ -5311,8 +5474,11 @@ void EOY_print_output_cell_level_mc(cell_t *const c, const int year, const int y
 
 	/* print class level values */
 	
-	//if ( c->heights_count )    //
-	//{
+	//printf("in PRINT OUTPUT c->heights_count, %d\n",c->heights_count);
+//printf("in PRINT OUTPUT2 c->heights_count, %d\n",3);
+
+	if ( c->heights_count )    //
+	{
 		for ( layer = c->tree_layers_count - 1; layer >= 0; --layer )
 		{
 			qsort(c->heights, c->heights_count, sizeof(height_t), sort_by_heights_desc);
@@ -5582,12 +5748,144 @@ void EOY_print_output_cell_level_mc(cell_t *const c, const int year, const int y
 
 		} // layer
 
-	//}    
-	//else   // no height_count
-	//{
+	}    
+	else   // no height_count
+	{
+
 		//TODO ALESSIOC TO ALLESSIOR PRINT EMPTY SPACES WHEN N_TREE = 0
 
-	//}
+		// sept 2024 when basically there are no more trees in the cells 
+      
+          /* values */
+          logger(g_annual_log, "%d,%d,%d", c->x, c->y, c->years[year].year);
+
+			/* print layer */
+			layer = 0 ; 
+			logger(g_annual_log,",%d", layer);
+
+			 // print height */
+			logger(g_annual_log,",%g", 0.0);
+					                 
+            /* print dbh */
+			logger(g_annual_log,",%g", 0.0);
+						         
+			/* print age */
+			logger(g_annual_log,",%d", 0);
+             
+
+			/* print species name */
+			logger(g_annual_log,",%s", "noone");
+
+			/* print management */
+			logger(g_annual_log,",%s", "T");
+
+			/* print variables at layer-class level */
+			logger(g_annual_log,",%6.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%d,%d,%d,%d,%d,%3.4f"
+			",%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f"
+			",%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f"
+			",%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f",
+			0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
+			0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
+			0,0,0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0, 0.0,0.0,0.0,0.0,
+			0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
+			0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
+			0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
+			0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
+			0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
+			0.0,0.0,0.0,0.0,0.0);
+										
+			/************************************************************************/
+	        /* printing variables at cell level only if there's more than one layer */  //Note: in the 5p6 we write the data anyhow
+           
+              if (!print_cell)
+                   {
+                        logger(g_annual_log, ",%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.2f,%3.2f,%3.2f,%3.2f,%3.2f,%3.2f,%3.2f,%3.2f,%3.2f,%3.2f,%3.2f,%3.2f,%3.2f,%3.2f,%3.2f,%3.2f,%3.2f"
+			",%3.2f,%3.2f,%3.2f,%3.2f,%3.2f,%3.2f,%3.2f,%3.2f,%3.2f,%3.2f,%3.2f,%3.2f,%3.2f,%3.2f,%3.2f,%3.2f,%3.2f,%3.2f,%3.2f,%3.2f,%3.2f,%3.2f,%3.2f",
+			0.0,
+			0.0,
+			0.0,
+			c->annual_het_resp,
+			c->annual_soil_resp,
+			c->annual_soil_respCO2,
+			c->annual_r_eco,
+			c->annual_nee,
+			c->annual_nep,
+			c->annual_et,
+			c->annual_lh_flux,
+			c->annual_soil_evapo,
+            c->years[year].yearly_mean.asw,
+			//c->asw,   //  comment: this is actually the value at the 31 december, it has more sense to have the mean value
+			0.0,
+			0.0,
+			0.0,
+			c->annual_out_flow,  // runoff
+			c->litrC,
+			c->litr1C,
+			c->litr2C,
+			c->litr3C,
+			c->litr4C,
+			c->cwd_C,
+			c->cwd_2C,
+			c->cwd_3C,
+			c->cwd_4C,
+			c->soilC,
+			c->soil1C,
+			c->soil2C,
+			c->soil3C,
+			c->soil4C,
+			c->litrN,
+			c->litr1N,
+			c->litr2N,
+			c->litr3N,
+			c->litr4N,
+			c->cwd_N,
+			c->cwd_2N,
+			c->cwd_3N,
+			c->cwd_4N,
+			c->soilN,
+			c->soil1N,
+			c->soil2N,
+			c->soil3N,
+			c->soil4N,
+			c->soil_depth);
+	            /************************************************************************/
+	            /* print meteo variables at cell level */
+	           logger(g_annual_log, ",%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f",  
+			c->years[year].yearly_mean.solar_rad     ,
+			c->years[year].yearly_mean.tavg          ,
+			c->years[year].yearly_mean.tmax          ,
+			c->years[year].yearly_mean.tmin          ,
+			c->years[year].yearly_mean.tday          ,
+			c->years[year].yearly_mean.tnight        ,
+			c->years[year].yearly_mean.vpd           ,
+			c->years[year].yearly_mean.prcp          ,
+			c->years[year].yearly_mean.tsoil         ,
+			c->years[year].yearly_mean.rh_f          ,
+		//	c->years[year].yearly_mean.asw           ,
+			c->years[year].co2Conc);
+	            /************************************************************************/
+
+                   }
+                   
+                   /* end print */
+	           logger(g_annual_log,"\n");
+										
+							
+							
+							
+					
+						
+					
+				
+			
+				
+		
+			
+
+		
+
+
+	}
 }
 
 void EOY_cell_msg(void)
