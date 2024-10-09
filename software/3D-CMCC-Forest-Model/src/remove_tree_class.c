@@ -78,6 +78,10 @@ static int height_remove(cell_t *c, const int height) {
 	if ( height > c->heights_count ) {
 		return 0;
 	}
+	
+	//printf("in height remove c->heights[0], %g\n",c->heights[0].value);
+	//printf("in height remove c->heights[1], %g\n",c->heights[1].value);
+	//printf("in height remove height, %d\n",height);
 
 	y = 0;
 	for ( i = 0; i < c->heights_count; ++i ) {
@@ -89,6 +93,9 @@ static int height_remove(cell_t *c, const int height) {
 	}
 	--c->heights_count;
 	++c->heights_avail;
+
+	//	printf("in height remove c->heights[0], %g\n",c->heights[0].value);
+	//printf("in height remove c->heights[1], %g\n",c->heights[1].value);
 
 	return 1;
 }
@@ -118,6 +125,8 @@ static int dbh_remove(cell_t *c, const int height, const int dbh) {
 	--c->heights[height].dbhs_count;
 	++c->heights[height].dbhs_avail;
 
+
+
 	return 1;
 }
 
@@ -138,7 +147,8 @@ static int age_remove(cell_t *c, const int height, const int dbh, const int age)
 	if ( age > c->heights[height].dbhs[dbh].ages_count ) {
 		return 0;
 	}
-
+		//printf("in age remove c->age[0], %d\n",c->heights[height].dbhs[dbh].ages[0].value);
+	//printf("in age remove c->age[1], %d\n",c->heights[height].dbhs[dbh].ages[1].value);
 	y = 0;
 	for ( i = 0; i < c->heights[height].dbhs[dbh].ages_count; ++i ) {
 		if ( age == i ) {
@@ -149,6 +159,10 @@ static int age_remove(cell_t *c, const int height, const int dbh, const int age)
 	}
 	--c->heights[height].dbhs[dbh].ages_count;
 	++c->heights[height].dbhs[dbh].ages_avail;
+
+	//		printf("in age remove c->age[0], %d\n",c->heights[height].dbhs[dbh].ages[0].value);
+	//printf("in age remove c->age[4], %d\n",c->heights[height].dbhs[dbh].ages[100].value);
+	//printf("in age remove c->age_counter, %d\n",c->heights[height].dbhs[dbh].ages_count);
 
 	return 1;
 }
@@ -246,9 +260,15 @@ int tree_class_remove(cell_t *const c, const int height, const int dbh, const in
 	}
 
 #if 1
-	/* remove class if N_TREE < 0 or if called by harvesting function */
+
+//printf("in height remove2 c->heights[0], %0.10f\n",c->heights[0]);
+//	printf("in height remove2 c->heights[1], %0.10f\n",c->heights[1]);
+
+
+	/* remove class if N_TREE == 0 or if called by harvesting function, growth efficiency mortality */
 	if ( ! c->heights[height].dbhs[dbh].ages[age].species[species].counter[N_TREE]
 			|| g_settings->management ) {
+
 
 		if ( ! species_remove(c, height, dbh, age, species) ) return 0;
 
@@ -265,7 +285,7 @@ int tree_class_remove(cell_t *const c, const int height, const int dbh, const in
 					if ( ! dbh_remove(c, height, 0) ) return 0;
 				}
 		}
-#if 0
+		#if 0
 		if ( 1 == c->heights_count ) {
 			if ( ! c->heights[0].dbhs_count 
 				|| ( (1 == c->heights[0].dbhs_count) 
@@ -275,7 +295,7 @@ int tree_class_remove(cell_t *const c, const int height, const int dbh, const in
 					if ( ! height_remove(c, 0) ) return 0;
 			}
 		}
-#else
+		#else
 		if ( ! c->heights[height].dbhs_count 
 			|| ( (1 == c->heights[height].dbhs_count) 
 				&& (c->heights[height].dbhs[0].ages_count <= 1)
@@ -283,7 +303,7 @@ int tree_class_remove(cell_t *const c, const int height, const int dbh, const in
 			) {
 				if ( ! height_remove(c, height) ) return 0;
 		}
-#endif
+		#endif
 	}
 #else
 	/* zeroed species class if N_TREE < 0 or if called by harvesting function */
@@ -292,6 +312,7 @@ int tree_class_remove(cell_t *const c, const int height, const int dbh, const in
 		if ( ! species_zeroed(c, height, dbh, age, species) ) return 0;
 	}
 #endif
+
 
 	return 1;
 }
