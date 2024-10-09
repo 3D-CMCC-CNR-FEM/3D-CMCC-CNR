@@ -883,9 +883,10 @@ enum {
 	MOS,                                /* (months) month of simulation */
 	YOS,                                /* (years) year of simulation */
 	YEARS_THINNING,
+	                                    // FIXME the followings should be moved to a different ENUM
 	THINNING_HAPPENS,                   /* 0 = thinning off, 1 = thinning on */
 	HARVESTING_HAPPENS,                 /* 0 = harvesting off, 1 = harvesting on */
-
+	                                     
 	COUNTERS
 };
 
@@ -1046,8 +1047,10 @@ typedef struct
 	int doy;                                                              /* day of the year */
 	int dos;                                                              /* day of simulation */
 
+    // FLAGS 
 	int harvesting;                                                       /* 0 = off, 1 = on */
-
+    int GREFFMORT_HAPPENS;                 /* 0 = no classes removed because of growth efficiency mortality, 1 = at least one class removed  */
+   
 	/* for logger */
 	int initial_tree_layers_count;
 	int initial_heights_count;
