@@ -1685,6 +1685,9 @@ void forest_initialization ( const matrix_t* const m, const int day, const int m
 				m->cells[cell].x,
 				m->cells[cell].y,
 				m->cells[cell].heights_count);
+ 
+        // set flag at cell level
+        m->cells[cell].GREFFMORT_HAPPENS = 0; 
 
 		/* loop on each height */
 #if 0
