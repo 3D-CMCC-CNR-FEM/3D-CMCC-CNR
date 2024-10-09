@@ -272,6 +272,25 @@ void carbon_allocation_new ( cell_t *const c, age_t *const a, species_t *const s
 	if ( s->value[C_TO_BRANCH] > 0. ) s->value[CUM_YEARLY_C_TO_WOOD] += s->value[C_TO_CROOT];
 
 	/***************************************************************************************/
+   #if 0 
+    printf(" ddalmo species %s!!!\n", s->name);
+	printf("in allocation LEAF_C               = %g tC/cell/day\n", s->value[LEAF_C]);
+    printf("FROOT_C              = %g tC/cell/day\n", s->value[FROOT_C]);
+	printf("CROOT_C              = %g tC/cell/day\n", s->value[CROOT_C]);
+	printf("STEM_C               = %g tC/cell/day\n", s->value[STEM_C]);
+	printf("BRANCH_C             = %g tC/cell/day\n", s->value[BRANCH_C]);
+	printf("RESERVE_C            = %g tC/cell/day\n", s->value[RESERVE_C]);
+   printf("FRUIT_C              = %g tC/cell/day\n", s->value[FRUIT_C]);
+
+ 
+	printf("TO REMOVE  LEAF_C               = %g tC/cell/day\n", s->value[LEAF_C_TO_REMOVE]);
+    printf("FROOT_C              = %g tC/cell/day\n", s->value[FROOT_C_TO_REMOVE]);
+	printf("BRANCH_C              = %g tC/cell/day\n", s->value[BRANCH_C_TO_REMOVE]);
+	printf("CROOT_C               = %g tC/cell/day\n", s->value[CROOT_C_TO_REMOVE]);
+	printf("FRUIT_C             = %g tC/cell/day\n", s->value[FRUIT_C_TO_REMOVE]);
+	//printf("RESERVE_C            = %g tC/cell/day\n",s->value[LEAF_C_TO_REMOVE]);
+   //printf("FRUIT_C              = %g tC/cell/day\n", s->value[FRUIT_C]);
+#endif 
 
 	/*** update class level carbon mass pools ***/
 	
