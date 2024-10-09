@@ -2,8 +2,8 @@
 #ifndef COMMON_H
 #define COMMON_H
 
-#define PROGRAM_NAME		"3D-CMCC-CNR (Coupled Model Carbon Cycle) Forest Ecosystem Model"
-#define PROGRAM_VERSION		"5.6"
+#define PROGRAM_NAME		"3D (Three Dimensional) CMCC (Coupled Model Carbon Cycle) FEM (Forest Ecosystem Module)"
+#define PROGRAM_VERSION		"5.606"
 #define PROGRAM_FULL_NAME	PROGRAM_NAME" v."PROGRAM_VERSION""
 
 #ifdef _WIN32
