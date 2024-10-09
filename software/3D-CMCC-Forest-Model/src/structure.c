@@ -91,7 +91,7 @@ int annual_forest_structure(cell_t* const c, const int year)
 	// ALESSIOR
 	// check if following code is useful!
 
-	/*
+    #if 0	
 	assert( ! c->tree_layers_count );
 
 	for ( height = 0; height < c->heights_count; ++height )
@@ -99,7 +99,7 @@ int annual_forest_structure(cell_t* const c, const int year)
 		assert( ! c->heights[height].height_z );
 		exit(1);
 	}
-	*/
+	#endif 
 
 
 	/***************************************************************************************************************/
@@ -140,7 +140,9 @@ int annual_forest_structure(cell_t* const c, const int year)
 	}
 
 	/*********************************************************************************************************/
-
+    // printf(" c->dos           = %d \n ", c->dos);
+    if (c->dos == 0)   // dovrebbe aggiungere un layer solo se è il primo giorno dell anno? 
+	{
 	/** compute number of annual layers **/
 
 	/* note: it starts from the lowest height values up to the highest */
@@ -174,9 +176,54 @@ int annual_forest_structure(cell_t* const c, const int year)
 			}
 		}
 	}
+	// printf(" in structure c->tree_layers_count             = %d \n ", c->tree_layers_count);
+
 	logger(g_debug_log, "*zeta_count %d*\n\n", zeta_count);
 	logger(g_debug_log, "*c->t_layers_count %d*\n\n", c->tree_layers_count);
 
+    } else {
+
+/** compute number of annual layers **/
+
+	/* note: it starts from the lowest height values up to the highest */
+
+	/* add 1 layer by default */
+	if ( ! layer_add(c) ) return 0;   // FIXME this has to be removed, when we call annual forest structure
+	                                  // within the year
+
+	logger(g_debug_log, "*compute height_z*\n");
+
+	/* note: it must starts from the lowest tree height class */
+	qsort(c->heights, c->heights_count, sizeof(height_t), sort_by_heights_asc);
+
+	logger(g_debug_log, "*compute height_z*\n");
+
+	/* compute zeta counter */
+
+	if (c->heights_count > 1)
+	{
+		for ( height = 0; height < c->heights_count-1; ++height )
+		{
+			logger(g_debug_log, "*value %f*\n\n", c->heights[height].value);
+
+			// ALESSIOR TO ALESSIOC...this give error
+			// on +1 YOU MUST remove -1 from count!
+			if ( (c->heights[height+1].value - c->heights[height].value) > g_settings->tree_layer_limit )
+			{
+				++zeta_count;
+
+				/* compute layer number and alloc memory for each one */
+				if ( ! layer_add(c) ) return 0;
+			}
+		}
+	}
+	// printf(" in structure c->tree_layers_count             = %d \n ", c->tree_layers_count);
+
+	logger(g_debug_log, "*zeta_count %d*\n\n", zeta_count);
+	logger(g_debug_log, "*c->t_layers_count %d*\n\n", c->tree_layers_count);
+
+		}
+    
  	/*****************************************************************************************/
 
 	/** assign zeta for each height class **/
@@ -234,6 +281,7 @@ int annual_forest_structure(cell_t* const c, const int year)
 	{
 		for ( height = 0; height < c->heights_count ; ++height )
 		{
+			//printf("in annual structure compute numbers of trees within each layer  c->heights[height] %g,\n",c->heights[height].value);
 			if( layer == c->heights[height].height_z )
 			{
 				for ( dbh = 0; dbh < c->heights[height].dbhs_count; ++dbh )
@@ -249,7 +297,7 @@ int annual_forest_structure(cell_t* const c, const int year)
 							//{
 								s = &c->heights[height].dbhs[dbh].ages[age].species[species];
 
-
+                                 //printf("in annual structure compute numbers of trees within each layer  s->counter[N_TREE] %d,\n",s->counter[N_TREE]);
 								c->tree_layers[layer].layer_n_trees += s->counter[N_TREE];
 							//}
 						}
@@ -509,7 +557,7 @@ int monthly_forest_structure (cell_t* const c)
 /*************************************************************************************************************************/
 
 #define TEST 1 //test 1 = old 0 = new
-int daily_forest_structure ( cell_t *const c, const meteo_daily_t *const meteo_daily )
+int daily_forest_structure ( cell_t *const c, const meteo_daily_t *const meteo_daily , const int year)
 {
 	int layer;
 	int height;
@@ -531,6 +579,356 @@ int daily_forest_structure ( cell_t *const c, const meteo_daily_t *const meteo_d
 
 
 	logger(g_debug_log, "\n***DAILY FOREST STRUCTURE***\n");
+
+
+    if (c->GREFFMORT_HAPPENS ) 
+	{
+
+    //printf(" IN DAILY STRUCTURE  WHEN MORTALITy GROWTH HAPPENS    \n");
+
+	 int layer;
+	int height;
+	int dbh;
+	int age;
+	int species;
+	int light_tol;
+	int zeta_count = 0;
+        int row;
+        int year_dens_fin = 0;  // only used if MANAGEMENT == VAR or VAR1
+
+         //ddalmo
+       assert(g_dataset);
+
+	species_t *s;
+	age_t *a;
+
+	/* this function compute annually:
+	 * -the number of forest layers comparing the tree height values of all tree height classes
+	 * -layer density
+	 * -DBHDC_EFF based on overall layer cover
+	 * -crown diameter
+	 * -crown area
+	 * -class cover
+	 * -layer cover
+	 * -cell cover
+	 * */
+
+
+	logger(g_debug_log, "\n***ANNUAL FOREST STRUCTURE***\n");
+
+
+	 reset_annual_layer_variables (c);
+
+   //l->layer_n_height_class =  l->layer_n_height_class -1 ;
+								//l->layer_height_class_counter --;
+
+    //	annual_forest_structure ( c, year );
+
+   
+    
+	/***************************************************************************************************************/
+
+	for ( height = 0; height < c->heights_count ; ++height )
+	{
+		for ( dbh = 0; dbh < c->heights[height].dbhs_count; ++dbh )
+		{
+			for ( age = 0; age < c->heights[height].dbhs[dbh].ages_count ; ++age )
+			{
+				for ( species = 0; species < c->heights[height].dbhs[dbh].ages[age].species_count; ++species )
+				{
+
+					light_tol = (int)c->heights[height].dbhs[dbh].ages[age].species[species].value[LIGHT_TOL];
+
+					switch ( light_tol )
+					{
+					case 1:
+						/* very shade tolerant */
+						c->heights[height].dbhs[dbh].ages[age].species[species].value[MAX_LAYER_COVER] = 1.1;
+						break;
+					case 2:
+						/* shade tolerant */
+						c->heights[height].dbhs[dbh].ages[age].species[species].value[MAX_LAYER_COVER] = 1.0;
+						break;
+					case 3:
+						/* shade intolerant */
+						c->heights[height].dbhs[dbh].ages[age].species[species].value[MAX_LAYER_COVER] = 0.9;
+						break;
+					case 4:
+						/* very shade intolerant */
+						c->heights[height].dbhs[dbh].ages[age].species[species].value[MAX_LAYER_COVER] = 0.8;
+						break;
+					}
+				}
+			}
+		}
+	}
+
+	/*********************************************************************************************************/
+   //  printf(" c->dos           = %d \n ", c->dos);
+ 
+	/** compute number of annual layers **/
+
+	/* note: it starts from the lowest height values up to the highest */
+
+	/* add 1 layer by default */
+	if ( ! layer_add(c) ) return 0;
+
+	logger(g_debug_log, "*compute height_z*\n");
+
+	/* note: it must starts from the lowest tree height class */
+	qsort(c->heights, c->heights_count, sizeof(height_t), sort_by_heights_asc);
+
+	logger(g_debug_log, "*compute height_z*\n");
+
+	/* compute zeta counter */
+
+	if (c->heights_count > 1)
+	{
+		for ( height = 0; height < c->heights_count-1; ++height )
+		{
+			logger(g_debug_log, "*value %f*\n\n", c->heights[height].value);
+
+			// ALESSIOR TO ALESSIOC...this give error
+			// on +1 YOU MUST remove -1 from count!
+			if ( (c->heights[height+1].value - c->heights[height].value) > g_settings->tree_layer_limit )
+			{
+				++zeta_count;
+
+				/* compute layer number and alloc memory for each one */
+				if ( ! layer_add(c) ) return 0;
+			}
+		}
+	}
+	 //printf(" in structure c->tree_layers_count             = %d \n ", c->tree_layers_count);
+
+	logger(g_debug_log, "*zeta_count %d*\n\n", zeta_count);
+	logger(g_debug_log, "*c->t_layers_count %d*\n\n", c->tree_layers_count);
+
+
+ 	/*****************************************************************************************/
+
+	/** assign zeta for each height class **/
+
+	for ( height = c->heights_count -1 ; height >= 0; --height )
+	{
+		// ALESSIOR...on height == 0 you can't go to previous values (height-1)
+		//if ( (c->heights[height].value - c->heights[height-1].value) > g_settings->tree_layer_limit )
+		if ( height && (c->heights[height].value - c->heights[height-1].value) > g_settings->tree_layer_limit )
+		{
+			c->heights[height].height_z = zeta_count;
+			--zeta_count;
+		}
+		else
+		{
+			c->heights[height].height_z = zeta_count;
+		}
+	}
+
+	/* check */
+	CHECK_CONDITION(c->tree_layers_count, <, 1);
+	CHECK_CONDITION(c->tree_layers_count, >, c->heights_count);
+
+	/*************************************************************************************/
+
+	/** compute numbers of height classes within each layer **/
+
+	logger(g_debug_log, "*compute numbers of height classes within each layer*\n\n");
+
+	for ( layer = c->tree_layers_count - 1; layer >= 0 ; --layer )
+	{
+		for ( height = c->heights_count -1; height >= 0 ; --height )
+		{
+			if( layer == c->heights[height].height_z )
+			{
+				++c->tree_layers[layer].layer_n_height_class;
+			}
+		}
+		logger(g_debug_log, "-layer %d height class(es) = %d\n", layer, c->tree_layers[layer].layer_n_height_class);
+
+		/* check */
+		CHECK_CONDITION(c->tree_layers[layer].layer_n_height_class, <, ZERO);
+	}
+	logger(g_debug_log, "**************************************\n\n");
+
+	/*************************************************************************************/
+
+	/** compute numbers of trees within each layer **/
+
+
+
+	logger(g_debug_log, "*compute numbers of trees within each layer*\n\n");
+
+	for ( layer = c->tree_layers_count - 1; layer >= 0; --layer )
+	{
+		for ( height = 0; height < c->heights_count ; ++height )
+		{
+			//printf("in annual structure compute numbers of trees within each layer  c->heights[height] %g,\n",c->heights[height].value);
+			if( layer == c->heights[height].height_z )
+			{
+				for ( dbh = 0; dbh < c->heights[height].dbhs_count; ++dbh )
+				{
+
+
+					for ( age = 0; age < c->heights[height].dbhs[dbh].ages_count ; ++age )
+					{
+
+						for ( species = 0; species < c->heights[height].dbhs[dbh].ages[age].species_count; ++species )
+						{
+							//if( layer == c->heights[height].height_z ) //ddalmo: there is already this condition
+							//{
+								s = &c->heights[height].dbhs[dbh].ages[age].species[species];
+
+                                 //printf("in annual structure compute numbers of trees within each layer  s->counter[N_TREE] %d,\n",s->counter[N_TREE]);
+								c->tree_layers[layer].layer_n_trees += s->counter[N_TREE];
+							//}
+						}
+					}
+				}
+			}
+		}
+		logger(g_debug_log, "-layer %d number of trees = %d\n", layer, c->tree_layers[layer].layer_n_trees);
+	}
+	logger(g_debug_log, "**************************************\n\n");
+
+	/*************************************************************************************/
+
+	/** compute density within each layer **/
+
+	logger(g_debug_log, "*compute density within each layer*\n\n");
+
+	for (layer = c->tree_layers_count - 1; layer >= 0; layer --)
+	{
+		c->tree_layers[layer].layer_density = c->tree_layers[layer].layer_n_trees / g_settings->sizeCell;
+
+		logger(g_debug_log, "-layer %d density = %f layer\n", layer, c->tree_layers[layer].layer_density);
+	}
+	logger(g_debug_log, "**************************************\n\n");
+
+	/*************************************************************************************/
+	/*************************************************************************************/
+
+	/** compute layer canopy cover within each layer (layer level) **/
+
+	logger(g_debug_log, "*compute layer canopy cover within each layer (layer level)*\n\n");
+
+        // note; this variable is however not used. Yet it should be considered in the canopy radiative subroutine (e.g. competition when overlapping classes)
+
+	for (layer = c->tree_layers_count - 1; layer >= 0; --layer)
+	{
+		for ( height = 0; height < c->heights_count ; ++height )
+		{
+			if( layer == c->heights[height].height_z )
+			{
+				for ( dbh = 0; dbh < c->heights[height].dbhs_count; ++dbh )
+				{
+					for ( age = 0; age < c->heights[height].dbhs[dbh].ages_count ; ++age )
+					{
+						for ( species = 0; species < c->heights[height].dbhs[dbh].ages[age].species_count; ++species )
+						{
+							s = &c->heights[height].dbhs[dbh].ages[age].species[species];
+
+							c->tree_layers[layer].layer_cover_proj += s->value[CANOPY_COVER_PROJ];
+							logger(g_debug_log, "layer %d cover_proj         = %f\n", layer, c->tree_layers[layer].layer_cover_proj);
+
+						}
+					}
+				}
+			}
+		}
+	}
+	logger(g_debug_log, "**************************************\n");
+
+	/*************************************************************************************/
+
+	/*************************************************************************************/
+    int eta_temp ;
+
+	/** compute total number of trees **/ 
+	// and daily canopy cover projection (which is equal to canopy_cover_projection)
+
+	logger(g_debug_log, "*compute total number of trees*\n\n");
+
+	c->n_trees = 0;
+
+	for ( height = 0; height < c->heights_count ; ++height )
+	{
+		for ( dbh = 0; dbh < c->heights[height].dbhs_count; ++dbh )
+		{
+			for ( age = 0; age < c->heights[height].dbhs[dbh].ages_count ; ++age )
+			{
+				for ( species = 0; species < c->heights[height].dbhs[dbh].ages[age].species_count; ++species )
+				{
+					s = &c->heights[height].dbhs[dbh].ages[age].species[species];
+					eta_temp = c->heights[height].dbhs[dbh].ages[age].value;
+
+					//printf("eta_temp  %d\n", eta_temp);
+					
+					//s = &m->cells[cell].heights[height].dbhs[dbh].ages[age].species[species];
+          
+		           s = &c->heights[height].dbhs[dbh].ages[age].species[species];
+				   a = &c->heights[height].dbhs[dbh].ages[age]; 
+
+					canopy_cover    ( c, height, dbh, age, species );
+                    //printf("  XXXX s->value[SLA_AVG1]   = %g\n", s->value[SLA_AVG1]  );
+					// printf("  XXXX s->value[SLA_AVG0]   = %g\n", s->value[SLA_AVG0]  );
+					//printf("CANOPY_COVER_PROJ = %f\n", s->value[CANOPY_COVER_PROJ]);
+
+           
+                    daily_lai       ( c, a,  s );
+					s->value[DAILY_CANOPY_COVER_PROJ] = s->value[CANOPY_COVER_PROJ];
+
+					c->n_trees += s->counter[N_TREE];
+				}
+			}
+		}
+	}
+
+	//printf(" IN DAILY STRUCTURE BECAUSE OF GREFF MORTALITY N TOT TREES %d \n", c->n_trees);
+
+	logger(g_debug_log, "**************************************\n");
+	logger(g_debug_log, "**************************************\n");
+	/*************************************************************************************/
+
+	/** compute overall cell cover (cell level) **/
+
+	logger(g_debug_log, "*daily overall cell cover (cell level))*\n");
+
+	for ( layer = c->tree_layers_count - 1; layer >= 0; --layer )
+	{
+		/* note: overall cell cover can't exceed its area */
+		c->cell_cover_proj += c->tree_layers[layer].layer_cover_proj;
+
+		if ( c->cell_cover_proj > 1 + eps )
+		{
+			c->cell_cover_proj = 1;
+		}
+	}
+
+	/*************************************************************************************/
+
+	/** compute overall bare soil cover **/
+
+	c->bare_soil_cover = 1. - c->cell_cover_proj;
+
+	logger(g_debug_log, "-Number of trees cell level    = %d trees/cell\n", c->n_trees);
+	logger(g_debug_log, "-Canopy cover at cell level    = %f %%\n", c->cell_cover_proj * 100.);
+	logger(g_debug_log, "-Bare soil cover at cell level = %f %%\n", c->bare_soil_cover * 100.);
+	logger(g_debug_log, "**************************************\n");
+	logger(g_debug_log, "**************************************\n");
+
+    
+	c->GREFFMORT_HAPPENS =0;
+
+	return 1;
+
+   
+
+
+
+
+}
+
+
 
 	/*******************************COMPUTE VERTICAL COMPETITION*******************************/
 #if TEST //test layer level
