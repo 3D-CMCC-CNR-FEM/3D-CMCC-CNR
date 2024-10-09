@@ -60,6 +60,9 @@ void canopy_sw_band_abs_trans_refl_radiation(cell_t *const c, const int height, 
 	/** available par **/
 	s->value[PAR]             = meteo_daily->par  * s->value[DAILY_CANOPY_COVER_PROJ];
 
+   //printf("in canopy radiation  s->value[PAR]              = %g  \n", s->value[PAR]) ;
+     // printf("in canopy radiation  s->value[DAILY_CANOPY_COVER_PROJ]            = %g  \n", s->value[DAILY_CANOPY_COVER_PROJ]) ;
+
 	/** sun leaves **/
 	s->value[PAR_REFL_SUN]     = s->value[PAR]     * Light_refl_par_frac_sun;
 	s->value[PAR_SUN]          = s->value[PAR]     - s->value[PAR_REFL_SUN];
@@ -311,6 +314,8 @@ void canopy_radiation_sw_band(cell_t *const c, const int layer, const int height
 	/* first height class in the cell is processed */
 	if( ! l->layer_height_class_counter && ! c->cell_height_class_counter )
 	{
+
+	//	 printf(" ************************ first height class in the cell is processed  \n");
 		/* reset temporary values when the first height class in layer is processed */
 		c->temp_apar         = 0.;
 		c->temp_par_refl     = 0.;
@@ -337,10 +342,15 @@ void canopy_radiation_sw_band(cell_t *const c, const int layer, const int height
 	/* update temporary absorbed and reflected PAR for lower layer */
 	c->temp_apar       += s->value[APAR];
 	c->apar            += s->value[APAR];
+	//	 printf(" s->value[APAR]             = %g \n ", s->value[APAR]);
+	// printf(" c->apar            = %g \n ",c->apar);
+
 	logger(g_debug_log,"cum apar = %f\n", c->apar);
 
 	c->temp_par_refl   += s->value[PAR_REFL];
 	c->par_refl        += s->value[PAR_REFL];
+	// printf(" s->value[PAR_REFL]             = %g \n ", s->value[PAR_REFL]);
+	// printf(" c->par_refl            = %g \n ",c->par_refl );
 	logger(g_debug_log,"cum par_refl = %f\n", c->par_refl);
 
 	/* update temporary absorbed and transmitted Short Wave radiation lower layer */
@@ -363,16 +373,25 @@ void canopy_radiation_sw_band(cell_t *const c, const int layer, const int height
 
 	/*****************************************************************************************************************/
 	/* when it matches the last height class in the layer is processed */
+
+	// printf("  l->layer_n_height_class           = %d \n ", l->layer_n_height_class);
+	//  printf(" l->layer_height_class_counter        = %d \n ",l->layer_height_class_counter );
+ //printf(" c->cell_height_class_counter       = %d \n ",c->cell_height_class_counter );
+
 	if ( l->layer_n_height_class == l->layer_height_class_counter )
 	{
 		logger(g_debug_log,"\n************************************\n");
 		logger(g_debug_log,"last height class in layer processed\n");
 		logger(g_debug_log,"update radiation values for lower layer\n");
 
+
+   // printf(" ********last height class in layer processed ************    \n " );
+
 		/* compute values for lower layer when last height class in layer is processed */
 		/* compute par for lower layer */
 		meteo_daily->par           -= (c->temp_apar + c->temp_par_refl);
 
+        //printf(" SONO ULTIMO ALTEZZA NEL LAYER \n") ;
 		/* compute Short Wave radiation for lower layesr */
 		meteo_daily->sw_downward_W -= (c->temp_sw_rad_abs + c->temp_sw_rad_refl);
 
@@ -396,6 +415,7 @@ void canopy_radiation_sw_band(cell_t *const c, const int layer, const int height
 		l->layer_height_class_counter = 0;
 	}
 
+    
 	/*************************************************************************/
 	/* when it matches the last height class in the cell is processed */
 	//fixme sometimes it doesn't go in caused by the a jump in "cell_height_class_counter"
