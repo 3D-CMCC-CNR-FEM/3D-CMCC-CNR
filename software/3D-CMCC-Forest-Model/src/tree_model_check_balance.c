@@ -207,6 +207,8 @@ int check_tree_class_carbon_mass_balance ( cell_t *const c, const int layer, con
 	/* check for carbon mass balance closure */
 	if ( ( fabs( s->value[TREEC_BALANCE] ) > eps ) && s->counter[DOS] > 1 && c->doy != 1 )
 	{
+
+		error_log(" ddalmo species %s!!!\n", s->name);
 		error_log("\nCLASS LEVEL CARBON MASS BALANCE\n");
 		error_log("DOY                  = %d\n",             c->doy);
 		error_log("TREE DOS             = %d\n",             s->counter[DOS]);
@@ -234,6 +236,7 @@ int check_tree_class_carbon_mass_balance ( cell_t *const c, const int layer, con
 		error_log("FRUIT_C              = %g tC/cell/day\n", s->value[FRUIT_C]);
 		error_log("\nbalance            = %g tC/cell\n",     s->value[TREEC_BALANCE]);
 		error_log("...FATAL ERROR in 'Tree_model_daily' carbon mass balance (exit)\n");
+
 		CHECK_CONDITION(fabs( s->value[TREEC_BALANCE] ), > , eps);
 
 		return 0;
