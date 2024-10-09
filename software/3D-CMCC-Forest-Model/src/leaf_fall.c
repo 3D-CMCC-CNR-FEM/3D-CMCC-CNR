@@ -35,6 +35,8 @@ void leaffall_deciduous ( cell_t *const c, const int height, const int dbh, cons
 		/* assign Maximum LAI values at the beginning of the sigmoid shape */
 		s->value[MAX_LAI_LEAFFALL_PROJ] = s->value[LAI_PROJ];
 
+		 printf("in LEAF_FALL AT THE BEGINNING   **** MAX_LAI_LEAFFALL_PROJ  %g,\n", s->value[LAI_PROJ]);
+
 		/* assign senescence doy */
 		s->counter[SENESCENCE_DAY_ONE] = c->doy;
 	}
@@ -49,7 +51,13 @@ void leaffall_deciduous ( cell_t *const c, const int height, const int dbh, cons
 		currentLai  = MAX(0,s->value[MAX_LAI_LEAFFALL_PROJ] / (1 + exp(-(s->counter[DAYS_LEAFFALL] / 2. + s->counter[SENESCENCE_DAY_ONE] - c->doy)
 				/(s->counter[DAYS_LEAFFALL] / (log(9. * s->counter[DAYS_LEAFFALL] / 2. + s->counter[SENESCENCE_DAY_ONE]) -
 						log(.11111111111))))));
+  
+     printf("in LEAF FALLLLLL  s->value[MAX_LAI_LEAFFALL_PROJ] %g,\n",s->value[MAX_LAI_LEAFFALL_PROJ]);
+      printf("in LEAF FALLLLLL  s->counter[DAYS_LEAFFALL] %d,\n",s->counter[DAYS_LEAFFALL]);
+     printf("in LEAF FALLLLLL  s->counter[SENESCENCE_DAY_ONE]%d,\n",s->counter[SENESCENCE_DAY_ONE]);
+     printf("in LEAF FALLLLLL  c->doy %d,\n",c->doy);
 
+     printf("in LEAF FALLLLLL  currentLai  %g,\n",currentLai );
 		/* check */
  
                 // force current LAI to 0 if the leaf C has been forced to 0 (leafC < 1 mg C m-2) (and hence previous LAI)
@@ -100,8 +108,7 @@ void leaffall_deciduous ( cell_t *const c, const int height, const int dbh, cons
 		s->value[FRUIT_FALL_N]   = s->value[FRUIT_N];
   
 	}
-
-	
+   
 	/*************************************************************************************************************/
 
 	/* reconcile leaf and fine root */
@@ -153,6 +160,8 @@ void leaffall_evergreen ( cell_t *const c, const int height, const int dbh, cons
 
         
 		// check if there are inconsistency such as removing more than available fruit C
+		// this hold for evergreen alone, as we are using a daily constant value of fruit to remove
+		// based on the amount of fruit of the first day of the year
 		s->value[FRUIT_FALL_C]   = MIN(s->value[FRUIT_C],fruit_C_aux);
 		s->value[FRUIT_FALL_N]   = fruit_N_aux;  // TODO check this.
 		//s->value[FRUIT_N_TO_REMOVE]   = MAX( s->value[FRUIT_N],fruit_N_aux);
@@ -172,18 +181,12 @@ void leaffall (species_t *const s)
 	s->value[LEAF_C_TO_REMOVE]  += s->value[LEAF_FALL_C]   ;
 	s->value[FROOT_C_TO_REMOVE] += s->value[FROOT_FALL_C]  ;
 	s->value[FRUIT_C_TO_REMOVE] += s->value[FRUIT_FALL_C]  ;
-
-	printf("ddalmo in leaffall species %s!!!\n", s->name);
-
-    printf("ddalmo in leaffall C_s->value[FRUIT_C_TO_REMOVE]     = %0.10f tC/cell/day\n", s->value[FRUIT_C_TO_REMOVE]);
-		
-    printf("ddalmo in leaffall s->value[FRUIT_FALL_C]    = %0.10f tC/cell/day\n",s->value[FRUIT_FALL_C]);
-	
-   printf("ddalmo in leaffall s->value[FRUIT_C]    = %0.10f tC/cell/day\n",s->value[FRUIT_C]);
 	
 	s->value[LEAF_N_TO_REMOVE]  += s->value[LEAF_FALL_N]   ;
 	s->value[FROOT_N_TO_REMOVE] += s->value[FROOT_FALL_N]  ;
 	s->value[FRUIT_N_TO_REMOVE] += s->value[FRUIT_FALL_N]  ;
+
+
 
     /*** carbon leaf_fall ***/
 	/* compute fluxes of carbon leaf and fine root pool to reserve and litter */
@@ -195,6 +198,16 @@ void leaffall (species_t *const s)
 	s->value[C_FRUIT_TO_CWD]      += s->value[FRUIT_FALL_C];
 	s->value[C_TO_CWD]            += s->value[FRUIT_FALL_C];
 
+#if 0
+     printf(" ddalmo species %s!!!\n", s->name); 
+	printf("IN LEAF FALL TO REMOVE s->value[LEAF_FALL_C]            = %g tC/cell/day\n",s->value[LEAF_FALL_C]);
+    printf("s->value[FROOT_FALL_C]              = %g tC/cell/day\n", s->value[FROOT_FALL_C] );
+	printf("s->value[FRUIT_FALL_C]            = %g tC/cell/day\n", s->value[FRUIT_FALL_C]);
+	printf("s->value[C_LEAF_TO_RESERVE]           = %g tC/cell/day\n", s->value[C_LEAF_TO_RESERVE]  );
+	printf("s->value[C_LEAF_TO_LITR]          = %g tC/cell/day\n", s->value[C_LEAF_TO_LITR] );
+	printf("s->value[C_FROOT_TO_RESERVE]            = %g tC/cell/day\n", s->value[C_FROOT_TO_RESERVE]);
+    printf("s->value[C_FRUIT_TO_CWD]            = %g tC/cell/day\n", s->value[C_FRUIT_TO_CWD] );
+#endif
 	s->value[C_TO_RESERVE]        += ((s->value[LEAF_FALL_C]   * C_FRAC_TO_RETRANSL) + (s->value[FROOT_FALL_C]  * C_FRAC_TO_RETRANSL));
 	logger(g_debug_log, "C_TO_RESERVE       = %f\n", s->value[C_TO_RESERVE]);
 
