@@ -221,6 +221,7 @@ int growth_efficiency_mortality ( cell_t *const c, const int height, const int d
 	species_t* s;
 
 	nat_man = 0;
+   
 
 	s = &c->heights[height].dbhs[dbh].ages[age].species[species];
 
