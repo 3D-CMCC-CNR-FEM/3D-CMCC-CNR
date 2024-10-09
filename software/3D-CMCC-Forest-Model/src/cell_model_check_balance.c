@@ -64,7 +64,7 @@ int check_cell_radiation_flux_balance (cell_t *const c, const meteo_daily_t *con
 		error_log("par out          = %f molPAR/m2/day\n", out);
 		error_log("par store        = %f molPAR/m2/day\n", store);
 		error_log("par balance      = %f molPAR/m2/day\n", balance);
-		error_log("...FATAL ERROR IN PAR radiative balance (exit)\n");
+		error_log("...FATAL ERROR IN CELL LEVEL PAR radiative balance (exit)\n");
 		CHECK_CONDITION(fabs( balance ), > , eps);
 
 		return 0;
