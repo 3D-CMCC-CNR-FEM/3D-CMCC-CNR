@@ -4,7 +4,7 @@
 
 int alloc_struct(void** t, int* count, int* avail, unsigned int size);
 
-int daily_forest_structure ( cell_t *const c, const meteo_daily_t *const meteo_daily );
+int daily_forest_structure ( cell_t *const c, const meteo_daily_t *const meteo_daily , const int  );
 
 int monthly_forest_structure ( cell_t* const c );
 
