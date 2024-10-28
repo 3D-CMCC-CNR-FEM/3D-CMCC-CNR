@@ -180,13 +180,13 @@ int forest_management (cell_t *const c, const int day, const int month, const in
 						// if ( year )
 						if ( year && c->years[year].year <= year_dens_fin)
 						{
-
+                         
 							s->counter[THINNING_HAPPENS] = 1;
 
 							prescribed_thinning ( c, height, dbh, age, species, c->years[year].year );
 						}
 
-                                                // Management prescribed by external file: only with one class or combined with regeneration option
+                        // Management prescribed by external file: only with one class or combined with regeneration option
 
 						if ( g_management && g_management->thinning_years_count )
 						{
@@ -197,8 +197,8 @@ int forest_management (cell_t *const c, const int day, const int month, const in
 								if ( c->years[year].year == g_management->thinning_years[i] )
 								{
 									flag = 1;
-                                                                        //s->value[THINNING_INDEX]= i;
-                                                                        THINNING_INDEX= i;          // to set e.g. intensity of the thinning from external file
+                                    //s->value[THINNING_INDEX]= i;
+                                    THINNING_INDEX= i;          // to set e.g. intensity of the thinning from external file
 									break;
 								}
 							}
@@ -213,6 +213,7 @@ int forest_management (cell_t *const c, const int day, const int month, const in
 
 						s->counter[THINNING_HAPPENS] = 1;
 
+						  
 						thinning ( c, height, dbh, age, species, year ,THINNING_INDEX);
 
 						/* reset counter */
@@ -403,6 +404,7 @@ int forest_management (cell_t *const c, const int day, const int month, const in
 						 s->counter[THINNING_HAPPENS] = 1; // FIXME the removed trees as prescribed from stand_file.txt
 						// are then saved as HWP, to be consistent with the option MAN=VAR & REG=OFF
 						// however the observed density in the stand could be due to mortality and not thinning
+                        //printf(" SONO QUA MANAGEMENT.c s->counter[THINNING_HAPPENS]  **************************    = %d \n", s->counter[THINNING_HAPPENS]);
 
 						prescribed_thinning ( c, height, dbh, age, species, c->years[year].year );
 					  }
@@ -728,7 +730,7 @@ void prescribed_thinning (cell_t *const c, const int height, const int dbh, cons
 
 	assert(g_dataset);
 
-    //printf("** IN PRESCRIBED_THINNING **\n");
+    printf("** IN PRESCRIBED_THINNING **\n");
 
 	for ( row = 0; row < g_dataset->rows_count; ++row )
 	{
@@ -744,6 +746,9 @@ void prescribed_thinning (cell_t *const c, const int height, const int dbh, cons
 
 					/* compute number of tree to remove */
 					tree_remove = c->heights[height].dbhs[dbh].ages[age].species[species].counter[N_TREE] - g_dataset->rows[row].n;
+                     
+					//printf(" SONO QUA MANAGEMENT.c tree_remove]  = %d \n", tree_remove);
+                    //printf(" SONO QUA MANAGEMENT.c g_dataset->rows[row].n  = %d \n", g_dataset->rows[row].n);
 
 					/* added thinned trees */
 					c->heights[height].dbhs[dbh].ages[age].species[species].counter[THINNED_TREE] += tree_remove;
