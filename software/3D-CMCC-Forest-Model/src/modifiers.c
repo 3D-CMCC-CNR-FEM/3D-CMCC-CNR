@@ -480,7 +480,7 @@ void modifiers(cell_t *const c, const int layer, const int height, const int dbh
         //TODO add flag for N modifier
         // currently not used
 	
-#if 1	
+#if 1
 	
 	s->value[F_NUTR] = 1. ;  
 	
