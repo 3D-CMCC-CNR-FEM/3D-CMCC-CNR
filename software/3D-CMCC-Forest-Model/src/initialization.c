@@ -440,9 +440,11 @@ void initialization_forest_class_C (cell_t *const c, const int height, const int
  
 	/***** INITIALIZE LITTER POOL *****/
 
+    // values are then only used in the function 'initialization_forest_class_litter'
 
 	if ( ! c->init_litter_C || c->init_litter_C == NO_DATA )
 	{
+
 		/* compute leaf litter (assuming that at year zero litter is composed by the amount of peak lai of the previous year */
 		s->value[LEAF_LITRC]  = ( ( s->value[PEAK_LAI_PROJ] / s->value[SLA_AVG] ) / 1e3 * ( s->value[CANOPY_COVER_PROJ] * g_settings->sizeCell ) ) / GC_GDM;
 		s->value[FROOT_LITRC] = s->value[LEAF_LITRC] * ( 1. - s->value[FROOT_LEAF_FRAC] );
