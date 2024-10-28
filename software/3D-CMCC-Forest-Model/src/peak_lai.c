@@ -20,7 +20,7 @@ void peak_lai( age_t *const a, species_t *const s, const int day, const int mont
 
 	/* compute annual Peak Projected Lai (m2/m2) (tree level) */
 	s->value[PEAK_LAI_PROJ] = ( ( s->value[SAPWOOD_AREA] / 10000. ) * s->value[SAP_LEAF]) / s->value[CROWN_AREA_PROJ];
-
+   //   printf(" IN PEAK LAI 5 s->value[PEAK_LAI_PROJ] %f!!!\n",s->value[PEAK_LAI_PROJ]);
 	/* check if Peak Lai exceeds Maximum prescribed Peak Lai (this shouldn't happens) */
 	if (s->value[PEAK_LAI_PROJ] > MAX_PEAK_LAI_PROJ) s->value[PEAK_LAI_PROJ] = MAX_PEAK_LAI_PROJ;
 
