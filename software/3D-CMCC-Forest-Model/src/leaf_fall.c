@@ -198,6 +198,12 @@ void leaffall (species_t *const s)
 	s->value[C_FRUIT_TO_CWD]      += s->value[FRUIT_FALL_C];
 	s->value[C_TO_CWD]            += s->value[FRUIT_FALL_C];
 
+   // printf(" IN LEAF FALL s->value[C_TO_CWD]          = %g tC/cell/day\n", (s->value[C_TO_CWD] * 1e6 / g_settings->sizeCell));
+//printf("IN LEAF FALLs->value[C_LEAF_TO_LITR]         = %g tC/cell/day\n", (s->value[C_LEAF_TO_LITR] * 1e6 / g_settings->sizeCell));
+//printf("IN LEAF FALL s->value[C_FROOT_TO_LITR]         = %g tC/cell/day\n", (s->value[C_FROOT_TO_LITR] * 1e6 / g_settings->sizeCell));
+//printf("IN LEAF FALL s->value[C_FRUIT_TO_CWD]         = %g tC/cell/day\n", (s->value[C_FRUIT_TO_CWD] * 1e6 / g_settings->sizeCell));
+
+	
 #if 0
      printf(" ddalmo species %s!!!\n", s->name); 
 	printf("IN LEAF FALL TO REMOVE s->value[LEAF_FALL_C]            = %g tC/cell/day\n",s->value[LEAF_FALL_C]);
@@ -210,6 +216,9 @@ void leaffall (species_t *const s)
 #endif
 	s->value[C_TO_RESERVE]        += ((s->value[LEAF_FALL_C]   * C_FRAC_TO_RETRANSL) + (s->value[FROOT_FALL_C]  * C_FRAC_TO_RETRANSL));
 	logger(g_debug_log, "C_TO_RESERVE       = %f\n", s->value[C_TO_RESERVE]);
+    
+	//printf(" IN LEAF FALL s->value[C_TO_RESERVE]           = %g tC/cell/day\n", (s->value[C_TO_RESERVE] * 1e6 / g_settings->sizeCell));
+
 
 	/*** nitrogen leaf_fall ***/
 	/* compute fluxes of nitrogen leaf and fine root pool */
@@ -234,7 +243,7 @@ void leaffall (species_t *const s)
 	if ( s->value[LEAF_C] < s->value[LEAF_C_TO_REMOVE] )
 	{
 		s->value[LEAF_C_TO_REMOVE]        = s->value[LEAF_C];
-		printf("Warning: s->value[LEAF_C] < s->value[LEAF_C_TO_REMOVE] \n"); 
+		//printf("IN LEAF FALL Warning: s->value[LEAF_C] < s->value[LEAF_C_TO_REMOVE] \n"); 
 		
 	}
 	if ( s->value[FROOT_C] < s->value[FROOT_C_TO_REMOVE] )
