@@ -31,6 +31,8 @@ void litter_carbon_balance ( cell_t *const c, const int year )
 
 	c->cwd_4C             -= c->daily_cwd_to_litr4C;
 
+   //  printf("c->daily_cwd_to_litrC            = %g tC/cell/day\n", c->daily_cwd_to_litr2C + c->daily_cwd_to_litr3C +c->daily_cwd_to_litr4C );
+
 	/*********************************************************************************************************/
 
 	/* update carbon fluxes balance of labile litter pool */
@@ -85,6 +87,18 @@ void litter_carbon_balance ( cell_t *const c, const int year )
 	c->daily_to_soil2C          = c->daily_litr2C_to_soil2C;
 	c->daily_to_soil3C          = c->daily_litr4C_to_soil3C;
 	c->daily_to_soil4C          = 0.;
+#if 0
+printf("c->daily_leaf_to_litr1C            = %g tC/cell/day\n", c->daily_leaf_to_litr1C );
+printf("c->daily_to_litr2C            = %g tC/cell/day\n", c->daily_to_litr2C );
+printf("c->daily_to_litr3C            = %g tC/cell/day\n", c->daily_to_litr3C );
+printf("c->daily_to_litr4C            = %g tC/cell/day\n", c->daily_to_litr4C );
 
+printf("c->daily_to_litr1C            = %g tC/cell/day\n", c->daily_to_litr1C );
+printf("c->daily_to_litr2C            = %g tC/cell/day\n", c->daily_to_litr2C );
+printf("c->daily_to_litr3C            = %g tC/cell/day\n", c->daily_to_litr3C );
+printf("c->daily_to_litr4C            = %g tC/cell/day\n", c->daily_to_litr4C );
+	 printf("c->daily_to_litrC            = %g tC/cell/day\n", c->daily_to_litrC );
+
+#endif 
 }
 
