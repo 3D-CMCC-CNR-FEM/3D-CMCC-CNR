@@ -19,7 +19,7 @@ extern logger_t* g_debug_log;
 
 #define TEST 0
 
-void canopy_sw_band_abs_trans_refl_radiation(cell_t *const c, const int height, const int dbh, const int age, const int species, const meteo_daily_t *const meteo_daily,
+void canopy_sw_band_abs_trans_refl_radiation(cell_t *const c, const int layer,const int height, const int dbh, const int age, const int species, const meteo_daily_t *const meteo_daily,
 		double Light_abs_frac, double Light_abs_frac_sun, double Light_abs_frac_shade, double Light_refl_par_frac, double Light_refl_par_frac_sun, double Light_refl_par_frac_shade,
 		double Light_refl_sw_frac, double Light_refl_sw_frac_sun, double Light_refl_sw_frac_shade)
 {
@@ -49,6 +49,25 @@ void canopy_sw_band_abs_trans_refl_radiation(cell_t *const c, const int height, 
 	 */
 
 	/***********************************************************************************************/
+    double scal_cover = 1. ;
+double temp_scale = 1. ;
+	// when multispecies in the same layer overlapp, they might give a higher absorpion than what is entering
+    // this might happen when some species are particular shade tollerant
+    //printf("ddalmo c->tree_layers[layer].daily_layer_cover_proj   = %f \n",c->tree_layers[layer].daily_layer_cover_proj );
+	//printf("ddalmo s->value[DAILY_CANOPY_COVER_PROJ]  = %f \n",s->value[DAILY_CANOPY_COVER_PROJ]);
+
+   if (c->tree_layers[layer].daily_layer_cover_proj > 1.)
+
+   {
+	scal_cover = 1/c->tree_layers[layer].daily_layer_cover_proj  ;
+   }   else  {
+
+   scal_cover = 1. ;
+   }
+   //printf(" IN CANOPY RAD  layer  %d!!!\n", layer );
+   //printf(" IN CANOPY RAD SCALE COVER %f!!!\n", scal_cover );
+   //printf(" IN CANOPY RAD c->tree_layers[layer].daily_layer_cover_proj  %f!!!\n", c->tree_layers[layer].daily_layer_cover_proj  );
+ //printf(" IN CANOPY RAD2 c->tree_layers[layer].daily_layer_cover_proj  %f !!!\n", c->tree_layers[layer].layer_cover_proj );
 
 	/* light reflection, absorption and transmission */
 	logger(g_debug_log,"\n*Light reflection, absorption and transmission*\n");
@@ -58,10 +77,14 @@ void canopy_sw_band_abs_trans_refl_radiation(cell_t *const c, const int height, 
 	logger(g_debug_log,"\n-PAR-\n");
 
 	/** available par **/
-	s->value[PAR]             = meteo_daily->par  * s->value[DAILY_CANOPY_COVER_PROJ];
+	s->value[PAR]             = meteo_daily->par  * s->value[DAILY_CANOPY_COVER_PROJ]*scal_cover;
+    temp_scale=s->value[DAILY_CANOPY_COVER_PROJ]*scal_cover;
 
+   //printf("in canopy radiation  meteo_daily->par              = %g  \n", meteo_daily->par) ;
    //printf("in canopy radiation  s->value[PAR]              = %g  \n", s->value[PAR]) ;
      // printf("in canopy radiation  s->value[DAILY_CANOPY_COVER_PROJ]            = %g  \n", s->value[DAILY_CANOPY_COVER_PROJ]) ;
+//printf("in canopy radiation TEMP SCALE          = %g  \n", temp_scale ) ;
+
 
 	/** sun leaves **/
 	s->value[PAR_REFL_SUN]     = s->value[PAR]     * Light_refl_par_frac_sun;
@@ -89,6 +112,12 @@ void canopy_sw_band_abs_trans_refl_radiation(cell_t *const c, const int height, 
 	s->value[PAR_REFL]         = s->value[PAR_REFL_SUN] + s->value[PAR_REFL_SHADE];
 	s->value[TRANSM_PAR]       = s->value[TRANSM_PAR_SHADE];
 
+    //printf("in canopy radiation  s->value[APAR]  = %g  \n", s->value[APAR] ) ;
+
+//printf("in canopy radiation s->value[PAR_REFL]  = %g  \n", s->value[PAR_REFL]) ;
+
+//printf("in canopy radiation s->value[TRANSM_PAR]  = %g  \n", s->value[TRANSM_PAR] ) ;
+
 	logger(g_debug_log,"APAR = %f par/m2\n", s->value[APAR]);
 
 	/* compute fAPAR */
@@ -115,7 +144,7 @@ void canopy_sw_band_abs_trans_refl_radiation(cell_t *const c, const int height, 
 	logger(g_debug_log,"\n-Short Wave-\n");
 
 	/** available Short Wave **/
-	s->value[SW_RAD]              = meteo_daily->sw_downward_W * s->value[DAILY_CANOPY_COVER_PROJ];
+	s->value[SW_RAD]              = meteo_daily->sw_downward_W * s->value[DAILY_CANOPY_COVER_PROJ]*scal_cover;
 
 	/** sun leaves **/
 	s->value[SW_RAD_REFL_SUN]     = s->value[SW_RAD]     * Light_refl_sw_frac_sun;
@@ -144,6 +173,14 @@ void canopy_sw_band_abs_trans_refl_radiation(cell_t *const c, const int height, 
 
 	logger(g_debug_log,"SW_RAD_ABS = %f W/m2\n", s->value[SW_RAD_ABS]);
 
+//    printf("SW_RAD_ABS  species %s!!!\n", s->name);
+//	printf("ddalmo SW_RAD  = %f W/m2\n", s->value[SW_RAD]);
+//	printf("ddalmo meteo_daily->sw_downward_W  = %f W/m2\n", meteo_daily->sw_downward_W);
+//	printf("ddalmo DAILY_CANOPY_COVER_PROJ  = %f \n", s->value[DAILY_CANOPY_COVER_PROJ]);
+//	printf("ddalmo SW_RAD_ABS  = %f W/m2\n", s->value[SW_RAD_ABS]);
+//	printf("ddalmo s->value[SW_RAD_TRANSM]   = %f W/m2\n", s->value[SW_RAD_TRANSM] );
+//	printf("ddalmo s->value[SW_RAD_REFL]   = %f W/m2\n", s->value[SW_RAD_REFL] );
+
 	/* check */
 	CHECK_CONDITION(s->value[SW_RAD_ABS],    <, ZERO );
 	CHECK_CONDITION(s->value[SW_RAD_TRANSM], <, ZERO);
@@ -163,7 +200,7 @@ void canopy_sw_band_abs_trans_refl_radiation(cell_t *const c, const int height, 
 	logger(g_debug_log,"\n-Net Radiation-\n");
 
 	/** available Net Radiation **/
-	s->value[NET_RAD]              = meteo_daily->Net_rad_threePG * s->value[DAILY_CANOPY_COVER_PROJ];
+	s->value[NET_RAD]              = meteo_daily->Net_rad_threePG * s->value[DAILY_CANOPY_COVER_PROJ]*scal_cover;
 
         // to avoid negative Transpiration values (e.g. at night transpiration is assumed 0)
         // yet, net radiation can be negative and lead to e.g. dew formation)
@@ -333,7 +370,7 @@ void canopy_radiation_sw_band(cell_t *const c, const int layer, const int height
 
 	/*************************************************************************/
 	/* compute reflected, absorbed and transmitted Par, Short Wave radiation and PPFD class level */
-	canopy_sw_band_abs_trans_refl_radiation (c, height, dbh, age, species, meteo_daily, Light_abs_frac, Light_abs_frac_sun, Light_abs_frac_shade,
+	canopy_sw_band_abs_trans_refl_radiation (c, layer, height, dbh, age, species, meteo_daily, Light_abs_frac, Light_abs_frac_sun, Light_abs_frac_shade,
 			Light_refl_par_frac, Light_refl_par_frac_sun, Light_refl_par_frac_shade, Light_refl_sw_frac, Light_refl_sw_frac_sun, Light_refl_sw_frac_shade);
 
 	/*************************************************************************/
@@ -362,6 +399,9 @@ void canopy_radiation_sw_band(cell_t *const c, const int layer, const int height
 	c->sw_rad_refl      += s->value[SW_RAD_REFL];
 	logger(g_debug_log,"cum sw_rad_refl = %f\n", c->sw_rad_refl);
 
+	//	printf("ddalmo c->temp_sw_rad_abs  = %f W/m2\n", c->temp_sw_rad_abs);
+	//		printf("ddalmo c->sw_rad_refl   = %f W/m2\n",c->sw_rad_refl );
+
 	/* update temporary absorbed and transmitted net radiation lower layer */
 	c->temp_net_rad_abs += s->value[NET_RAD_ABS];
 	c->net_rad_abs      += s->value[NET_RAD_ABS];
@@ -389,7 +429,13 @@ void canopy_radiation_sw_band(cell_t *const c, const int layer, const int height
 
 		/* compute values for lower layer when last height class in layer is processed */
 		/* compute par for lower layer */
+	//	printf(" BEFORE END LAYER PAR TO THE LOWER LAYER meteo_daily->par  = %f \n", meteo_daily->par );
+
 		meteo_daily->par           -= (c->temp_apar + c->temp_par_refl);
+
+	//	printf(" END LAYER PAR TO THE LOWER LAYER meteo_daily->par  = %f \n", meteo_daily->par );
+      //  printf(" END LAYER PAR TO THE LOWER LAYER c->temp_apar  = %f \n", c->temp_apar );
+      //  printf(" END LAYER PAR TO THE LOWER LAYER c->temp_par_refl = %f \n", c->temp_par_refl);
 
         //printf(" SONO ULTIMO ALTEZZA NEL LAYER \n") ;
 		/* compute Short Wave radiation for lower layesr */
