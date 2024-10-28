@@ -67,7 +67,8 @@ int annual_forest_structure(cell_t* const c, const int year)
 	int zeta_count = 0;
         int row;
         int year_dens_fin = 0;  // only used if MANAGEMENT == VAR or VAR1
-
+ 
+    int tree_remove_st = 0 ;   // tree to remove because of self thinning 
          //ddalmo
        assert(g_dataset);
 
@@ -355,7 +356,8 @@ int annual_forest_structure(cell_t* const c, const int year)
 		}
 	}
 	logger(g_debug_log, "**************************************\n\n");
-
+	
+	//printf("SONO ANNUAL STRUCTURE DOPO DBHDC FUNCTION ----------------------\n");
 	/*************************************************************************************/
 
 	/** Compute Crown and Canopy allometry **/
@@ -397,6 +399,8 @@ int annual_forest_structure(cell_t* const c, const int year)
 	{
 		for ( height = 0; height < c->heights_count ; ++height )
 		{
+		//	printf(" annual LOOP height %d!!!\n",height); 
+		//	printf(" annual LOOP c->heights[height] %f!!!\n",c->heights[height].value);
 			if( layer == c->heights[height].height_z )
 			{
 				for ( dbh = 0; dbh < c->heights[height].dbhs_count; ++dbh )
@@ -426,6 +430,10 @@ int annual_forest_structure(cell_t* const c, const int year)
 	logger(g_debug_log, "*check if layer cover exceeds maximum layer cover*\n\n");  // ddalmo: where it is checked?
                                                                                         // the DBHDC_eff is already computed fixing the maximum layer cover of the SPECIES!!
 
+//printf(" annual structure   c->tree_layers_count %d!!!\n", c->tree_layers_count);
+//printf(" annual structure  c->heights_count %d!!!\n",c->heights_count);
+//printf(" annual structure c->heights[height] %d!!!\n",c->heights[height]);
+
 	for (layer = c->tree_layers_count - 1; layer >= 0; --layer)
 	{
 
@@ -442,8 +450,11 @@ int annual_forest_structure(cell_t* const c, const int year)
 
 		for ( height = 0; height < c->heights_count ; ++height )
 		{
+		//	printf(" annual structure DDALMO c->heights[height] %f!!!\n",c->heights[height].value);
+            // parte da height = 0 che è il più basso all interno dello stand
 			if( layer == c->heights[height].height_z )
 			{
+				//	printf(" SONO QUA!! layer  !!! %d\n",layer);
 				for ( dbh = 0; dbh < c->heights[height].dbhs_count; ++dbh )
 				{
 					for ( age = 0; age < c->heights[height].dbhs[dbh].ages_count ; ++age )
@@ -464,9 +475,19 @@ int annual_forest_structure(cell_t* const c, const int year)
 
                                                         if ( c->years[year].year > year_dens_fin )
 							  {
+							//	printf(" annual structure self thin 3 species %s!!!\n", s->name);
+							//	printf(" annual structure self thin  3 s->value[DBHDC_EFF] %f!!!\n",s->value[DBHDC_EFF]);
+
 								if ( s->value[DBHDC_EFF] <= s->value[DBHDCMIN] )   //ddalmo may23: test include if layer_cc_proj > max_layer_cc_proj
 								{
-									self_thinning_mortality ( c, layer, year );
+							//		printf(" annual structure self thin  LAYER %d!!!\n",layer); 
+							//	printf(" ENTRO IN SELF THINNING MORTALITY !!!\n");
+
+								// i transfer as well the number of trees to be remove 
+                                    tree_remove_st = s->value[tree_remove_crowded] ; 
+							//		 printf(" ENTRO IN SELF THINNING tree_remove_st %d!!!\n", tree_remove_st);
+									self_thinning_mortality_new( c, layer, year , tree_remove_st);
+									//self_thinning_mortality ( c, layer, year );
 
 								}
 							  }
@@ -495,6 +516,11 @@ int annual_forest_structure(cell_t* const c, const int year)
 
 	/** compute total number of trees **/
 
+		//printf(" compute total number of trees !!!\n");
+		
+		
+
+
 	logger(g_debug_log, "*compute total number of trees*\n\n");
 
 	c->n_trees = 0;
@@ -514,7 +540,7 @@ int annual_forest_structure(cell_t* const c, const int year)
 			}
 		}
 	}
-
+//printf("  c->n_trees      = %d  \n",c->n_trees);
 	logger(g_debug_log,"n_trees = %d \n", c->n_trees);
 	logger(g_debug_log, "**************************************\n");
 	logger(g_debug_log, "**************************************\n");
@@ -624,7 +650,7 @@ int daily_forest_structure ( cell_t *const c, const meteo_daily_t *const meteo_d
 
     //	annual_forest_structure ( c, year );
 
-   
+   printf(" c->doy           = %d \n ", c->doy);
     
 	/***************************************************************************************************************/
 
@@ -699,7 +725,8 @@ int daily_forest_structure ( cell_t *const c, const meteo_daily_t *const meteo_d
 			}
 		}
 	}
-	 //printf(" in structure c->tree_layers_count             = %d \n ", c->tree_layers_count);
+	
+	//printf(" in structure c->tree_layers_count             = %d \n ", c->tree_layers_count);
 
 	logger(g_debug_log, "*zeta_count %d*\n\n", zeta_count);
 	logger(g_debug_log, "*c->t_layers_count %d*\n\n", c->tree_layers_count);
@@ -777,8 +804,8 @@ int daily_forest_structure ( cell_t *const c, const meteo_daily_t *const meteo_d
 							//if( layer == c->heights[height].height_z ) //ddalmo: there is already this condition
 							//{
 								s = &c->heights[height].dbhs[dbh].ages[age].species[species];
-
-                                 //printf("in annual structure compute numbers of trees within each layer  s->counter[N_TREE] %d,\n",s->counter[N_TREE]);
+                                // printf(" IN DAILY STRUCTURE  species %s!!!\n", s->name);
+                                //printf("in annual structure compute numbers of trees within each layer  s->counter[N_TREE] %d,\n",s->counter[N_TREE]);
 								c->tree_layers[layer].layer_n_trees += s->counter[N_TREE];
 							//}
 						}
@@ -799,21 +826,18 @@ int daily_forest_structure ( cell_t *const c, const meteo_daily_t *const meteo_d
 	for (layer = c->tree_layers_count - 1; layer >= 0; layer --)
 	{
 		c->tree_layers[layer].layer_density = c->tree_layers[layer].layer_n_trees / g_settings->sizeCell;
-
+       // printf("in annual structure compute numbers of trees within each layer c->tree_layers[layer].layer_density  %f,\n",c->tree_layers[layer].layer_density );
 		logger(g_debug_log, "-layer %d density = %f layer\n", layer, c->tree_layers[layer].layer_density);
 	}
 	logger(g_debug_log, "**************************************\n\n");
 
 	/*************************************************************************************/
 	/*************************************************************************************/
+    /** Compute Crown and Canopy allometry **/
+#if 0
+	logger(g_debug_log, "*Compute Crown and Canopy allometry*\n");
 
-	/** compute layer canopy cover within each layer (layer level) **/
-
-	logger(g_debug_log, "*compute layer canopy cover within each layer (layer level)*\n\n");
-
-        // note; this variable is however not used. Yet it should be considered in the canopy radiative subroutine (e.g. competition when overlapping classes)
-
-	for (layer = c->tree_layers_count - 1; layer >= 0; --layer)
+	for ( layer = c->tree_layers_count - 1; layer >= 0; --layer )
 	{
 		for ( height = 0; height < c->heights_count ; ++height )
 		{
@@ -825,10 +849,12 @@ int daily_forest_structure ( cell_t *const c, const meteo_daily_t *const meteo_d
 					{
 						for ( species = 0; species < c->heights[height].dbhs[dbh].ages[age].species_count; ++species )
 						{
+							crown_allometry ( c, height, dbh, age, species );
+							canopy_cover    ( c, height, dbh, age, species );
 							s = &c->heights[height].dbhs[dbh].ages[age].species[species];
+							printf(" IN DAILY STRUCTURE  species %s!!!\n", s->name);
+                            printf(" IN DAILY RAD s->value[CANOPY_COVER_PROJ] %f!!!\n",s->value[CANOPY_COVER_PROJ]);
 
-							c->tree_layers[layer].layer_cover_proj += s->value[CANOPY_COVER_PROJ];
-							logger(g_debug_log, "layer %d cover_proj         = %f\n", layer, c->tree_layers[layer].layer_cover_proj);
 
 						}
 					}
@@ -836,7 +862,9 @@ int daily_forest_structure ( cell_t *const c, const meteo_daily_t *const meteo_d
 			}
 		}
 	}
-	logger(g_debug_log, "**************************************\n");
+	logger(g_debug_log, "**************************************\n\n");
+
+#endif
 
 	/*************************************************************************************/
 
@@ -861,20 +889,26 @@ int daily_forest_structure ( cell_t *const c, const meteo_daily_t *const meteo_d
 					s = &c->heights[height].dbhs[dbh].ages[age].species[species];
 					eta_temp = c->heights[height].dbhs[dbh].ages[age].value;
 
-					//printf("eta_temp  %d\n", eta_temp);
+				//	printf("eta_temp  %d\n", eta_temp);
 					
 					//s = &m->cells[cell].heights[height].dbhs[dbh].ages[age].species[species];
           
 		           s = &c->heights[height].dbhs[dbh].ages[age].species[species];
 				   a = &c->heights[height].dbhs[dbh].ages[age]; 
-
+                    
 					canopy_cover    ( c, height, dbh, age, species );
                     //printf("  XXXX s->value[SLA_AVG1]   = %g\n", s->value[SLA_AVG1]  );
 					// printf("  XXXX s->value[SLA_AVG0]   = %g\n", s->value[SLA_AVG0]  );
 					//printf("CANOPY_COVER_PROJ = %f\n", s->value[CANOPY_COVER_PROJ]);
-
-           
+                  
+				    if (c->doy >1 )
+					{
+                    // NB i can call daily_lai only if it is not the first day of the year
+					// i call daily_lay only if class mortality occurr during the year, and not
+					// because of e.g. self thinning 
                     daily_lai       ( c, a,  s );
+					}  
+                    
 					s->value[DAILY_CANOPY_COVER_PROJ] = s->value[CANOPY_COVER_PROJ];
 
 					c->n_trees += s->counter[N_TREE];
@@ -882,6 +916,49 @@ int daily_forest_structure ( cell_t *const c, const meteo_daily_t *const meteo_d
 			}
 		}
 	}
+
+	/** compute layer canopy cover within each layer (layer level) **/
+
+	logger(g_debug_log, "*compute layer canopy cover within each layer (layer level)*\n\n");
+
+        // note; this variable is however not used. Yet it should be considered in the canopy radiative subroutine (e.g. competition when overlapping classes)
+
+	for (layer = c->tree_layers_count - 1; layer >= 0; --layer)
+	{
+		for ( height = 0; height < c->heights_count ; ++height )
+		{
+			if( layer == c->heights[height].height_z )
+			{
+				for ( dbh = 0; dbh < c->heights[height].dbhs_count; ++dbh )
+				{
+					for ( age = 0; age < c->heights[height].dbhs[dbh].ages_count ; ++age )
+					{
+						for ( species = 0; species < c->heights[height].dbhs[dbh].ages[age].species_count; ++species )
+						{
+							s = &c->heights[height].dbhs[dbh].ages[age].species[species];
+							//  printf(" IN DAILY RAD2 c->tree_layers[layer].daily_layer_cover_proj  %f !!!\n", c->tree_layers[layer].daily_layer_cover_proj  );
+
+                           // printf(" IN DAILY RAD2 s->value[CANOPY_COVER_PROJ] %f!!!\n",s->value[CANOPY_COVER_PROJ]);
+               //printf(" IN DAILY RAD2 layer  %d!!!\n", layer );
+
+							c->tree_layers[layer].layer_cover_proj += s->value[CANOPY_COVER_PROJ];
+							logger(g_debug_log, "layer %d cover_proj         = %f\n", layer, c->tree_layers[layer].layer_cover_proj);
+                 //           printf(" IN DAILY RAD3 c->tree_layers[layer].daily_layer_cover_proj  %f !!!\n", c->tree_layers[layer].layer_cover_proj );
+
+						}
+					}
+				}
+			}
+		}
+		
+	}
+	logger(g_debug_log, "**************************************\n");
+
+	  //printf(" IN DAILY RAD4 c->tree_layers[0].daily_layer_cover_proj  %f !!!\n", c->tree_layers[0].layer_cover_proj );
+
+	  //printf(" IN DAILY RAD4 c->tree_layers[1].daily_layer_cover_proj  %f !!!\n", c->tree_layers[1].layer_cover_proj );
+
+
 
 	//printf(" IN DAILY STRUCTURE BECAUSE OF GREFF MORTALITY N TOT TREES %d \n", c->n_trees);
 
@@ -919,7 +996,7 @@ int daily_forest_structure ( cell_t *const c, const meteo_daily_t *const meteo_d
     
 	c->GREFFMORT_HAPPENS =0;
 
-	return 1;
+	//return 1;
 
    
 
@@ -928,6 +1005,7 @@ int daily_forest_structure ( cell_t *const c, const meteo_daily_t *const meteo_d
 
 }
 
+//printf(" ******************** COMPUTE VERTICAL COMPETITION **********************************\n");
 
 
 	/*******************************COMPUTE VERTICAL COMPETITION*******************************/
@@ -1052,6 +1130,8 @@ int daily_forest_structure ( cell_t *const c, const meteo_daily_t *const meteo_d
 	logger(g_debug_log, "**************************************\n");
 
 	/******************************COMPUTE HORIZONTAL COMPETITION******************************/
+//printf(" ******************** COMPUTE HORIZONTAL COMPETITION **********************************\n");
+
 
 	/** overall cell level within each layer **/
 
@@ -1081,6 +1161,8 @@ int daily_forest_structure ( cell_t *const c, const meteo_daily_t *const meteo_d
 								/*******************************************************************************************/
 								/* compute daily canopy projected cover */
 								s->value[DAILY_CANOPY_COVER_PROJ] = s->value[CANOPY_COVER_PROJ];
+  //                                printf(" IN DAILY STRUCTURE COMPETITION s->value[CANOPY_COVER_PROJ]  %f !!!\n", s->value[CANOPY_COVER_PROJ] );
+
 
 								/* canopy cannot absorbs more than 100% of incoming flux (e.g. rain) */
 								if( s->value[DAILY_CANOPY_COVER_PROJ] > 1. ) s->value[DAILY_CANOPY_COVER_PROJ] = 1.;
@@ -1107,6 +1189,8 @@ int daily_forest_structure ( cell_t *const c, const meteo_daily_t *const meteo_d
 
 								/* sum all over canopy cover projected for each layer */
 								c->tree_layers[layer].daily_layer_cover_proj += s->value[DAILY_CANOPY_COVER_PROJ];
+    //                             printf(" IN DAILY STRUCTURE COMPETITION c->tree_layers[layer].daily_layer_cover_proj %f !!!\n", c->tree_layers[layer].daily_layer_cover_proj);
+
 
 								/* sum all over canopy cover exposed for each layer */
 								//c->tree_layers[layer].daily_layer_cover_exp  += s->value[DAILY_CANOPY_COVER_EXP];
