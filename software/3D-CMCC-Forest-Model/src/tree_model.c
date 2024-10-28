@@ -407,7 +407,7 @@ int Tree_model_daily (matrix_t *const m, const int cell, const int day, const in
 							/* note: when it happens the overall class is removed */
 
                             //printf("BEFORE mortaliy GEff  height              = %d  \n", height);
-							//	 printf("BEFORE mortaliy GEff  m->cells[cell].heights_count               = %d \n ", m->cells[cell].heights_count);
+							// printf("BEFORE mortaliy GEff  m->cells[cell].heights_count               = %d \n ", m->cells[cell].heights_count);
 								 
 
 							if ( ! growth_efficiency_mortality ( c, height, dbh, age, species ) )
@@ -501,6 +501,7 @@ int Tree_model_daily (matrix_t *const m, const int cell, const int day, const in
 									/* annual volume, MAI and CAI */
 									annual_tree_increment ( c, height, dbh, age, species, year );
 								}
+                               // printf("IN TREE MODEL c->daily_leaf_to_litrC           = %g tC/cell/day\n",c->daily_leaf_to_litrC );
 
 								/* litter fluxes and pools */
 								    littering             ( c, s );
@@ -534,22 +535,22 @@ int Tree_model_daily (matrix_t *const m, const int cell, const int day, const in
 								//FIXME here model should remove class just after have checked that the balances are closed
 								//so model has to include c fluxes that go out to litter and cwd
 
-                                // printf("in mortaliy GEff  height              = %d  \n", height);
-								// printf("in mortaliy GEff  m->cells[cell].heights_count               = %d \n ", m->cells[cell].heights_count);
+                                //printf("in mortaliy GEff  height              = %d  \n", height);
+								 //printf("in mortaliy GEff  m->cells[cell].heights_count               = %d \n ", m->cells[cell].heights_count);
 								//printf(" in mortaliy GEff c->tree_layers_count             = %d \n ", c->tree_layers_count);
 
                                  c->GREFFMORT_HAPPENS = 1 ;
-								// printf(" in mortaliy GEff c->GREFFMORT_HAPPENS            = %d \n ", c->GREFFMORT_HAPPENS);
+								 //printf(" in mortaliy GEff c->GREFFMORT_HAPPENS            = %d \n ", c->GREFFMORT_HAPPENS);
 
 
 								//printf("in mortaliy GEff  height              = %d  \n", height);
-								// printf("in mortaliy GEff  m->cells[cell].heights_count               = %d \n ", m->cells[cell].heights_count);
+								 //printf("in mortaliy GEff  m->cells[cell].heights_count               = %d \n ", m->cells[cell].heights_count);
                                  // annual_forest_structure ( c, year );
                                  
 								  
 								if ( height >= m->cells[cell].heights_count ) 
 								   { 
-									//printf("GO TO HEIGHT END  \n ") ;
+									printf("GO TO HEIGHT END  \n ") ;
 									goto height_end; 
 									}
 								if ( dbh >= m->cells[cell].heights[height].dbhs_count ) goto dbh_end;
@@ -579,7 +580,7 @@ int Tree_model_daily (matrix_t *const m, const int cell, const int day, const in
 			}
 		}
 		//printf(" FINITO GIRO SULLE ALTEZZE  \n");
-		// printf(" height              = %d  \n", height);
+		 //printf(" height              = %d  \n", height);
 		//printf(" m->cells[cell].heights_count               = %d \n ", m->cells[cell].heights_count);
 								 
 
