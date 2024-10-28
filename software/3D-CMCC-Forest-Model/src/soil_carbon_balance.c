@@ -64,4 +64,7 @@ void soil_carbon_balance (cell_t *const c)
 	/* total mass */
 	c->soilC                    = c->soil1C + c->soil2C + c->soil3C + c->soil4C;
 
+	 //printf("LITR TO SOIL           = %g tC/cell/day\n", c->daily_litr1C_to_soil1C + c->daily_litr2C_to_soil2C + c->daily_litr4C_to_soil3C );
+
+
 }
