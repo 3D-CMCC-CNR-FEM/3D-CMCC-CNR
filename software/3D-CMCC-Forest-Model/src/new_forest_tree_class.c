@@ -105,6 +105,11 @@ int add_tree_class_for_replanting (cell_t *const c, const int day, const int mon
 	age = c->heights[height].dbhs[dbh].ages_count - 1;
 	species = c->heights[height].dbhs[dbh].ages[age].species_count - 1;
 
+	  
+	species_t *s;
+	s = &c->heights[height].dbhs[dbh].ages[age].species[species];
+
+
 	/* fill with species values from parameterization file */
 	if ( ! fill_species_from_file ( &c->heights[height].dbhs[dbh].ages[age].species[species]) )
 	{
@@ -145,11 +150,21 @@ int add_tree_class_for_replanting (cell_t *const c, const int day, const int mon
 	initialization_forest_class_N      ( c, height, dbh, age, species );
 
 	/* initialize new litter pools */
-	initialization_forest_class_litter ( c, height, dbh, age, species );
+	//initialization_forest_class_litter ( c, height, dbh, age, species );
 
         //ddalmo august 2021 
         /* update forest cell pool */
 	initialization_forest_cell_C ( c, height, dbh, age, species ); 
+
+	 c->annual_Ctree_repl +=  (( (s->value[STEM_C]  * 1e6 )/ g_settings->sizeCell)
+                            + ((s->value[CROOT_C]  * 1e6 )/ g_settings->sizeCell)
+                            + ((s->value[FROOT_C]  * 1e6 )/ g_settings->sizeCell)
+							+ ((s->value[BRANCH_C]  * 1e6 )/ g_settings->sizeCell)
+							+ ((s->value[FRUIT_C]  * 1e6 )/ g_settings->sizeCell)
+                            + ((s->value[LEAF_C]  * 1e6 )/ g_settings->sizeCell)
+		                    + ((s->value[RESERVE_C]  * 1e6 )/ g_settings->sizeCell)
+	                          )    ; 
+							  
 
 	/* print new forest class dataset */
 	print_new_daily_forest_class_data  ( c, height, dbh, age, species );
@@ -247,6 +262,10 @@ int add_tree_class_for_replanting_reg (cell_t *const c, const int day, const int
 	age = c->heights[height].dbhs[dbh].ages_count - 1;
 	species = c->heights[height].dbhs[dbh].ages[age].species_count - 1;
   
+
+  species_t *s;
+	s = &c->heights[height].dbhs[dbh].ages[age].species[species];
+
         // comment: at this point the new class simply has been added and has 
         // an height index = c->heights_count - 1
 
@@ -291,17 +310,44 @@ int add_tree_class_for_replanting_reg (cell_t *const c, const int day, const int
 
 	/* initialize new forest class pools */
 	initialization_forest_class_C      ( c, height, dbh, age, species );
-       
+
+#if 0
+	printf(" ADD REG LAYER c->value[STEM_C]  %f!!!\n", (s->value[STEM_C]  * 1e6 )/ g_settings->sizeCell);
+    printf(" ADD REG LAYER c->value[CROOT_C]  %f!!!\n", (s->value[CROOT_C]  * 1e6 )/ g_settings->sizeCell);
+	printf(" ADD REG LAYER c->value[BRANCH_C]  %f!!!\n", (s->value[BRANCH_C]  * 1e6 )/ g_settings->sizeCell);
+     printf(" ADD REG LAYER c->value[RESERVE_C]  %f!!!\n", (s->value[RESERVE_C]  * 1e6 )/ g_settings->sizeCell);
+    printf(" ADD REG LAYER c->value[LEAF_C]  %f!!!\n", (s->value[LEAF_C]  * 1e6 )/ g_settings->sizeCell);
+    printf(" ADD REG LAYER c->value[FROOT_C]  %f!!!\n", (s->value[FROOT_C]  * 1e6 )/ g_settings->sizeCell);
+printf(" ADD REG LAYER c->value[FRUIT_C]  %f!!!\n", (s->value[FRUIT_C]  * 1e6 )/ g_settings->sizeCell);
+#endif
 	/* initialize new nitrogen pools */
 	initialization_forest_class_N      ( c, height, dbh, age, species );
 
 	/* initialize new litter pools */
-	initialization_forest_class_litter ( c, height, dbh, age, species );
+	//initialization_forest_class_litter ( c, height, dbh, age, species );
 
         //ddalmo august 2021 
-        /* update forest cell pool */
+        /* update forest cell pool*/
+		// adding the new class pool
 	initialization_forest_cell_C ( c, height, dbh, age, species ); 
 
+   #if 0
+	printf(" ADD REG LAYER  c->leaf_carbon   %f!!!\n",c->leaf_carbon  );
+			printf("ADD REG LAYER    c->croot_carbon   %f!!!\n",c->croot_carbon   );
+			printf(" ADD REG LAYER   c->froot_carbon   %f!!!\n",c->froot_carbon   );
+			printf("ADD REG LAYER   c->stem_carbon   %f!!!\n",c->stem_carbon  );
+			printf(" ADD REG LAYER   c->branch_carbon   %f!!!\n",c->branch_carbon  );
+			printf(" ADD REG LAYER    c->reserve_carbon   %f!!!\n",c->reserve_carbon  );
+			printf(" ADD REG LAYER    c->fruit_carbon   %f!!!\n",c->fruit_carbon  );
+#endif
+    c->annual_Ctree_repl +=  (( (s->value[STEM_C]  * 1e6 )/ g_settings->sizeCell)
+                            + ((s->value[CROOT_C]  * 1e6 )/ g_settings->sizeCell)
+                            + ((s->value[FROOT_C]  * 1e6 )/ g_settings->sizeCell)
+							+ ((s->value[BRANCH_C]  * 1e6 )/ g_settings->sizeCell)
+							+ ((s->value[FRUIT_C]  * 1e6 )/ g_settings->sizeCell)
+                            + ((s->value[LEAF_C]  * 1e6 )/ g_settings->sizeCell)
+		                    + ((s->value[RESERVE_C]  * 1e6 )/ g_settings->sizeCell)
+	                          )    ; 
 	/* print new forest class dataset */
 	print_new_daily_forest_class_data  ( c, height, dbh, age, species );
       
