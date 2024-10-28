@@ -253,6 +253,7 @@ void reset_annual_cell_variables(cell_t *const c)
 	c->volume =                         0.;
 	c->yearly_C_to_wood =               0.;
 	//c->dead_tree =                    0;
+	c->daily_dead_tree  =               0;
 	c->annual_soil_evapo =              0.;
 	c->annual_out_flow =                0.;
 	c->annual_soil_resp =               0.;
@@ -262,6 +263,7 @@ void reset_annual_cell_variables(cell_t *const c)
 	c->annual_nee =                     0.;
 	c->annual_nep =                     0.;
 	c->annual_hwp =                     0.;
+	c->annual_Ctree_repl =              0.;
 }
 void reset_daily_layer_variables(cell_t *const c)
 {
@@ -279,6 +281,7 @@ void reset_daily_layer_variables(cell_t *const c)
 		l->layer_tree_height_modifier = 0.;
 		l->daily_layer_cover_proj =     0.;
 		//l->daily_layer_cover_exp =      0.;
+		
 	}
 }
 void reset_monthly_layer_variables(cell_t *const c)
@@ -350,7 +353,7 @@ void reset_daily_class_variables(cell_t *const c)
 				{
 					s = &a->species[species];
 
-					//s->counter[DEAD_TREE] =                0;
+					s->counter[DEAD_TREE] =                0;
 					s->counter[THINNING_HAPPENS] =         0;
 					s->counter[HARVESTING_HAPPENS] =       0;
 
@@ -486,7 +489,7 @@ void reset_daily_class_variables(cell_t *const c)
 					s->value[CWD_TO_LITR4C] =             0.;
 					s->value[RESERVE_TO_LITRC] =             0.;
 					s->value[RESERVE_TO_LITR1C] =            0.;
-
+                    s->value[tree_remove_crowded] =         0.; 
                 
 				    // any type of removal, but the tree-mortality/harvest
 
