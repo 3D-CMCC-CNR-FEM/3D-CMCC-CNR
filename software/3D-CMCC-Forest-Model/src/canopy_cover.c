@@ -36,12 +36,18 @@ void dbhdc_function ( cell_t *const c, const int layer, const int height, const 
 	double previous_dbhdc_eff  = 0.;
 	double max_dbhdc_incr      = 0.1;      /* fraction of maximum dbhdc increment */ //note: this was 0.001 in v.5.4
 	//double max_dbhdc_decr      = 0.001;  /* fraction of maximum dbhdc decrement */
-
-
+    //double max_dbhdc_incr      = 0.05;   //ddalmo october 2024 test to reduce further, when in particular
+	                                    // one specie suddently is in a new layer (dominant)
+    int tree_l_number = 0; 
 	dbh_t *d;
 	species_t *s;
 	d = &c->heights[height].dbhs[dbh];
 	s = &c->heights[height].dbhs[dbh].ages[age].species[species];
+
+	  tree_layer_t *l;
+
+	l = &c->tree_layers[layer];
+
 
 	logger(g_debug_log,"\n*DBHDC FUNCTION for %s for %d*\n", s->name, year);
 
@@ -57,12 +63,14 @@ void dbhdc_function ( cell_t *const c, const int layer, const int height, const 
 	previous_dbhdc_eff  = s->value[DBHDC_EFF];
 	logger(g_debug_log,"-DBHDC (old)         = %f\n", s->value[DBHDC_EFF]);
 
+   
+   // printf(" IN CANOPY COVER LAYER DENSITY  %f!!!\n",c->tree_layers[layer].layer_density* g_settings->sizeCell );
+    tree_l_number = (int)(c->tree_layers[layer].layer_density* g_settings->sizeCell); 
+    //printf(" IN CANOPY COVER tree_l_number   %d!!!\n",tree_l_number);
 
 	temp_crown_area     = ( s->value[MAX_LAYER_COVER] * g_settings->sizeCell ) / ( c->tree_layers[layer].layer_density * g_settings->sizeCell );
 	logger(g_debug_log,"-temp_crown_area     = %f\n", temp_crown_area);
-
-
-
+   
 	temp_crown_radius   = sqrt(temp_crown_area / Pi);
 	logger(g_debug_log,"-temp_crown_radius   = %f\n", temp_crown_radius);
 
@@ -72,17 +80,26 @@ void dbhdc_function ( cell_t *const c, const int layer, const int height, const 
 	s->value[DBHDC_EFF] = temp_crown_diameter / d->value;
 	logger(g_debug_log,"-DBHDC (new)         = %f\n", s->value[DBHDC_EFF]);
 
+   // printf(" CANOPY _ COVER 1 s->value[DBHDC_EFF] %g!!!\n", s->value[DBHDC_EFF]);
+
 
 	/* check if current dbhdc_eff grows too much (case when there's thinning) */
 	/* this is checked to avoid unrealistic crown area increment */
 
 	/* note: max_dbhdc_incr corresponds to an arbitrary increment of n value */
 	/* note: not used in the first year of simulation */
+
+   // TBD: if ( ( s->counter[YOS] > 1 )) if use constrain starting in the 3rd year
+   // because of issue when the 'observed' height in the classes do not match the 'heiths'
+   // of the allometric equations (problem in defining the layers)
+ 
 	if ( ( s->counter[YOS] ) && ( s->value[DBHDC_EFF] > ( previous_dbhdc_eff + ( previous_dbhdc_eff * max_dbhdc_incr ) ) ) )
 	{
 		s->value[DBHDC_EFF] = previous_dbhdc_eff + ( previous_dbhdc_eff * max_dbhdc_incr );
+		//printf(" CRESCE TROPPO IN FRETTA \n") ;
 	}
 
+     //printf(" CANOPY _ COVER s->counter[YOS] %d!!!\n", s->counter[YOS]);
 
 	/***************************************************************************************************/
 	//note test: 18 June 2018
@@ -145,6 +162,7 @@ void dbhdc_function ( cell_t *const c, const int layer, const int height, const 
 
 	}
 
+      //printf(" CANOPY _ COVER 2 s->value[DBHDC_EFF] %g!!!\n", s->value[DBHDC_EFF]);
 
 	/************************************************************************************************************************/
 
@@ -159,6 +177,25 @@ void dbhdc_function ( cell_t *const c, const int layer, const int height, const 
 	}
 
 	logger(g_debug_log,"-DBHDC effective     = %f\n", s->value[DBHDC_EFF]);
+
+
+    // if DBHDC_eff is less than DBHDC_min, compute how many trees i should remove.
+   // tree_l_number - 
+	s->value[tree_remove_crowded] =1 + (int)( tree_l_number -  (( (s->value[MAX_LAYER_COVER] * g_settings->sizeCell)/Pi) * (4./pow((s->value[DBHDCMIN]*d->value),2)) )); 
+   
+
+    // issue when there is a missmach between 'observed' layer and 'estimated' by mean of the allometric.
+    // set to 0 when no-overcrowed conditions which might lead to negative value of  [tree_remove_crowded]
+	
+	if (s->value[tree_remove_crowded] < 0 ) { s->value[tree_remove_crowded] = 0  ; 
+	}  
+   
+  // printf(" CANOPY _ COVER s->value[MAX_LAYER_COVER]  %g!!!\n", s->value[MAX_LAYER_COVER]);
+
+    // printf(" CANOPY _ COVER s->value[tree_remove_crowded]  %g!!!\n", s->value[tree_remove_crowded] );
+    //printf(" CANOPY _ COVER 3 s->value[DBHDC_EFF]  %g!!!\n", s->value[DBHDC_EFF] );
+   
+
 
 	/* check */
 	CHECK_CONDITION (s->value[DBHDC_EFF], < , ZERO);
