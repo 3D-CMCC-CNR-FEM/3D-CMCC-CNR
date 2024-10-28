@@ -88,7 +88,12 @@ void daily_lai (cell_t *const c, age_t *const a, species_t *const s)
 	/* control it should anyway never happens */
 	if ( s->value[LAI_PROJ] > s->value[PEAK_LAI_PROJ] )
 	{
+
+		// printf(" in DAILY LAI  SONO QUA!!!!!\n");
+
 		s->value[LAI_PROJ]       =  s->value[PEAK_LAI_PROJ];
+
+		//printf(" in DAILY LAI s->value[PEAK_LAI_PROJ]%f!!!\n",s->value[PEAK_LAI_PROJ]);
 
 		s->value[LAI_SUN_PROJ]   = 1. - exp ( - s->value[LAI_PROJ] );
 
@@ -135,6 +140,26 @@ void daily_lai (cell_t *const c, age_t *const a, species_t *const s)
 
 	/* checks */
 
+	#if 0
+  printf(" IN PEAK LAI s->value[SAP_LEAF] %f!!!\n",s->value[SAP_LEAF]);
+
+   printf(" in DAILY LAI  s->value[LEAF_C] %f!!!\n",s->value[LEAF_C]);
+   printf(" in DAILY LAI  s->value[LAI_PROJ]%f!!!\n",s->value[LAI_PROJ]);
+   printf(" in DAILY LAI   s->value[LEAF_AREA] %f!!!\n", s->value[LEAF_AREA]);
+   printf(" in DAILY LAI   s->value[LEAF_SHADE_C] %f!!!\n", s->value[LEAF_SHADE_C]);
+   printf(" in DAILY LAI   s->value[LEAF_SUN_C] %f!!!\n", s->value[LEAF_SUN_C]);
+   printf(" in DAILY LAI  s->value[LAI_SUN_PROJ]  %f!!!\n", s->value[LAI_SUN_PROJ]);
+   printf(" in DAILY LAI  s->value[LAI_SHADE_PROJ]  %f!!!\n", s->value[LAI_SHADE_PROJ]);
+   printf(" in DAILY LAI s->value[SLA_SUN_PROJ] %f!!!\n",s->value[SLA_SUN_PROJ]);
+   printf(" in DAILY LAI s->value[SLA_SHADE_PROJ] %f!!!\n",s->value[SLA_SHADE_PROJ]);
+   printf(" in DAILY LAI s->value[CANOPY_COVER_PROJ] %f!!!\n",s->value[CANOPY_COVER_PROJ]);
+     printf(" in DAILY LAI  s->value[SLA_RATIO] %f!!!\n", s->value[SLA_RATIO]);
+
+#endif
+
+	 
+
+   //printf("  species %s!!!\n", s->name);
 
 	CHECK_CONDITION(s->value[LAI_PROJ],       <, ZERO);
 	CHECK_CONDITION(s->value[LAI_SUN_PROJ],   <, ZERO);
