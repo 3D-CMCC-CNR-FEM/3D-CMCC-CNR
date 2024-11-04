@@ -313,6 +313,10 @@ int tree_class_remove(cell_t *const c, const int height, const int dbh, const in
 	}
 #endif
 
+		 // printf("TREE CLASS REMOVE  height  %d\n",height);
+		  //printf("TREE CLASS REMOVE height_count  %d\n",c->heights_count);
+
+          //printf("TREE CLASS REMOVE c->tree_layers_count %d\n",c->tree_layers_count);
 
 	return 1;
 }
