@@ -230,7 +230,6 @@ int check_cell_carbon_mass_balance(cell_t *const c)
 
 	/* check for carbon mass balance closure */
 	// if ( ( fabs( c->cell_carbon_balance ) > 1e3 ) && ( c->dos > 1 ) )
-	// if ( ( fabs( c->cell_carbon_balance ) > eps ) && ( c->dos > 1 ) )wq
 	if ( ( fabs( c->cell_carbon_balance ) > eps && ( c->dos > 1 ) )  )
 	{
 		logger(g_debug_log, "\nCELL LEVEL CARBON MASS BALANCE\n");
