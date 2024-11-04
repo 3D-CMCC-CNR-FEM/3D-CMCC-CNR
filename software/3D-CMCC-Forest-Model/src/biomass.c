@@ -238,7 +238,12 @@ void tree_biomass_remove (cell_t *const c, const int height, const int dbh, cons
 	c->reserve_carbon           -= ((s->value[TREE_RESERVE_C]    * tree_remove) * 1e6 / g_settings->sizeCell);
 	c->fruit_carbon             -= ((s->value[TREE_FRUIT_C]    * tree_remove)  * 1e6 / g_settings->sizeCell);
 
+		//	printf(" IN BIOMASS REMOVE  MORTALITY  !!!\n"  );
+
 #if 0
+
+printf(" BIOMASS REMOVE   reserve to remove   %f!!!\n",(s->value[TREE_RESERVE_C]    * tree_remove) * 1e6 / g_settings->sizeCell );
+
 			printf(" BIOMASS REMOVE   c->leaf_carbon   %f!!!\n",c->leaf_carbon  );
 			printf(" BIOMASS REMOVE    c->croot_carbon   %f!!!\n",c->croot_carbon   );
 			printf(" BIOMASS REMOVE    c->froot_carbon   %f!!!\n",c->froot_carbon   );
@@ -246,16 +251,19 @@ void tree_biomass_remove (cell_t *const c, const int height, const int dbh, cons
 			printf(" BIOMASS REMOVE    c->branch_carbon   %f!!!\n",c->branch_carbon  );
 			printf(" BIOMASS REMOVE E   c->reserve_carbon   %f!!!\n",c->reserve_carbon  );
 			printf(" BIOMASS REMOVE    c->fruit_carbon   %f!!!\n",c->fruit_carbon  );
+			printf(" BIOMASS REMOVE    c->soilC  %f!!!\n",c->soilC  );
+			printf(" BIOMASS REMOVE    c->cwd_C   %f!!!\n",c->cwd_C  );
+			printf(" BIOMASS REMOVE    c->litrC   %f!!!\n",c->litrC  );
 #endif	
 
 	/* check */
-	CHECK_CONDITION ( c->leaf_carbon,    < , ZERO );
-	CHECK_CONDITION ( c->froot_carbon,   < , ZERO );
-	CHECK_CONDITION ( c->stem_carbon,    < , ZERO );
-	CHECK_CONDITION ( c->branch_carbon,  < , ZERO );
-	CHECK_CONDITION ( c->croot_carbon,   < , ZERO );
-	CHECK_CONDITION ( c->reserve_carbon, < , ZERO );
-	CHECK_CONDITION ( c->fruit_carbon,   < , ZERO );
+	CHECK_CONDITION ( c->leaf_carbon,    < , ZERO_C );
+	CHECK_CONDITION ( c->froot_carbon,   < , ZERO_C );
+	CHECK_CONDITION ( c->stem_carbon,    < , ZERO_C );
+	CHECK_CONDITION ( c->branch_carbon,  < , ZERO_C );
+	CHECK_CONDITION ( c->croot_carbon,   < , ZERO_C );
+	CHECK_CONDITION ( c->reserve_carbon, < , ZERO_C );
+	CHECK_CONDITION ( c->fruit_carbon,   < , ZERO_C );
 
 #endif
 	/******************************************************************************************/
@@ -393,7 +401,7 @@ void tree_biomass_remove (cell_t *const c, const int height, const int dbh, cons
 
 		c->annual_hwp += ((s->value[TREE_STEM_C] + s->value[TREE_BRANCH_C]*branch_perc_remove)* tree_remove * 1e6 / g_settings->sizeCell);
  
-       // printf(" ____daily_hwp_fluxes  **************************    = %f gC/m2/day\n", c->annual_hwp);
+       //printf(" ____daily_hwp_fluxes  **************************    = %f gC/m2/day\n", c->annual_hwp);
   
 		/* compute stem volume removed (m3/ha/yr) */
 		s->value[VOLUME_HWP]     += s->value[TREE_VOLUME] * tree_remove;
