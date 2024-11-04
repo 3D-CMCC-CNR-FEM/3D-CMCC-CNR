@@ -1669,6 +1669,7 @@ void forest_initialization ( const matrix_t* const m, const int day, const int m
 	int age;
 	int dbh;
 	int height;
+	int age_temp =0 ;
 
 	assert (m);
 	for ( cell = 0; cell < m->cells_count; ++cell )
@@ -1771,6 +1772,7 @@ void forest_initialization ( const matrix_t* const m, const int day, const int m
 		/* initialize forest structure */
 		initialization_forest_structure (&m->cells[cell], day, month, year);
 
+        
 		/* initialize pools */
 		for ( height = m->cells[cell].heights_count - 1; height >= 0; --height )
 		{
@@ -1778,6 +1780,9 @@ void forest_initialization ( const matrix_t* const m, const int day, const int m
 			{
 				for ( age = m->cells[cell].heights[height].dbhs[dbh].ages_count - 1; age >= 0; --age )
 				{
+  
+                    age_temp =MAX(age_temp, m->cells[cell].heights[height].dbhs[dbh].ages[age].value) ;
+
 					for ( species = m->cells[cell].heights[height].dbhs[dbh].ages[age].species_count - 1; species >= 0; --species )
 					{
 
@@ -1801,6 +1806,9 @@ void forest_initialization ( const matrix_t* const m, const int day, const int m
 				}
 			}
 		}
+
+        // define age of the stand Hp: is the highest age among DBH classes.
+        m->cells[cell].cell_age =  age_temp; 
 
 		logger(g_debug_log, "\n*******FOREST POOLS*******\n");
 		logger(g_debug_log, "***FOREST CELL POOLS (CARBON)***\n");
