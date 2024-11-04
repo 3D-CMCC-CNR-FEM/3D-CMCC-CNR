@@ -1066,9 +1066,10 @@ typedef struct
 	int cell_species_count;                                               /* (species/cell) number of different species */
 	int cell_height_class_counter;
 	int canopy_int_cell_height_class_counter;
+    int cell_age;                                                         // age of the stand (abovegraound/soprassuolo)
 
-	int year_stand;                                                       /* input stand.txt row stand year */
-
+	int year_stand;                                                       /* input stand.txt row stand year : used when man = var */
+ 
 	int x;                                                                /* cell index within the matrix */
 	int y;                                                                /* cell index within the matrix */
 
