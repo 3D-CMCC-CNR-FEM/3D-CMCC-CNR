@@ -5752,6 +5752,7 @@ void EOY_print_output_cell_level_mc(cell_t *const c, const int year, const int y
 	else   // no height_count
 	{
 
+      //printf("PRINT OUTPUT c->annual_hwp %g \n ",c->annual_hwp); 
 		//TODO ALESSIOC TO ALLESSIOR PRINT EMPTY SPACES WHEN N_TREE = 0
 
 		// sept 2024 when basically there are no more trees in the cells 
@@ -5791,7 +5792,7 @@ void EOY_print_output_cell_level_mc(cell_t *const c, const int year, const int y
 			0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
 			0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
 			0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
-			0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
+			0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,(c->annual_hwp/(1e6 / g_settings->sizeCell)),0.0,
 			0.0,0.0,0.0,0.0,0.0);
 										
 			/************************************************************************/
@@ -5864,7 +5865,10 @@ void EOY_print_output_cell_level_mc(cell_t *const c, const int year, const int y
 		//	c->years[year].yearly_mean.asw           ,
 			c->years[year].co2Conc);
 	            /************************************************************************/
+ 
+                 
 
+                  
                    }
                    
                    /* end print */
@@ -5881,9 +5885,9 @@ void EOY_print_output_cell_level_mc(cell_t *const c, const int year, const int y
 				
 		
 			
-
-		
-
+    //s->value[C_HWP] =                       0.;
+	//	printf("PRINT OUTPUT s->value[C_HWP] %g \n ",s->value[C_HWP] ); 
+    
 
 	}
 }
