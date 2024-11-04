@@ -67,9 +67,19 @@ static int harvesting (cell_t *const c, const int height, const int dbh, const i
    #endif
         //FIXME : update the cell level N pools too!
 
+    // update class level n_trees
+     c->n_trees -=   s->counter[N_TREE];
+
 	/* remove completely all trees */
 
+    		/* litter fluxes and pools */
+		littering             ( c, s );
+
 	return tree_class_remove (c, height, dbh, age, species );
+
+
+
+
 }
 
 
@@ -252,7 +262,7 @@ int forest_management (cell_t *const c, const int day, const int month, const in
 							}
 						}
 					}
-					if ( flag )
+					if ( flag )   // HARVEST
 					{
 						int rsi;               /* replanted species index */
 
@@ -291,29 +301,30 @@ int forest_management (cell_t *const c, const int day, const int month, const in
 						}
 
 						/* note: RESET c->dos */
-						c->dos = 0;
+						// CHECK THIs
+						//c->dos = 0;
 
-                                                // august 2021
+                         // august 2021
 
-                                                // with 'harvest' we remove the class, with replanting we create a new class in the same
-                                                // virtual space (as result the value of e.g. s->value[C_HWP] is simply set to 0 once the replanted class
-                                                // is added. For this reason We save hence some key variables belonging to the old removed layer
-                                                // and we save it in the new replanted layer object.
-                                                // no tests have been yet performed With multilayer or multispecie
+                        // with 'harvest' we remove the class, with replanting we create a new class in the same
+                        // virtual space (as result the value of e.g. s->value[C_HWP] is simply set to 0 once the replanted class
+                        // is added. For this reason We save hence some key variables belonging to the old removed layer
+                        // and we save it in the new replanted layer object.
+                        // no tests have been yet performed With multilayer or multispecie
 
-                                                harvested_carbon =      s->value[C_HWP]     ;      /* woody biomass removed (tC/ha/yr) */
-                                                harvested_carbon_cum =  s->value[CUM_C_HWP] ;
-                                                harvested_volume =      s->value[VOLUME_HWP]     ; /*  stem volume removed (m3/ha/yr) */
-                                                harvested_volume_cum =  s->value[CUM_VOLUME_HWP] ;
+                        harvested_carbon =      s->value[C_HWP]     ;      /* woody biomass removed (tC/ha/yr) */
+                        harvested_carbon_cum =  s->value[CUM_C_HWP] ;
+                        harvested_volume =      s->value[VOLUME_HWP]     ; /*  stem volume removed (m3/ha/yr) */
+                        harvested_volume_cum =  s->value[CUM_VOLUME_HWP] ;
 
 
-                                               // v5.6
-                                            	// As currently set, we need to assume that the clear cut is performed in one class only, and
-                                            	// only one new class is added (thus in the setting file, only one replanting dataset is provided)
-                                            	// The replanted specie can be different from the removed old layer.
-                                            	// rsi is simply g_settings->replanted_count -1
+                        // v5.6
+                        // As currently set, we need to assume that the clear cut is performed in one class only, and
+                        // only one new class is added (thus in the setting file, only one replanting dataset is provided)
+                        // The replanted specie can be different from the removed old layer.
+                        // rsi is simply g_settings->replanted_count -1
 
-                                            	rsi =  g_settings->replanted_count -1 ;
+                        rsi =  g_settings->replanted_count -1 ;
 
 						/* check that all mandatory variables are filled */
 						CHECK_CONDITION (g_settings->replanted[rsi].n_tree, <, ZERO);
@@ -323,51 +334,63 @@ int forest_management (cell_t *const c, const int day, const int month, const in
 
 						/* re-planting tree class */
 						if( g_settings->replanted[rsi].n_tree )
-						  {
+						{
 							if ( ! add_tree_class_for_replanting( c , day, month, year, rsi ) )
 							{
 								logger_error(g_debug_log, "unable to add new replanted class! (exit)\n");
 								exit(1);
 							}
 
+                         // FIXME : to test this option
+						 // if only harvest but no replanting, jump to the end
+                        if (c->n_trees ==0)  
+						 {
+							goto end_tree1;
+						 }
 							// indexes
-							h = &c->heights[height];
-							d = &h->dbhs[dbh];
-							a = &d->ages[age];
-							s = &a->species[species];
+						h = &c->heights[height];
+						d = &h->dbhs[dbh];
+						a = &d->ages[age];
+						s = &a->species[species];
 
-							/* reset years_for_thinning */
-							s->counter[YEARS_THINNING] = 1;
+						/* reset years_for_thinning */
+						s->counter[YEARS_THINNING] = 1;
 
-                                                  	// save in the new class object the following variables wich refer to the
-                                                  	// removed old class.
+                        // save in the new class object the following variables wich refer to the
+                        // removed old class.
 
-                                                  	s->value[C_HWP]          =  harvested_carbon      ;
-                                                  	s->value[CUM_C_HWP]      =  harvested_carbon_cum  ;
-                                                  	s->value[VOLUME_HWP]     =  harvested_volume      ;
-                                                  	s->value[CUM_VOLUME_HWP] =  harvested_volume_cum  ;
-                                                  	s->counter[THINNED_TREE] =  thinned_plants        ;
+                        s->value[C_HWP]          =  harvested_carbon      ;
+                        s->value[CUM_C_HWP]      =  harvested_carbon_cum  ;
+                        s->value[VOLUME_HWP]     =  harvested_volume      ;
+                        s->value[CUM_VOLUME_HWP] =  harvested_volume_cum  ;
+                        s->counter[THINNED_TREE] =  thinned_plants        ;
 
-                                                }
+                        }
 
-                                                s->counter[THINNING_HAPPENS] = 1;
-						 c->harvesting                = 1;
+                        s->counter[THINNING_HAPPENS] = 1;
+						c->harvesting                = 1;
 
-			                }
+			        }
 
 				}
 			}
 		}
 	 }
 
-        }
+    }
         else  // SHELTERWOOD CASE WITH PRESCRIBED REGENERATION : only in combination with MAN = VAR
-        {
+    {
 
        // 5p6 regeneration+MAN=VAr option works only on a monoclass forest
        // Management is performed in the dominant layer only.
-
+ 
+         
          height = c->heights_count -1 ;
+         
+
+		 // printf("SHELTERWOOD  height  %d\n",height);
+		 // printf("SHELTERWOOD  height_count  %d\n",c->heights_count);
+          //printf("SHELTERWOOD  c->tree_layers_count %d\n",c->tree_layers_count);
 
 		/* assign shortcut */
 		h = &c->heights[height];
@@ -418,9 +441,9 @@ int forest_management (cell_t *const c, const int day, const int month, const in
 						 {
 						   if ( c->years[year].year == g_management->thinning_years[i] )
 						     {
-							flag = 1;
-                                                        //s->value[THINNING_INDEX]= i;
-                                                        THINNING_INDEX= i;
+							    flag = 1;
+                                //s->value[THINNING_INDEX]= i;
+                                THINNING_INDEX= i;
 
 							break;
 						     }
@@ -466,68 +489,84 @@ int forest_management (cell_t *const c, const int day, const int month, const in
 					{
 						logger(g_debug_log,"**FOREST MANAGEMENT**\n");
 						logger(g_debug_log,"**HARVESTING AFTER ADDED REGENERATION LAYER**\n");
+                        printf("SHELTERWOOD : FINAL HARVEST \n");
 
-
-                                                thinned_plants =       s->counter[N_TREE] ; //save number of harvested trees
+                        thinned_plants =       s->counter[N_TREE] ; //save number of harvested trees
 
 						/* remove tree class */
 
-                                                if (  ! harvesting ( c, height, dbh, age, species ) )
+                        if (  ! harvesting ( c, height, dbh, age, species ) )
 						{
 							logger_error(g_debug_log, "unable to harvesting! (exit)\n");
 							exit(1);
 						}
 
+                        printf("SHELTERWOOD : END HARVEST \n");
 						 /* note: RESET c->dos */
-						 c->dos = 0;    //comment: however, when there is a simulated regeneration, is not stricly
-                                                               //speaking starting from scratch
+						// c->dos = 0;    //comment: however, when there is a simulated regeneration, is not stricly
+                        //speaking starting from scratch
 
 
-                                                 // save data of the removed layer
+                        // save data of the removed layer
 
 
-                                                 harvested_carbon =      s->value[C_HWP]     ;      /* woody biomass removed (tC/ha/yr) */
-                                                 harvested_carbon_cum =  s->value[CUM_C_HWP] ;
-                                                 harvested_volume =      s->value[VOLUME_HWP]     ; /*  stem volume removed (m3/ha/yr) */
-                                                 harvested_volume_cum =  s->value[CUM_VOLUME_HWP] ;
+                        harvested_carbon =      s->value[C_HWP]     ;      /* woody biomass removed (tC/ha/yr) */
+                        harvested_carbon_cum =  s->value[CUM_C_HWP] ;
+                        harvested_volume =      s->value[VOLUME_HWP]     ; /*  stem volume removed (m3/ha/yr) */
+                        harvested_volume_cum =  s->value[CUM_VOLUME_HWP] ;
+   
+                        //printf("SHELTERWOOD : BEFORE CALLUNG ANNUAL FOREST STRUCTURE \n");
 
-                                                 annual_forest_structure ( c, year );
+                         if (c->n_trees ==0) 
+ 						{
 
-                                                 height = c->heights_count -  1;         //a questo punto dovrei avere solo un layer, quello di regen che diventa0
-	                                         dbh = c->heights[height].dbhs_count - 1;
-	                                         age = c->heights[height].dbhs[dbh].ages_count - 1;
-	                                         species = c->heights[height].dbhs[dbh].ages[age].species_count - 1;
+	  					//   printf(" HELTERWOODc->tree_layers_count %d\n",c->tree_layers_count);
+     					//printf(" HELTERWOOD c->heights_count %d\n",c->heights_count);
+      					//printf(" HELTERWOOD height %d\n",height);
+
+    					//printf("ESCO NCtree s->value[C_HWP] %g \n ",s->value[C_HWP] ); 
+						goto end_tree1;
+ 						}
+  
+
+                        annual_forest_structure ( c, year );
+						// printf("SHELTERWOOD : AFTER CALLUNG ANNUAL FOREST STRUCTURE \n");
+
+                        height = c->heights_count -  1;         //a questo punto dovrei avere solo un layer, quello di regen che diventa0
+	                    dbh = c->heights[height].dbhs_count - 1;
+	                    age = c->heights[height].dbhs[dbh].ages_count - 1;
+	                    species = c->heights[height].dbhs[dbh].ages[age].species_count - 1;
 
 
-                                                 // indexes of the remaining layer after harves, i.e. the regeneration layer
+                        // indexes of the remaining layer after harves, i.e. the regeneration layer
 
-					                         h = &c->heights[height];
-						                     d = &h->dbhs[dbh];
-						                     a = &d->ages[age];
-					                         s = &a->species[species];
+					    h = &c->heights[height];
+						d = &h->dbhs[dbh];
+						a = &d->ages[age];
+					    s = &a->species[species];
 
-                                                 // save in the class object of the regeneration layer
-                                                 // the data of the removed old class.
+                        // save in the class object of the regeneration layer
+                        // the data of the removed old class.
 
-                                                 s->value[C_HWP]          =  harvested_carbon      ;
-                                                 s->value[CUM_C_HWP]      =  harvested_carbon_cum  ;
-                                                 s->value[VOLUME_HWP]     =  harvested_volume      ;
-                                                 s->value[CUM_VOLUME_HWP] =  harvested_volume_cum  ;
-                                                 s->counter[THINNED_TREE] =  thinned_plants        ;
+                        s->value[C_HWP]          =  harvested_carbon      ;
+                        s->value[CUM_C_HWP]      =  harvested_carbon_cum  ;
+                        s->value[VOLUME_HWP]     =  harvested_volume      ;
+                        s->value[CUM_VOLUME_HWP] =  harvested_volume_cum  ;
+                        s->counter[THINNED_TREE] =  thinned_plants        ;
 
-                                                 s->counter[THINNING_HAPPENS] = 1;
-						                         c->harvesting                = 1;
+                        s->counter[THINNING_HAPPENS] = 1;
+						c->harvesting                = 1;
 					}
 
-                                        /*************************************** PRESCRIBED REGENERATION *************************************/
+                    /*************************************** PRESCRIBED REGENERATION *************************************/
 
-                                        //v. 5p6
+                    //v. 5p6
 
-                                        //if( g_settings->regeneration && (MANAGEMENT_VAR == g_settings->management))
-                                        //{
+                    //if( g_settings->regeneration && (MANAGEMENT_VAR == g_settings->management))
+                    //{
 
-                                        flag = 0;
-                                        if ( g_management->regeneration_years_count )
+                    flag = 0;
+                    if ( g_management->regeneration_years_count )
 						{
 							int i;
 							for ( i = 0; i < g_management->regeneration_years_count; i++ )
@@ -541,19 +580,19 @@ int forest_management (cell_t *const c, const int day, const int month, const in
 						}
 
 
-                                          if ( flag )   //add layer for regeneration
-                                          {
+                    if ( flag )   //add layer for regeneration
+                        {
 
-                                          /* check that all mandatory variables are filled */
+                        /* check that all mandatory variables are filled */
 
 						CHECK_CONDITION (g_settings->regeneration_n_tree, <, ZERO);
 						CHECK_CONDITION (g_settings->regeneration_height, <, 1.3);
 						CHECK_CONDITION (g_settings->regeneration_avdbh,  <, ZERO);
 						CHECK_CONDITION (g_settings->regeneration_age,    <, ZERO);
 
-                                          /* mimic natural regeneration with a re-planting tree class */
+                        /* mimic natural regeneration with a re-planting tree class */
 
-	                                        if ( ! add_tree_class_for_replanting_reg( c , day, month, year) )
+	                    if ( ! add_tree_class_for_replanting_reg( c , day, month, year) )
 						{
 							logger_error(g_debug_log, "unable to add new replanted class! (exit)\n");
 							exit(1);
@@ -565,20 +604,19 @@ int forest_management (cell_t *const c, const int day, const int month, const in
 						a = &d->ages[age];
 						s = &a->species[species];
 
-                                                /* reset years_for_thinning */
+                        /* reset years_for_thinning */
 						s->counter[YEARS_THINNING] =   1;
 
  						c->harvesting              =   1;    //  in this way the annual_structure function is not
                                                                                     // called in the tree_model.c
 
-                                          }
-                                        //}
-
-				}
+                    }
+                //}
+				}	
 			}
-		}
-
-        }
+		}  
+    }
+	end_tree1 :
 	return 0;
 
 }
