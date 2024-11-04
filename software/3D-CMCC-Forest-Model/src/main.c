@@ -1678,6 +1678,7 @@ int main(int argc, char *argv[]) {
 					soil_initialization   ( matrix, day, month, year );
 
 				}
+				
 
 				for ( cell = 0; cell < matrix->cells_count; ++cell )
 				{
@@ -1802,6 +1803,10 @@ int main(int argc, char *argv[]) {
 
 				for ( cell = 0; cell < matrix->cells_count; ++cell )
 				{
+
+                    if( !day && !month && year ) matrix->cells[cell].cell_age += 1;
+				
+					//printf("PRINT AGE CELL  %d \n", matrix->cells[cell].cell_age);
 
 					/* counter "day of the year" */
 					if( !day && !month )matrix->cells[cell].doy = 1;
