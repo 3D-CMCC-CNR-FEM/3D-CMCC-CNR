@@ -1852,6 +1852,9 @@ int main(int argc, char *argv[]) {
 							}
 						}
 					}
+
+
+  //printf("in MAIN.c  SONO QUA \n " ); 
 					/************************************************************************/
 					/* pruning */
 					// v 5p6 not yet active
@@ -1916,6 +1919,7 @@ int main(int argc, char *argv[]) {
 						);
 
 					}
+                    //printf("in MAIN.c  SONO QUA PRIMA DI EOD PRINTING \n " ); 
 					/*************************************************************************/
 					/******************************************************************************/
 					/* print daily output */
@@ -1924,7 +1928,7 @@ int main(int argc, char *argv[]) {
                       // mc = multiclass                   
 				      EOD_print_output_cell_level_mc(&matrix->cells[cell], day, month, year, years_of_simulation );
 					 //EOD_print_output_soil_cell_level (&matrix->cells[cell], day, month, year, years_of_simulation );
-
+                    //printf("in MAIN.c  SONO QUA DOPO DI EOD PRINTING \n " ); 
 					/* reset daily variables once printed */
 					reset_daily_class_variables ( &matrix->cells[cell] );
 					reset_daily_layer_variables ( &matrix->cells[cell] );
@@ -1956,10 +1960,12 @@ int main(int argc, char *argv[]) {
 
 						/* print annual output */
 
+					    //	printf("matrix->cells[cell].annual_hwp %g \n",matrix->cells[cell].annual_hwp);
+
 						//EOY_print_output_cell_level( &matrix->cells[cell], year, years_of_simulation );
                                                //EOY_print_output_cell_level_ddalmo( &matrix->cells[cell], year, years_of_simulation );
-                            // mc = multiclass
-							EOY_print_output_cell_level_mc( &matrix->cells[cell], year, years_of_simulation );
+                        // mc = multiclass
+						EOY_print_output_cell_level_mc( &matrix->cells[cell], year, years_of_simulation );
 						 //EOY_print_output_soil_cell_level( &matrix->cells[cell], year, years_of_simulation );
 
 						reset_annual_class_variables ( &matrix->cells[cell] );
