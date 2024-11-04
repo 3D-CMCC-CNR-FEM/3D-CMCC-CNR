@@ -12,6 +12,8 @@ void self_pruning                      ( cell_t *const c, const int height, cons
 
 void self_thinning_mortality           ( cell_t *const c, const int layer, const int year );
 
+void self_thinning_mortality_new       ( cell_t *const c, const int layer, const int year , const int tree_remove_st);
+
 void age_mortality                     ( cell_t *const c, const int height, const int dbh, const int age, const int species );
 
 void stochastic_mortality              ( cell_t *const c, const int height, const int dbh, const int age, const int species );
