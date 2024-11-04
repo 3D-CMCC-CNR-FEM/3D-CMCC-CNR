@@ -10,7 +10,7 @@
 
 #include "matrix.h"
 
-void canopy_sw_band_abs_trans_refl_radiation(cell_t *const , const int , const int , const int , const int , const meteo_daily_t *const,
+void canopy_sw_band_abs_trans_refl_radiation(cell_t *const , const int , const int , const int , const int , const int , const meteo_daily_t *const,
 		double, double, double, double, double, double, double, double, double);
 
 void canopy_radiation_sw_band(cell_t *const c, const int layer, const int height, const int dbh, const int age, const int species,  meteo_daily_t *const meteo_daily);
