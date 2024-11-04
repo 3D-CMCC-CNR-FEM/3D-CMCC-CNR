@@ -161,7 +161,7 @@ enum {
 	TREE_MAI,                            /* (m3/tree/year) Single Tree Mean Annual Volume Increment */
 	STEMCONST,                           /* constant in the stem mass vs. diameter relationship */
 	MAX_SPECIES_COVER,                   /* (DIM) maximum species-specific cell cover */
-
+    
 	/* PAR */
 	PAR,                                /* (molPAR/m2/day) Photosynthetically Active Radiation  */
 	PAR_SUN,                            /* (molPAR/m2/day) Photosynthetically Active Radiation for sun leaves */
@@ -860,6 +860,7 @@ enum {
 	N_TREE,                             /* (tree/cell) Live Tree per class */
 	DEAD_TREE,                          /* (tree/cell) Dead Tree per class */
 	THINNED_TREE,                       /* (tree/cell) Tree removed for thinning or harvesting */
+	tree_remove_crowded ,           // (tree/cell) number to be remove when self-thinning is activated
 	N_STUMP,                            /* (stump/cell) Number of stumps for coppice per class */
 	N_SEED,                             /* (seeds/cell) Seeds number per class */
 	N_TREE_SAP,                         /* (saplings/cell) Numbers of Saplings per class */
@@ -968,6 +969,8 @@ typedef struct
 	int layer_n_trees;                  /* number of trees per layer */
 	int layer_height_class_counter;
 	int canopy_int_layer_height_class_counter;
+	
+
 	double layer_density;               /* tree density per layer (n_tree/sizecell) */
 	double layer_cover_proj;            /* layer canopy cover projected per layer */
 	double layer_cover_exp;             /* layer canopy cover exposed per layer */
@@ -1103,6 +1106,7 @@ typedef struct
 	int monthly_dead_tree;                                                /* (trees/cell/month) monthly number of dead tree */
 	int annual_dead_tree ;                                                /* (trees/cell/year) annual number of dead tree */
 	int saplings_counter;                                                 /* (trees/cell) number of class as sapling */
+	
 	double basal_area;                                                    /* (m2/cell) cumulated basal area at cell level */
 	double agb;                                                           /* (tC/cell) current above ground biomass at cell level */
 	double bgb;                                                           /* (tC/cell) current below ground biomass at cell level */
@@ -1204,8 +1208,8 @@ typedef struct
 	double daily_branch_aut_resp;                                         /* (gC/m2/day) daily branch and bark aut resp at cell level */
 	double daily_froot_aut_resp;                                          /* (gC/m2/day) daily fine root aut resp at cell level */
 	double daily_croot_aut_resp;                                          /* (gC/m2/day) daily coarse root aut resp at cell level */
-    double annual_hwp;                         // (tC/cell/yr) cell level annual harvested woody products removed from stand */
-
+    double annual_hwp;                         // (tC/cell/yr) cell level annual harvested woody products removed from stand - at DOY == 1  */
+    double annual_Ctree_repl;                         // (tC/cell/yr) cell level annual replanted trees total C - at DOY ==1 */
 
 	/* tree carbon pools */
 	double leaf_carbon;                                                   /* (gC/m2) leaf carbon at cell level */
