@@ -70,6 +70,7 @@ enum {
 #define eps                     1e-6      /* differences in comparison */
 #define eps_pr                  1e-15      /* critical precision */
 #define ZERO                  -1e-10      /* power limit of state variables before they are set to 0.0 to control rounding and overflow errors */
+#define ZERO_C                 -1e-8      /* power limit of state variables of C cycle at cell level  TBD  if to force to 0*/
 #define CRIT_PREC              1e-20      /* precision control */
 #define e                 2.71828183      /* nepero/eulero constant */
 #define DBH_ref                  1.3      /* reference DBH value */
