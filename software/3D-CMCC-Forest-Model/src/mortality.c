@@ -213,30 +213,6 @@ void self_thinning_mortality_new(cell_t *const c, const int layer, const int yea
 
 		//printf("in SELFTHINNING AFTER REMOVING CLASS heights_count             = %d  \n",  c->heights_count);
 
-   // update layers
-				
-								// if ( height >= m->cells[cell].heights_count ) 
-								 //  { 
-								//	printf("GO TO HEIGHT END  \n ") ;
-							//		goto height_end; 
-							//		}
-							//	if ( dbh >= m->cells[cell].heights[height].dbhs_count ) goto dbh_end;
-							//	if ( age >= m->cells[cell].heights[height].dbhs[dbh].ages_count ) goto age_end;
-							//	//if ( species >= m->cells[cell].heights[height].dbhs[dbh].ages[age].species_count ) goto species_end;
-							    
-							//	// check: maybe we do not need the next one.as we are looping to increasing heigth
-							//	 height = height -1 ;  // per poter procedere alle classi di altezze piu' basse 
-								 
-							//	 c->GREFFMORT_HAPPENS = 1 ;
-
-                        // 
-
-                          // update tree to removed
-						  // only if we decide to go on with the removal
-
-						 //  l->tree_remove_crowded -= s->counter[N_TREE] ; 
-
-
 					deadtree = 0;
 					livetree = 0;
 
