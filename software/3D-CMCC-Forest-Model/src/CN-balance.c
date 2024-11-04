@@ -45,14 +45,14 @@ void carbon_balance (cell_t *const c, const int height, const int dbh, const int
 			s->value[C_FRUIT_TO_CWD]);
 
 	/* check */
-	CHECK_CONDITION ( s->value[LEAF_C],     < , ZERO );
-	CHECK_CONDITION ( s->value[FROOT_C],    < , ZERO );
-	CHECK_CONDITION ( s->value[STEM_C],     < , ZERO );
-	CHECK_CONDITION ( s->value[BRANCH_C],   < , ZERO );
-	CHECK_CONDITION ( s->value[CROOT_C],    < , ZERO );
-	CHECK_CONDITION ( s->value[FRUIT_C],    < , ZERO );
-	CHECK_CONDITION ( s->value[LITR_C],     < , ZERO );
-	CHECK_CONDITION ( s->value[CWD_C],      < , ZERO );
+	CHECK_CONDITION ( s->value[LEAF_C],     < , ZERO_C );
+	CHECK_CONDITION ( s->value[FROOT_C],    < , ZERO_C );
+	CHECK_CONDITION ( s->value[STEM_C],     < , ZERO_C );
+	CHECK_CONDITION ( s->value[BRANCH_C],   < , ZERO_C );
+	CHECK_CONDITION ( s->value[CROOT_C],    < , ZERO_C );
+	CHECK_CONDITION ( s->value[FRUIT_C],    < , ZERO_C );
+	CHECK_CONDITION ( s->value[LITR_C],     < , ZERO_C );
+	CHECK_CONDITION ( s->value[CWD_C],      < , ZERO_C );
 
 	/*** update cell level carbon pools ***/
 
@@ -66,14 +66,14 @@ void carbon_balance (cell_t *const c, const int height, const int dbh, const int
 	c->fruit_carbon             -= (s->value[C_FRUIT_TO_CWD]  * 1e6 / g_settings->sizeCell);
 
 	/* check */
-	CHECK_CONDITION ( c->leaf_carbon,    < , ZERO );
-	CHECK_CONDITION ( c->froot_carbon,   < , ZERO );
-	CHECK_CONDITION ( c->stem_carbon,    < , ZERO );
-	CHECK_CONDITION ( c->branch_carbon,  < , ZERO );
-	CHECK_CONDITION ( c->croot_carbon,   < , ZERO );
-	CHECK_CONDITION ( c->fruit_carbon,   < , ZERO );
-	CHECK_CONDITION ( c->litrC,          < , ZERO );
-	CHECK_CONDITION ( c->cwd_C,          < , ZERO );
+	CHECK_CONDITION ( c->leaf_carbon,    < , ZERO_C );
+	CHECK_CONDITION ( c->froot_carbon,   < , ZERO_C );
+	CHECK_CONDITION ( c->stem_carbon,    < , ZERO_C );
+	CHECK_CONDITION ( c->branch_carbon,  < , ZERO_C );
+	CHECK_CONDITION ( c->croot_carbon,   < , ZERO_C );
+	CHECK_CONDITION ( c->fruit_carbon,   < , ZERO_C );
+	CHECK_CONDITION ( c->litrC,          < , ZERO_C );
+	CHECK_CONDITION ( c->cwd_C,          < , ZERO_C );
 	/***************************************************************************************/
 }
 
