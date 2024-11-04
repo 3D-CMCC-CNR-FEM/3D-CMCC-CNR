@@ -102,6 +102,7 @@ int annual_forest_structure(cell_t* const c, const int year)
 	}
 	#endif 
 
+    //printf(" ANNUAL STRUCTURE height_count  %d\n",c->heights_count);
 
 	/***************************************************************************************************************/
 
@@ -141,56 +142,20 @@ int annual_forest_structure(cell_t* const c, const int year)
 	}
 
 	/*********************************************************************************************************/
-    // printf(" c->dos           = %d \n ", c->dos);
-    if (c->dos == 0)   // dovrebbe aggiungere un layer solo se è il primo giorno dell anno? 
-	{
+   // printf(" c->dos           = %d \n ", c->dos);
+  
 	/** compute number of annual layers **/
 
 	/* note: it starts from the lowest height values up to the highest */
+    //  printf(" ANNUAL STRUCTURE 2 c->tree_layers_count %d\n",c->tree_layers_count);
+    //printf(" ANNUAL STRUCTURE 2 c->heights_count %d\n",c->heights_count);
+    // printf(" ANNUAL STRUCTURE 2 c->n_trees  %d\n",c->n_trees );
+
 
 	/* add 1 layer by default */
 	if ( ! layer_add(c) ) return 0;
 
-	logger(g_debug_log, "*compute height_z*\n");
-
-	/* note: it must starts from the lowest tree height class */
-	qsort(c->heights, c->heights_count, sizeof(height_t), sort_by_heights_asc);
-
-	logger(g_debug_log, "*compute height_z*\n");
-
-	/* compute zeta counter */
-
-	if (c->heights_count > 1)
-	{
-		for ( height = 0; height < c->heights_count-1; ++height )
-		{
-			logger(g_debug_log, "*value %f*\n\n", c->heights[height].value);
-
-			// ALESSIOR TO ALESSIOC...this give error
-			// on +1 YOU MUST remove -1 from count!
-			if ( (c->heights[height+1].value - c->heights[height].value) > g_settings->tree_layer_limit )
-			{
-				++zeta_count;
-
-				/* compute layer number and alloc memory for each one */
-				if ( ! layer_add(c) ) return 0;
-			}
-		}
-	}
-	// printf(" in structure c->tree_layers_count             = %d \n ", c->tree_layers_count);
-
-	logger(g_debug_log, "*zeta_count %d*\n\n", zeta_count);
-	logger(g_debug_log, "*c->t_layers_count %d*\n\n", c->tree_layers_count);
-
-    } else {
-
-/** compute number of annual layers **/
-
-	/* note: it starts from the lowest height values up to the highest */
-
-	/* add 1 layer by default */
-	if ( ! layer_add(c) ) return 0;   // FIXME this has to be removed, when we call annual forest structure
-	                                  // within the year
+	// printf(" ANNUAL STRUCTURE 2b c->tree_layers_count %d\n",c->tree_layers_count);
 
 	logger(g_debug_log, "*compute height_z*\n");
 
@@ -212,19 +177,20 @@ int annual_forest_structure(cell_t* const c, const int year)
 			if ( (c->heights[height+1].value - c->heights[height].value) > g_settings->tree_layer_limit )
 			{
 				++zeta_count;
-
+                  // printf(" ANNUAL STRUCTURE 4 zeta_count  %d\n",zeta_count);
 				/* compute layer number and alloc memory for each one */
 				if ( ! layer_add(c) ) return 0;
 			}
 		}
 	}
+	   //  printf(" ANNUAL STRUCTURE 3 c->tree_layers_count %d\n",c->tree_layers_count);
+       // printf(" ANNUAL STRUCTURE 3 c->heights_count %d\n",c->heights_count);
+         // printf(" ANNUAL STRUCTURE 3 zeta_count  %d\n",zeta_count);
 	// printf(" in structure c->tree_layers_count             = %d \n ", c->tree_layers_count);
 
 	logger(g_debug_log, "*zeta_count %d*\n\n", zeta_count);
 	logger(g_debug_log, "*c->t_layers_count %d*\n\n", c->tree_layers_count);
-
-		}
-    
+ 
  	/*****************************************************************************************/
 
 	/** assign zeta for each height class **/
