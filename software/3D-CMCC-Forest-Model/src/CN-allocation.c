@@ -344,12 +344,12 @@ void carbon_allocation_new ( cell_t *const c, age_t *const a, species_t *const s
 	CHECK_CONDITION(fabs((s->value[BRANCH_SAPWOOD_C] + s->value[BRANCH_HEARTWOOD_C])- s->value[BRANCH_C]),>,eps);
 
 	/* check */
-	CHECK_CONDITION ( s->value[LEAF_C],     < , ZERO );
-	CHECK_CONDITION ( s->value[FROOT_C],    < , ZERO );
-	CHECK_CONDITION ( s->value[STEM_C],     < , ZERO );
-	CHECK_CONDITION ( s->value[BRANCH_C],   < , ZERO );
-	CHECK_CONDITION ( s->value[CROOT_C],    < , ZERO );
-	CHECK_CONDITION ( s->value[FRUIT_C],    < , ZERO );
+	CHECK_CONDITION ( s->value[LEAF_C],     < , ZERO_C );
+	CHECK_CONDITION ( s->value[FROOT_C],    < , ZERO_C );
+	CHECK_CONDITION ( s->value[STEM_C],     < , ZERO_C );
+	CHECK_CONDITION ( s->value[BRANCH_C],   < , ZERO_C );
+	CHECK_CONDITION ( s->value[CROOT_C],    < , ZERO_C );
+	CHECK_CONDITION ( s->value[FRUIT_C],    < , ZERO_C );
 	
 	// *********************************************************************
 	
@@ -398,6 +398,7 @@ void carbon_allocation_new ( cell_t *const c, age_t *const a, species_t *const s
 #endif
 	/*********************************************************************/
 	// if the sapwood goes to 0, basically there is no Leaf, no GPP etc.
+	// we put a more restrictive condition here
 	
 	CHECK_CONDITION ( s->value[STEM_SAPWOOD_C],     < , -ZERO );
 	//CHECK_CONDITION ( s->value[STEM_HEARTWOOD_C],   < , -ZERO );
@@ -546,12 +547,12 @@ void carbon_allocation_new ( cell_t *const c, age_t *const a, species_t *const s
          } 
 
 	/* check */
-	CHECK_CONDITION ( c->leaf_carbon,    < , ZERO );
-	CHECK_CONDITION ( c->froot_carbon,   < , ZERO );
-	CHECK_CONDITION ( c->stem_carbon,    < , ZERO );
-	CHECK_CONDITION ( c->branch_carbon,  < , ZERO );
-	CHECK_CONDITION ( c->croot_carbon,   < , ZERO );
-	CHECK_CONDITION ( c->fruit_carbon,   < , ZERO );
+	CHECK_CONDITION ( c->leaf_carbon,    < , ZERO_C );
+	CHECK_CONDITION ( c->froot_carbon,   < , ZERO_C );
+	CHECK_CONDITION ( c->stem_carbon,    < , ZERO_C );
+	CHECK_CONDITION ( c->branch_carbon,  < , ZERO_C );
+	CHECK_CONDITION ( c->croot_carbon,   < , ZERO_C );
+	CHECK_CONDITION ( c->fruit_carbon,   < , ZERO_C );
 	
 	// 5p606
 	// update tree level carbon pools
