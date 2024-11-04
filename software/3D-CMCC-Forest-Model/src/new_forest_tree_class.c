@@ -80,6 +80,8 @@ static int fill_cell_for_replanting(cell_t *const c, const int species_index)
 	a->species[a->species_count-1].counter[N_STUMP] = 0;
 	a->species[a->species_count-1].value[LAI_PROJ]  = g_settings->replanted[species_index].lai;
 
+    // update 
+	c->n_trees +=   (int)g_settings->replanted[species_index].n_tree;
 	return 1;
 }
 
@@ -236,6 +238,9 @@ static int fill_cell_for_replanting_reg(cell_t *const c )
 	a->species[a->species_count-1].counter[N_TREE]  =(int)g_settings->regeneration_n_tree; //(int)g_settings->replanted[species_index].n_tree;
 	a->species[a->species_count-1].counter[N_STUMP] = 0;
 	a->species[a->species_count-1].value[LAI_PROJ]  = g_settings->regeneration_lai; //g_settings->replanted[species_index].lai;
+
+    // update 
+	c->n_trees +=  (int)g_settings->regeneration_n_tree; 
 
 	return 1;
 }
