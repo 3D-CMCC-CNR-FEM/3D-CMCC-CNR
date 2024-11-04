@@ -131,6 +131,9 @@ int Tree_model_daily (matrix_t *const m, const int cell, const int day, const in
 
 	}
 
+    // i.e. this condition might occurr when harvest happens, without replanting 
+	if ( c->n_trees ==0 ) goto end_tree;
+
 	/****************************************************************************/
 
 	/* annual forest structure (only the year after the first) */
@@ -138,6 +141,7 @@ int Tree_model_daily (matrix_t *const m, const int cell, const int day, const in
 	{
 
 		annual_forest_structure ( c, year );
+
 
 	}
 
@@ -502,6 +506,7 @@ int Tree_model_daily (matrix_t *const m, const int cell, const int day, const in
 									annual_tree_increment ( c, height, dbh, age, species, year );
 								}
                                // printf("IN TREE MODEL c->daily_leaf_to_litrC           = %g tC/cell/day\n",c->daily_leaf_to_litrC );
+                               // printf("IN TREE MODEL BEFORE LITTERING \n");
 
 								/* litter fluxes and pools */
 								    littering             ( c, s );
@@ -589,6 +594,8 @@ int Tree_model_daily (matrix_t *const m, const int cell, const int day, const in
 	}
 	logger(g_debug_log, "****************END OF LAYER CLASS***************\n");
 	/* ok */
+
+	end_tree:  
 	return 1;
 }
 
