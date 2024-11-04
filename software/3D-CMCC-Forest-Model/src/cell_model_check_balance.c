@@ -184,7 +184,17 @@ int check_cell_carbon_mass_balance(cell_t *const c)
 
 	/* sum of output */
 
-    c->cell_carbon_out   = c->daily_aut_resp + c->annual_hwp + c->daily_het_resp ;
+    if (c->doy == 1) 
+	{ 
+     c->cell_carbon_out   = c->daily_aut_resp + c->annual_hwp + c->daily_het_resp ;
+
+	 //printf(" ____Cell balance  c->annual_hwp **************************    = %f gC/m2/day\n", c->annual_hwp);
+
+	} else  {
+     c->cell_carbon_out   = c->daily_aut_resp + c->daily_het_resp ;
+
+	}
+    
 
 	/* sum of current storage */
 	c->cell_carbon_store = c->leaf_carbon +
@@ -220,7 +230,8 @@ int check_cell_carbon_mass_balance(cell_t *const c)
 
 	/* check for carbon mass balance closure */
 	// if ( ( fabs( c->cell_carbon_balance ) > 1e3 ) && ( c->dos > 1 ) )
-	if ( ( fabs( c->cell_carbon_balance ) > eps ) && ( c->dos > 1 ) )
+	// if ( ( fabs( c->cell_carbon_balance ) > eps ) && ( c->dos > 1 ) )wq
+	if ( ( fabs( c->cell_carbon_balance ) > eps && ( c->dos > 1 ) )  )
 	{
 		logger(g_debug_log, "\nCELL LEVEL CARBON MASS BALANCE\n");
 
@@ -283,7 +294,11 @@ int check_cell_carbon_mass_balance(cell_t *const c)
 #endif
          // after the first day of the year
 		// set to 0 (this works only if management is applied the first day of the year)
-	    c->annual_hwp = 0.;
+
+		//printf("  ************************** cell balance set c->annual_hwp to 0 \n");
+        //printf("**************************  DOS = %d\n", c->dos);
+
+	  //  c->annual_hwp = 0.;
 		c->annual_Ctree_repl =0.;
 
 	}
