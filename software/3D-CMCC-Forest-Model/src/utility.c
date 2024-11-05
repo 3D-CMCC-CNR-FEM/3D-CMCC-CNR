@@ -353,7 +353,7 @@ void reset_daily_class_variables(cell_t *const c)
 				{
 					s = &a->species[species];
 
-					s->counter[DEAD_TREE] =                0;
+					//s->counter[DEAD_TREE] =                0;
 					s->counter[THINNING_HAPPENS] =         0;
 					s->counter[HARVESTING_HAPPENS] =       0;
 
