@@ -99,7 +99,6 @@ void carbon_allocation ( cell_t *const c, age_t *const a, species_t *const s, co
 	if ( s->value[C_TO_BRANCH] > 0. ) s->value[CUM_YEARLY_C_TO_WOOD] += s->value[C_TO_CROOT];
 
 	/***************************************************************************************/
-
 	/*** update class level carbon mass pools ***/
 	s->value[LEAF_C]      += s->value[C_TO_LEAF];
 	s->value[FROOT_C]     += s->value[C_TO_FROOT];
@@ -248,7 +247,7 @@ void carbon_allocation_new ( cell_t *const c, age_t *const a, species_t *const s
 	/***************************************************************************************/
 	/***************************************************************************************/
 
-//   printf(" CN_allocation  species %s!!!\n", s->name);
+   //printf(" CN_allocation  species %s!!!\n", s->name);
    //printf(" s->value[BRANCH_C_TO_REMOVE]  %f!!!\n", s->value[BRANCH_C_TO_REMOVE]);
    //printf(" s->value[C_TO_BRANCH]  %f!!!\n",s->value[C_TO_BRANCH]);
    //printf(" s->value[BRANCH_C]  %f!!!\n",s->value[BRANCH_C]);
@@ -305,10 +304,11 @@ void carbon_allocation_new ( cell_t *const c, age_t *const a, species_t *const s
 // // printf("in allocation s->value[C_TO_LEAF]             = %g tC/cell/day\n", (s->value[C_TO_LEAF]* 1e6 / g_settings->sizeCell));
 // printf("in allocation s->value[C_TO_FROOT]             = %g tC/cell/day\n", (s->value[C_TO_FROOT]* 1e6 / g_settings->sizeCell));
 // printf("in allocation s->value[C_TO_CROOT]             = %g tC/cell/day\n", (s->value[C_TO_CROOT]* 1e6 / g_settings->sizeCell));
-// printf("in allocation s->value[C_TO_STEM]             = %g tC/cell/day\n", (s->value[C_TO_STEM]* 1e6 / g_settings->sizeCell));
+//printf("in allocation s->value[C_TO_STEM]             = %g tC/cell/day\n", (s->value[C_TO_STEM]* 1e6 / g_settings->sizeCell));
 // printf("in allocation s->value[C_TO_BRANCH]             = %g tC/cell/day\n", (s->value[C_TO_BRANCH]* 1e6 / g_settings->sizeCell));
 // printf("in allocation s->value[C_TO_FRUIT]             = %g tC/cell/day\n", (s->value[C_TO_FRUIT]* 1e6 / g_settings->sizeCell));
 // printf("in allocation s->value[C_TO_RESERVE]             = %g tC/cell/day\n", (s->value[C_TO_RESERVE]* 1e6 / g_settings->sizeCell));
+//  printf("CN ALLOCATION  before update  s->value[STEM_C]             = %g \n",  s->value[STEM_C] );
 
 	/*** update class level carbon mass pools ***/
 	
@@ -585,6 +585,9 @@ void carbon_allocation_new ( cell_t *const c, age_t *const a, species_t *const s
 					s->value[TREE_TOT_LIVEWOOD_C]        = (s->value[TOT_LIVEWOOD_C]     / (double)s->counter[N_TREE]);
 					s->value[TREE_TOT_DEADWOOD_C]        = (s->value[TOT_DEADWOOD_C]     / (double)s->counter[N_TREE]);
 
+ //printf("CN ALLOCATION   s->value[TREE_STEM_C]             = %g \n",  s->value[TREE_STEM_C]);
+ //printf("CN ALLOCATION   s->value[STEM_C]             = %g \n",  s->value[STEM_C] );
+ //printf("CN ALLOCATION  s->counter[N_TREE]           = %d \n",s->counter[N_TREE] );
   // set to 0 
   s->value[LEAF_C_TO_REMOVE] = 0. ;
 	 s->value[FROOT_C_TO_REMOVE]  = 0.;
