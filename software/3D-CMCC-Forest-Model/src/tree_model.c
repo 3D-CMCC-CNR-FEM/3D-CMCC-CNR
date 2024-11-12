@@ -134,17 +134,22 @@ int Tree_model_daily (matrix_t *const m, const int cell, const int day, const in
     // i.e. this condition might occurr when harvest happens, without replanting 
 	if ( c->n_trees ==0 ) goto end_tree;
 
+    //printf(" IN TREE DAILY ANFANG  c->tree_layers_count %d\n",c->tree_layers_count);
+
 	/****************************************************************************/
 
 	/* annual forest structure (only the year after the first) */
 	if ( ( ! day && ! month && year ) && ( ! c->harvesting ) )
 	{
 
+  //printf(" IN TREE DAILY ENTERING ANNUAL FOREST STRUCTURE \n");
+
 		annual_forest_structure ( c, year );
 
 
 	}
 
+  //printf(" IN TREE DAILY ANFANG2  c->tree_layers_count %d\n",c->tree_layers_count);
 	 //printf(" in tree model c->tree_layers_count             = %d \n ", c->tree_layers_count);
 
 	/* daily forest structure*/
@@ -256,7 +261,7 @@ int Tree_model_daily (matrix_t *const m, const int cell, const int day, const in
 
                           // printf("in TREE DAILY  HEIGHT %g,\n",c->heights[height].value);
 						//	printf("in TREE DAILY  AGE %d,\n",c->heights[height].dbhs[dbh].ages[age].value);
-						//	printf("in TREE DAILY  DBH  %g,\n",c->heights[height].dbhs[dbh].value);
+						   //printf("in TREE DAILY  DBH  %g,\n",c->heights[height].dbhs[dbh].value);
 						  //  printf("in TREE DAILY  NTREE  %d,\n",s->counter[N_TREE]);
 
                              // printf("in TREE DAILY  CROWN_AREA_PROJ  %g,\n", s->value[CROWN_AREA_PROJ]);
@@ -436,8 +441,8 @@ int Tree_model_daily (matrix_t *const m, const int cell, const int day, const in
 								/* update Leaf Area Index */
 								daily_lai             ( c, a, s );
 
-								  //printf("in TREE  **** DAILY  LAI  %g,\n", s->value[LAI_PROJ]);
-
+								  //printf("IN TREE MODEL BEFORE DENDRO OLD \n");
+                    
 								/* tree level dendrometry */
 								dendrometry_old       ( c, layer, height, dbh, age, species, year );
 
@@ -488,7 +493,6 @@ int Tree_model_daily (matrix_t *const m, const int cell, const int day, const in
 											stochastic_mortality ( c, height, dbh, age, species );
 							      	}
 
-
 									// update canopy cover projection 
                                      
                                     canopy_cover    ( c, height, dbh, age, species );
@@ -505,6 +509,9 @@ int Tree_model_daily (matrix_t *const m, const int cell, const int day, const in
 									/* annual volume, MAI and CAI */
 									annual_tree_increment ( c, height, dbh, age, species, year );
 								}
+
+								//printf("TREE DAILZ s->counter[N_TREE]           = %d \n",s->counter[N_TREE] );
+
                                // printf("IN TREE MODEL c->daily_leaf_to_litrC           = %g tC/cell/day\n",c->daily_leaf_to_litrC );
                                // printf("IN TREE MODEL BEFORE LITTERING \n");
 
@@ -592,6 +599,7 @@ int Tree_model_daily (matrix_t *const m, const int cell, const int day, const in
 		height_end:
 		logger(g_debug_log, "****************END OF HEIGHT CLASS***************\n");
 	}
+	// printf(" IN TREE DAILY ENDE  c->tree_layers_count %d\n",c->tree_layers_count);
 	logger(g_debug_log, "****************END OF LAYER CLASS***************\n");
 	/* ok */
 
