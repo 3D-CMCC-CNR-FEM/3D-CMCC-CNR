@@ -207,6 +207,10 @@ void tree_biomass_remove (cell_t *const c, const int height, const int dbh, cons
 	s->value[RESERVE_C]   -= (s->value[TREE_RESERVE_C] * tree_remove);
 	s->value[FRUIT_C]     -= (s->value[TREE_FRUIT_C]   * tree_remove);
 
+    // printf("TREE BIOMASS REMOVE  s->value[STEM_C]             = %g \n",  s->value[STEM_C] );
+	// printf("TREE BIOMASS REMOVE s->value[TREE_STEM_C]             = %g \n", s->value[TREE_STEM_C] );
+	// printf("TREE BIOMASS REMOVE tree_remove       = %d \n", tree_remove);
+
 	/* sapwood and heartwood */
 
 	s->value[STEM_SAPWOOD_C]     -= (s->value[TREE_STEM_SAPWOOD_C]     * tree_remove);
