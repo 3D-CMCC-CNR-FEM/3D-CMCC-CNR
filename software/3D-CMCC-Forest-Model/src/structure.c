@@ -147,15 +147,32 @@ int annual_forest_structure(cell_t* const c, const int year)
 	/** compute number of annual layers **/
 
 	/* note: it starts from the lowest height values up to the highest */
-    //  printf(" ANNUAL STRUCTURE 2 c->tree_layers_count %d\n",c->tree_layers_count);
+    //printf(" ANNUAL STRUCTURE 2 c->tree_layers_count %d\n",c->tree_layers_count);
     //printf(" ANNUAL STRUCTURE 2 c->heights_count %d\n",c->heights_count);
     // printf(" ANNUAL STRUCTURE 2 c->n_trees  %d\n",c->n_trees );
 
+	if ( c->tree_layers_count )   // eg. in case of replanting of multiple species, we already have a layer
+	{ 
+     // reset and compute below, this happens when we add multiple classes during replanting
+   reset_annual_layer_variables ( c );
 
+
+	}	
+  //printf(" ANNUAL STRUCTURE  c->tree_layers_count %d\n",c->tree_layers_count);
+  // in questo modo ho messo a zero anche il tree_layers_count, ma mi serv iva per mettere a zero tutte le altre variabili
+  // at layer level. TOBE FIXED and TESTED as
+  ///* reset values for layer (they are recomputed below) */
+  //	c->tree_layers[layer].layer_n_height_class = 0;
+  //	c->tree_layers[layer].layer_n_trees        = 0;
+  //	c->tree_layers[layer].layer_density        = 0;
+
+
+    if ( !c->tree_layers_count )   // eg. in case of replanting of multiple species, we already have a layer
+	{ 
 	/* add 1 layer by default */
 	if ( ! layer_add(c) ) return 0;
-
-	// printf(" ANNUAL STRUCTURE 2b c->tree_layers_count %d\n",c->tree_layers_count);
+	}
+	//printf(" ANNUAL STRUCTURE 2b c->tree_layers_count %d\n",c->tree_layers_count);
 
 	logger(g_debug_log, "*compute height_z*\n");
 
@@ -166,26 +183,34 @@ int annual_forest_structure(cell_t* const c, const int year)
 
 	/* compute zeta counter */
 
+   // printf(" ANNUAL STRUCTURE 2c c->heights_count %d\n",c->heights_count);
+
+	//printf(" ANNUAL STRUCTURE 2d  c->heights[0].value  %f\n",c->heights[0].value);
+//printf(" ANNUAL STRUCTURE 2d  c->heights[1].value  %f\n",c->heights[1].value);
+//if (c->heights_count>2)
+//{
+	//printf(" ANNUAL STRUCTURE 2d  c->heights[2].value  %f\n",c->heights[2].value);
+//}
 	if (c->heights_count > 1)
 	{
 		for ( height = 0; height < c->heights_count-1; ++height )
 		{
 			logger(g_debug_log, "*value %f*\n\n", c->heights[height].value);
-
+           // printf(" ANNUAL STRUCTURE 2d  c->heights[height+1].value  %f\n",c->heights[height+1].value);
 			// ALESSIOR TO ALESSIOC...this give error
 			// on +1 YOU MUST remove -1 from count!
 			if ( (c->heights[height+1].value - c->heights[height].value) > g_settings->tree_layer_limit )
 			{
 				++zeta_count;
-                  // printf(" ANNUAL STRUCTURE 4 zeta_count  %d\n",zeta_count);
+              //     printf(" ANNUAL STRUCTURE 4 zeta_count  %d\n",zeta_count);
 				/* compute layer number and alloc memory for each one */
 				if ( ! layer_add(c) ) return 0;
 			}
 		}
 	}
-	   //  printf(" ANNUAL STRUCTURE 3 c->tree_layers_count %d\n",c->tree_layers_count);
-       // printf(" ANNUAL STRUCTURE 3 c->heights_count %d\n",c->heights_count);
-         // printf(" ANNUAL STRUCTURE 3 zeta_count  %d\n",zeta_count);
+	   // printf(" ANNUAL STRUCTURE 3 c->tree_layers_count %d\n",c->tree_layers_count);
+       //printf(" ANNUAL STRUCTURE 3 c->heights_count %d\n",c->heights_count);
+       //  printf(" ANNUAL STRUCTURE 3 zeta_count  %d\n",zeta_count);
 	// printf(" in structure c->tree_layers_count             = %d \n ", c->tree_layers_count);
 
 	logger(g_debug_log, "*zeta_count %d*\n\n", zeta_count);
@@ -197,6 +222,8 @@ int annual_forest_structure(cell_t* const c, const int year)
 
 	for ( height = c->heights_count -1 ; height >= 0; --height )
 	{
+
+		//printf("SONO IN ASSIGN ZETA \n");
 		// ALESSIOR...on height == 0 you can't go to previous values (height-1)
 		//if ( (c->heights[height].value - c->heights[height-1].value) > g_settings->tree_layer_limit )
 		if ( height && (c->heights[height].value - c->heights[height-1].value) > g_settings->tree_layer_limit )
@@ -215,6 +242,8 @@ int annual_forest_structure(cell_t* const c, const int year)
 	CHECK_CONDITION(c->tree_layers_count, >, c->heights_count);
 
 	/*************************************************************************************/
+  
+   //printf(" BEOFRE COMPUTING N heigths in layer c->tree_layers[layer].layer_n_height_class %d\n", c->tree_layers[0].layer_n_height_class);
 
 	/** compute numbers of height classes within each layer **/
 
@@ -235,6 +264,10 @@ int annual_forest_structure(cell_t* const c, const int year)
 		CHECK_CONDITION(c->tree_layers[layer].layer_n_height_class, <, ZERO);
 	}
 	logger(g_debug_log, "**************************************\n\n");
+
+    // printf(" AFTER  COMPUTING N heigths in layer c->tree_layers[0].layer_n_height_class %d\n", c->tree_layers[0].layer_n_height_class);
+    //printf(" AFTER  COMPUTING N heigths in layer c->tree_layers[1.layer_n_height_class %d\n", c->tree_layers[1].layer_n_height_class);
+
 
 	/*************************************************************************************/
 
@@ -264,7 +297,7 @@ int annual_forest_structure(cell_t* const c, const int year)
 							//{
 								s = &c->heights[height].dbhs[dbh].ages[age].species[species];
 
-                                 //printf("in annual structure compute numbers of trees within each layer  s->counter[N_TREE] %d,\n",s->counter[N_TREE]);
+                               //  printf("in annual structure compute numbers of trees within each layer  s->counter[N_TREE] %d,\n",s->counter[N_TREE]);
 								c->tree_layers[layer].layer_n_trees += s->counter[N_TREE];
 							//}
 						}
@@ -275,6 +308,10 @@ int annual_forest_structure(cell_t* const c, const int year)
 		logger(g_debug_log, "-layer %d number of trees = %d\n", layer, c->tree_layers[layer].layer_n_trees);
 	}
 	logger(g_debug_log, "**************************************\n\n");
+     
+	 // printf(" AFTER  COMPUTING N heigths in layer c->tree_layers[0].llayer_n_trees%d\n", c->tree_layers[0].layer_n_trees);
+   // printf(" AFTER  COMPUTING N heigths in layer c->tree_layers[1].layer_n_trees %d\n", c->tree_layers[1].layer_n_trees);
+
 
 	/*************************************************************************************/
 
