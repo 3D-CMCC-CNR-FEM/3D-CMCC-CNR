@@ -628,8 +628,6 @@ void age_mortality ( cell_t *const c, const int height, const int dbh, const int
 
 	deadtree = (int)(livetree * age_mort);
 
-	//printf("ddalmo DEADTREES  = %d \n",deadtree);
-
 	logger(g_debug_log, "dead trees = %d\n", deadtree);
 
         if ( ( deadtree ) > 1 )  //FIXME set >=1
@@ -687,7 +685,7 @@ void stochastic_mortality ( cell_t *const c, const int height, const int dbh, co
 	/* stochastic mortality factor which considers that (see BIOME-BGC) a stochastic mortality happens
 	 * BUT for reasons differet (e.g. pests) to age mortality factor */
 
-   // printf("** IN STOCHASTIC MORTALITY **\n");
+  //  printf("** IN STOCHASTIC MORTALITY **\n");
 
 	age_t *a;
 	species_t *s;
@@ -703,8 +701,6 @@ void stochastic_mortality ( cell_t *const c, const int height, const int dbh, co
 
 	/* stochastic probability function */
 	deadtree = (int)( livetree * age_mort_fact );
-
-	//printf("dead tree %d \n",deadtree );
 	//printf("livetree %d \n",livetree );
 
 	//printf("s->counter[DEAD_TREE] %d \n",s->counter[DEAD_TREE]);
@@ -733,7 +729,6 @@ void stochastic_mortality ( cell_t *const c, const int height, const int dbh, co
 		s->counter[DEAD_TREE] += deadtree;
 		s->counter[N_TREE]    -= deadtree;
 
-		//	printf("s->counter[DEAD_TREE] %d \n",s->counter[DEAD_TREE]);
 	//printf("s->counter[N_TREE]  %d \n",s->counter[N_TREE] );
 //printf("c->daily_dead_tree 1 %d \n",c->daily_dead_tree );
 		/* check */
