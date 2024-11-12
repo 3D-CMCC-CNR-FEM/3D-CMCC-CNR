@@ -67,7 +67,7 @@ void soil_water_balance(cell_t *c, const meteo_daily_t *const meteo_daily, int y
 		c->daily_soil_evapo      = 0.;
 		c->daily_canopy_transp   = 0.;
 	}
- 
+	
 	/* soil moist ratio (%vol.) */
 	//test computing soil moist ratio or get it from met data (to possibly avoid)
 	//	if ( -9999 == meteo_daily->swc )
