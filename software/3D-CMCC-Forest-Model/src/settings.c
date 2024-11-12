@@ -265,8 +265,8 @@ static int settings_replanted_import(const char* const filename, settings_t* s)
 			}
 			else
 			{
-				// not found ? maybe we have an index ?
-				// e.g: REPLANTED_SPECIES_1
+				// if not found, look for the name of variable with index
+				// e.g: REPLANTED_SPECIES_0  and so on
 				p2 = strstr(token, sz_replanted_settings[i]);
 				if ( 0 == p2 - token )
 				{
