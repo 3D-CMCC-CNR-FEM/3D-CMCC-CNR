@@ -62,12 +62,16 @@ void dendrometry_old(cell_t *const c, const int layer, const int height, const i
 	{
            // 5p6 recompute tree_stem_C based on the new stem_c and the new N_tree!
            // otherwise it  use the value of the day before. The differences would be anyhow minimal.
-           
-                s->value[TREE_STEM_C]                = (s->value[STEM_C]             / (double)s->counter[N_TREE]);
+      //     printf("DENDROMETRY   s->value[STEM_C]              = %g  \n", s->value[STEM_C] );
+		  
 
+                s->value[TREE_STEM_C]                = (s->value[STEM_C]             / (double)s->counter[N_TREE]);
+  //printf("DENDROMETRY   s->value[TREE_STEM_C]             = %g \n",  s->value[TREE_STEM_C]);
+	//	   printf("DENDROMETRY    s->value[STEMCONST_P]             = %g  \n",  s->value[STEMCONST_P]);
+	//	   printf("DENDROMETRY s->value[STEMPOWER_P]            = %g  \n",s->value[STEMPOWER_P]);
 		/* use site specific stemconst stempower values */
 		d->value = pow(((s->value[TREE_STEM_C] * 1e3) * GC_GDM) / s->value[STEMCONST_P], (1. / s->value[STEMPOWER_P]));
-             
+      //   printf("DENDROMETRY  d->value            = %g \n",  d->value );    
 	}
 	logger(g_debug_log, "-STEM_C          = %f tC/cell\n", s->value[STEM_C]);
 	logger(g_debug_log, "-TREE_STEM_C     = %f tC/tree\n", s->value[TREE_STEM_C]);
