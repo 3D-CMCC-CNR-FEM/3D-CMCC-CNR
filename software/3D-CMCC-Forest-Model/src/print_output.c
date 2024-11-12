@@ -5515,8 +5515,7 @@ void EOY_print_output_cell_level_mc(cell_t *const c, const int year, const int y
 							{
 								s  = &c->heights[height].dbhs[dbh].ages[age].species[species];
 
-  
-                                                                /* values */
+                                                             /* values */
                                 	                 logger(g_annual_log, "%d,%d,%d", c->x, c->y, c->years[year].year);
 
 					                 /* print layer */
