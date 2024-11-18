@@ -29,13 +29,14 @@ enum {
 	, SETTINGS_CO2_TRANS
 	, SETTINGS_YEAR_START_CO2_FIXED
 	, SETTINGS_NDEP_FIXED
-	, SETTINGS_TBASE_RESP        // ddalmo : currently this setting is not available in the ifle  OPTIONAL 
+	, SETTINGS_TBASE_RESP        // note: currently this setting is not available in the ifle  OPTIONAL 
 	, SETTINGS_PHOTO_ACCL
 	, SETTINGS_RESP_ACCL
-	//, SETTINGS_COLD_ACCL         // 5p606
+	, SETTINGS_COLD_ACCL         // 5p67
+	, SETTINGS_N_REG             // 5p67
 	, SETTINGS_REGENERATION
 	, SETTINGS_MANAGEMENT
-	, SETTINGS_MANAGEMENT_TYPE  //ddalmo this value/setting is actually not reported in the setting file OPTIONAL 
+	, SETTINGS_MANAGEMENT_TYPE   // 5p7 this value/setting is actually not reported in the setting file OPTIONAL 
 	, SETTINGS_YEAR_START_MANAGEMENT
 	, SETTINGS_PROGN_AUT_RESP
 	, SETTINGS_SIZECELL
@@ -47,6 +48,7 @@ enum {
 	, SETTINGS_SOIL_LAYER
 	, SETTINGS_MAX_LAYER_COVER
 	, SETTINGS_THINNING_REGIME
+	, SETTINGS_BRANCH_REM       // 5p67
 	, SETTINGS_REGENERATION_SPECIES
 	, SETTINGS_REGENERATION_MANAGEMENT
 	, SETTINGS_REGENERATION_N_TREE
@@ -108,7 +110,8 @@ const char* sz_settings[SETTINGS_COUNT] = {
 	, "TBASE_RESP"
 	, "PHOTO_ACCL"
 	, "RESP_ACCL"
-	//, "COLD_ACCL"   //5p606
+	, "COLD_ACCL"     // 5p7
+	, "N_REG"         // 5p7
 	, "REGENERATION"
 	, "MANAGEMENT"
 	, "MANAGEMENT_TYPE"
@@ -123,6 +126,7 @@ const char* sz_settings[SETTINGS_COUNT] = {
 	, "SOIL_LAYER"
 	, "MAX_LAYER_COVER"
 	, "THINNING_REGIME"
+	,  "BRANCH_REM"   // 5p7 percentage of branches left in the stand after thinning 
 	, "REGENERATION_SPECIES"
 	, "REGENERATION_MANAGEMENT"
 	, "REGENERATION_N_TREE"
@@ -1148,13 +1152,20 @@ settings_t* settings_import(const char *const filename) {
 				}
 			break;
 			
-			//5p606 TODO 
+			//5p7 
 			
-			//case SETTINGS_COLD_ACCL:
-			//	if ( ! string_compare_i(token, "on") ) {
-		//			s->Cold_accl = 1;
-		//		}
-		//	break;
+			case SETTINGS_COLD_ACCL:
+				if ( ! string_compare_i(token, "on") ) {
+				s->Cold_accl = 1;
+				}
+		    break;
+        
+		    //5p7 
+			case SETTINGS_N_REG:
+				if ( ! string_compare_i(token, "on") ) {
+				s->N_reg = 1;
+				}
+		    break;
 			
 
 			case SETTINGS_REGENERATION:
@@ -1295,6 +1306,10 @@ settings_t* settings_import(const char *const filename) {
 
 					case SETTINGS_MAX_LAYER_COVER:
 						s->max_layer_cover = value;
+					break;
+                    //5p7 
+					case SETTINGS_BRANCH_REM:
+						s->thinning_branch_rem = (int)value;
 					break;
 
 					case SETTINGS_REGENERATION_N_TREE:
