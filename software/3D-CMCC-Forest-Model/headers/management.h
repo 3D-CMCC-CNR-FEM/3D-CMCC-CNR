@@ -27,7 +27,7 @@ void choose_management(species_t *const s, const int years);
 
 void clearcut_timber_upon_request(cell_t *const c, const int layer, const int height, const int dbh, const int age, const int species);
 
-void thinning (cell_t *const c, const int height, const int dbh, const int age, const int species, const int year, const int THINNING_INDEX);
+void thinning (cell_t *const c, const int height, const int dbh, const int age, const int species, const int year, const int THINNING_INDEX, const int counter_thinning);
 
 void prescribed_thinning (cell_t *const c, const int height, const int dbh, const int age, const int species, const int year);
 
