@@ -123,6 +123,7 @@ void initialization_forest_class_C (cell_t *const c, const int height, const int
 	logger(g_debug_log, "-Single tree volume = %f m3/tree\n", s->value[TREE_VOLUME]);
 	logger(g_debug_log, "-Class volume       = %f m3/cell\n", s->value[VOLUME]);
 
+
 	/*check for initial biomass*/
 	if (s->value[STEM_DM] == 0.0 || s->value[STEM_DM] == NO_DATA)
 	{
@@ -172,6 +173,15 @@ void initialization_forest_class_C (cell_t *const c, const int height, const int
 	logger(g_debug_log, "---Stem Biomass = %f tC/tree\n",  s->value[TREE_STEM_C]);
 	logger(g_debug_log, "---Stem Biomass = %f tDM/cell\n", s->value[STEM_DM]);
 	logger(g_debug_log, "---Stem Biomass = %f tC/cell\n",  s->value[STEM_C]);
+
+    
+	/* compute volume using biomass conversion factors */
+	s->value[TREE_VOLUME2] = (s->value[TREE_STEM_C]*GC_GDM)/s->value[CONV_VOL_FACTOR] ;
+	s->value[VOLUME2]      = s->value[TREE_VOLUME2] * s->counter[N_TREE];
+
+	logger(g_debug_log, "-Single tree volume2 = %f m3/tree\n", s->value[TREE_VOLUME2]);
+	logger(g_debug_log, "-Class volume2       = %f m3/cell\n", s->value[VOLUME2]);
+
 
 	if (s->value[BRANCH_DM] == 0.0 || s->value[BRANCH_DM] == NO_DATA)
 	{
@@ -743,6 +753,8 @@ void initialization_forest_class_C (cell_t *const c, const int height, const int
 	CHECK_CONDITION(s->value[BGB],                     <=, ZERO);
 	CHECK_CONDITION(s->value[VOLUME],                  <=, ZERO);
 	CHECK_CONDITION(s->value[TREE_VOLUME],             <=, ZERO);  
+	CHECK_CONDITION(s->value[VOLUME2],                  <=, ZERO);
+	CHECK_CONDITION(s->value[TREE_VOLUME2],             <=, ZERO); 
 }
 
 void initialization_forest_cell_C (cell_t *const c, const int height, const int dbh, const int age, const int species)
