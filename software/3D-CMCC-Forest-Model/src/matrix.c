@@ -981,7 +981,9 @@ static const char *sz_species_values[] =
 		"THINNING",                   /* thinning regime (based on year simulation) */
 		"THINNING_REGIME",            /* thinning regime (0 = above, 1 = below) */
 		"THINNING_INTENSITY",         /* thinning intensity (% of Basal Area/N-tree to remove) */
-
+        
+ 
+        "CONV_VOL_FACTOR",         /* conversion factor from stem biomass to stem volume (GSV) */
 		"MINSTOCKGROW",
 		"THINNING_80",
 		"THINNING_60_80",
@@ -1015,7 +1017,10 @@ static int fill_cell_from_species(age_t* const a, const row_t* const row) {
 	assert(a->species_count);
 	species.index = a->species_count-1 + a->species_avail;
 	a->species[a->species_count-1] = species;
+	//printf(" IN TREE MODEL SPECIES  %s!!!\n", s->name);
+	//printf(" IN MATRIX.c   species  %s !!!\n", a->species[a->species_count-1].name);
 	a->species[a->species_count-1].management = row ? row->management : T;
+	//printf(" IN MATRIX.c  management type for the species  %s !!!\n", a->species[a->species_count-1].management);
 	a->species[a->species_count-1].name = p;
 	a->species[a->species_count-1].counter[N_TREE]    = row ? row->n : 0;
 	a->species[a->species_count-1].counter[N_STUMP]   = row ? row->stool : 0;
@@ -1053,6 +1058,8 @@ static int fill_cell_from_ages(dbh_t* const d, const row_t* const row)
 
 	/* add age */
 	return fill_cell_from_species(&d->ages[d->ages_count-1], row);
+   
+
 }
 
 static int fill_cell_from_dbhs(height_t* const h, const row_t* const row)
