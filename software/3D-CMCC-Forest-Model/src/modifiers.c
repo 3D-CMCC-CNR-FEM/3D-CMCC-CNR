@@ -429,20 +429,21 @@ void modifiers(cell_t *const c, const int layer, const int height, const int dbh
 	// Acclimatation factor to high temperature in spring, after dormance period
 	// ref. Mäkelä et al.2004, 2008 ; Luo et al 2023 (New Phytologist)
 	// Gennaretti et al.2017 (applied to T in Vcmax)
+
 	
-	//TODO add a flag in the settings file
-	//if ( g_settings->Cold_accl )
-	//{ 
+	//5p7
+	if ( g_settings->Cold_accl )
+	{ 
 	tau_acl =   s->value[TAU]     ; 
         S_acl_MAX = s->value[Smax]    ; 
         XO  =       s->value[X0]      ;
         
         //CURRENTLY NOT USED
-#if 1
+        //#if 0
 	
-	s->value[F_ACCL] = 1. ;  
+	    //s->value[F_ACCL] = 1. ;  
 	
-#else 
+         //#else 
 
 	 if (c->doy == 1 )  
 	
@@ -470,21 +471,24 @@ void modifiers(cell_t *const c, const int layer, const int height, const int dbh
 	 s->value[F_ACCL] = 1. ;    // at 1 january put the value to 1
 	 }
 
-#endif 
+  //#endif 
 	
 
-   //  }  //TODO end flag cold acclimatation
+    }  //TODO end flag cold acclimatation
 
 	/********************************************************************************************/
 
         //TODO add flag for N modifier
         // currently not used
 	
-#if 1
+//#if 1
 	
-	s->value[F_NUTR] = 1. ;  
+	// s->value[F_NUTR] = 1. ;  
 	
-#else
+//#else
+
+if ( g_settings->N_reg )
+	{
 
 	/* SOIL NUTRIENT MODIFIER */
 	s->value[F_NUTR] = 1. - ( 1. - c->fn0 ) * pow ( ( 1. - c->fr), c->fnn );
@@ -494,7 +498,13 @@ void modifiers(cell_t *const c, const int layer, const int height, const int dbh
 	CHECK_CONDITION( s->value[F_NUTR], >, 1 );
 	CHECK_CONDITION( s->value[F_NUTR], <, ZERO );	
 
-#endif
+ //#endif
+
+	} else {
+
+	s->value[F_NUTR] = 1. ; 
+
+	}
 
 	//test 25 nov 2016
 #if 0
