@@ -519,19 +519,21 @@ int annual_forest_structure(cell_t* const c, const int year)
 
 	/** compute total number of trees **/
 
-		//printf(" compute total number of trees !!!\n");
-		
-		
+	//printf(" compute total number of trees !!!\n");
 
 
-	logger(g_debug_log, "*compute total number of trees*\n\n");
+	logger(g_debug_log, "*compute total number of trees and total basal area *\n\n");
 
 	c->n_trees = 0;
 
+	c->basal_area = 0.;
+
 	for ( height = 0; height < c->heights_count ; ++height )
 	{
+
 		for ( dbh = 0; dbh < c->heights[height].dbhs_count; ++dbh )
 		{
+
 			for ( age = 0; age < c->heights[height].dbhs[dbh].ages_count ; ++age )
 			{
 				for ( species = 0; species < c->heights[height].dbhs[dbh].ages[age].species_count; ++species )
@@ -539,11 +541,12 @@ int annual_forest_structure(cell_t* const c, const int year)
 					s = &c->heights[height].dbhs[dbh].ages[age].species[species];
 
 					c->n_trees += s->counter[N_TREE];
+					c->basal_area += s->value[STAND_BASAL_AREA_m2] ; // ( ( pow( ( d->value / 2.), 2. ) ) * Pi)* 0.0001* s->counter[N_TREE];
 				}
 			}
 		}
 	}
-//printf("  c->n_trees      = %d  \n",c->n_trees);
+    //printf("  c->n_trees      = %d  \n",c->n_trees);
 	logger(g_debug_log,"n_trees = %d \n", c->n_trees);
 	logger(g_debug_log, "**************************************\n");
 	logger(g_debug_log, "**************************************\n");
@@ -630,6 +633,8 @@ int daily_forest_structure ( cell_t *const c, const meteo_daily_t *const meteo_d
 
 	species_t *s;
 	age_t *a;
+	//height_t *h;
+	//dbh_t *d;
 
 	/* this function compute annually:
 	 * -the number of forest layers comparing the tree height values of all tree height classes
@@ -881,10 +886,14 @@ int daily_forest_structure ( cell_t *const c, const meteo_daily_t *const meteo_d
 
 	c->n_trees = 0;
 
+	c->basal_area = 0.;
+
 	for ( height = 0; height < c->heights_count ; ++height )
 	{
+	//	  h = &c->heights[height];
 		for ( dbh = 0; dbh < c->heights[height].dbhs_count; ++dbh )
 		{
+		//	d = &h->dbhs[dbh];
 			for ( age = 0; age < c->heights[height].dbhs[dbh].ages_count ; ++age )
 			{
 				for ( species = 0; species < c->heights[height].dbhs[dbh].ages[age].species_count; ++species )
@@ -915,6 +924,7 @@ int daily_forest_structure ( cell_t *const c, const meteo_daily_t *const meteo_d
 					s->value[DAILY_CANOPY_COVER_PROJ] = s->value[CANOPY_COVER_PROJ];
 
 					c->n_trees += s->counter[N_TREE];
+						c->basal_area +=  s->value[STAND_BASAL_AREA_m2] ; // ( ( pow( ( d->value / 2.), 2. ) ) * Pi)* 0.0001* s->counter[N_TREE];
 				}
 			}
 		}
@@ -930,6 +940,7 @@ int daily_forest_structure ( cell_t *const c, const meteo_daily_t *const meteo_d
 	{
 		for ( height = 0; height < c->heights_count ; ++height )
 		{
+
 			if( layer == c->heights[height].height_z )
 			{
 				for ( dbh = 0; dbh < c->heights[height].dbhs_count; ++dbh )
