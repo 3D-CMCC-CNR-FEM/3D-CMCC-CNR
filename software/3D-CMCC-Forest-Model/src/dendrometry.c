@@ -140,6 +140,7 @@ void dendrometry_old(cell_t *const c, const int layer, const int height, const i
 	/* basal area */
 	s->value[BASAL_AREA]          = ( ( pow( ( d->value / 2.), 2. ) ) * Pi);
 	s->value[BASAL_AREA_m2]       = s->value[BASAL_AREA]    * 0.0001;
+	
 	s->value[STAND_BASAL_AREA]    = s->value[BASAL_AREA]    * s->counter[N_TREE];
 	s->value[STAND_BASAL_AREA_m2] = s->value[BASAL_AREA_m2] * s->counter[N_TREE];
 
@@ -177,7 +178,9 @@ void dendrometry_old(cell_t *const c, const int layer, const int height, const i
 #endif
 
 	/**/	
-	// NOTE: this should not anyhow happen as the sapwood area eventually is going to decrease with time or stress events
+	// NOTE: this should not anyhow happen as the sapwood area eventually 
+	// is going to decrease with age or stress events
+
 	if ( s->value[SAPWOOD_AREA] > s->value[BASAL_AREA] + eps3 )
 	{
 		s->value[SAPWOOD_AREA] = s->value[BASAL_AREA];
@@ -210,6 +213,9 @@ void annual_tree_increment(cell_t *const c, const int height, const int dbh, con
 {
 	double prev_vol;
 	double tree_prev_vol;
+
+    double prev_vol2;
+	double tree_prev_vol2;
 	double max_diff = 0.05;           /* maximum allowed differences in m3/tree between initialized volume and computed at the first year */
 
 	height_t *h;
@@ -267,7 +273,52 @@ void annual_tree_increment(cell_t *const c, const int height, const int dbh, con
 	if ( ! s->counter[YOS] ) { CHECK_CONDITION( ( tree_prev_vol - s->value[TREE_VOLUME] ), > , max_diff ); }
 	else { CHECK_CONDITION( s->value[TREE_VOLUME], < , tree_prev_vol - eps ); }
 
+    // compute data from volume2 (Vangi Elia's conversion factors)
 
+		/* in m^3/cell/yr */
+	/* assumption: CAI = Volume t1 - Volume t0 */
+	/* assumption: MAI = Volume t1 / Age t1 */
+
+	/* CURRENT ANNUAL INCREMENT-CAI */
+
+	logger(g_debug_log, "***VOLUME2 & CAI2 & MAI2***\n");
+
+	/* STAND VOLUME2-(STEM VOLUME2) */
+	/* assign previous volume to temporary variables */
+	prev_vol2              = s->value[VOLUME2];
+	logger(g_debug_log, "Previous stand volume2        = %f m^3/cell\n", prev_vol2 );
+
+	tree_prev_vol2         = s->value[TREE_VOLUME2];
+	logger(g_debug_log, "Previous single tree volume2  = %f m^3DM/tree\n", tree_prev_vol2 );
+
+	/* compute single tree volume */
+	s->value[TREE_VOLUME2] = (s->value[TREE_STEM_C]*GC_GDM)/s->value[CONV_VOL_FACTOR] ; //(Pi * s->value[FORM_FACTOR] * pow((d->value / 100.) , 2.) * h->value) / 4.;
+	logger(g_debug_log, "-Single tree-stem volume2 = %g m3/tree\n", s->value[TREE_VOLUME2]);
+
+	/* compute class volume */
+	s->value[VOLUME2]      = s->value[TREE_VOLUME2] * s->counter[N_TREE];
+	logger(g_debug_log, "-Class volume2 = %g m3/sizeCell\n", s->value[VOLUME2]);
+
+	/* CAI2-Current Annual Increment */
+	s->value[CAI2]         = s->value[VOLUME2]      - prev_vol2;
+	logger(g_debug_log, "CAI2-Current Annual Increment = %f m^3DM/cell/yr\n", s->value[CAI2]);
+
+	s->value[TREE_CAI2]    = s->value[TREE_VOLUME2] - tree_prev_vol2;
+	logger(g_debug_log, "CAI2-Current Annual Increment = %f m^3DM/tree/yr\n", s->value[TREE_CAI2]);
+
+	/* MAI2-Mean Annual Increment */
+	s->value[MAI2]         = s->value[VOLUME2]      / (double)a->value;
+	logger(g_debug_log, "MAI2-Mean Annual Increment    = %f m^3DM/cell/yr \n", s->value[MAI2]);
+
+	s->value[TREE_MAI2]    = s->value[TREE_VOLUME2] / (double)a->value;
+	logger(g_debug_log, "MAI2-Mean Annual Increment    = %f m^3DM/tree/yr \n", s->value[TREE_MAI2]);
+
+	c->volume2     += s->value[VOLUME2];
+	c->cum_volume2 += s->value[VOLUME2];
+
+	/* check every year after the first */
+	if ( ! s->counter[YOS] ) { CHECK_CONDITION( ( tree_prev_vol2 - s->value[TREE_VOLUME2] ), > , max_diff ); }
+	else { CHECK_CONDITION( s->value[TREE_VOLUME2], < , tree_prev_vol2 - eps ); }
 }
 
 void annual_minimum_reserve (species_t *const s)
