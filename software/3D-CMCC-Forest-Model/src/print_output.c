@@ -5384,9 +5384,9 @@ void EOY_print_output_cell_level_mc(cell_t *const c, const int year, const int y
 										",CLE"
 										",WUE"
 										",MAX_ANN_RESERVE_C"
-                                                                                ",MIN_ANN_RESERVE_C"
-                                                                                ",TREE_MAX_ANN_RESERVE_C"
-                                                                                ",TREE_MIN_ANN_RESERVE_C"
+                                        ",MIN_ANN_RESERVE_C"
+                                        ",TREE_MAX_ANN_RESERVE_C"
+                                        ",TREE_MIN_ANN_RESERVE_C"
 										",MIN_RESERVE_C"
 										",RESERVE_C"
 										",STEM_C"
@@ -5431,6 +5431,12 @@ void EOY_print_output_cell_level_mc(cell_t *const c, const int year, const int y
 										",MAI"
 										",VOLUME"
 										",TREE_VOLUME"
+										",TREE_CAI2"
+										",TREE_MAI2"
+										",CAI2"
+										",MAI2"
+										",VOLUME2"
+										",TREE_VOLUME2"
 										",DELTA_TREE_VOL(perc)"
 										",DELTA_AGB"
 										",DELTA_BGB"
@@ -5452,7 +5458,7 @@ void EOY_print_output_cell_level_mc(cell_t *const c, const int year, const int y
                if (!print_cell)
                  { 
 		  /* heading cell variables */
-		  logger(g_annual_log,",gpp,npp,ar,hr,rsoil,rsoilCO2,reco,nee,nep,et,le,soil-evapo,avg_asw,iWue,vol,cum_vol,run_off,"  
+		  logger(g_annual_log,",gpp,npp,ar,hr,rsoil,rsoilCO2,reco,nee,nep,et,le,soil-evapo,avg_asw,iWue,vol,cum_vol,vol2,cum_vol2,run_off,"  
 				"litrC,litr1C,litr2C,litr3C,litr4C,cwdC,cwd2C,cwd3C,cwd4C,soilC,soil1C,soil2C,soil3C,soil4C,"
 				"litrN,litr1N,litr2N,litr3N,litr4N,cwdN,cwd2N,cwd3N,cwd4N,soilN,soil1N,soil2N,soil3N,soil4N,soil_depth"); 
 		  /************************************************************************/
@@ -5541,7 +5547,7 @@ void EOY_print_output_cell_level_mc(cell_t *const c, const int year, const int y
 								logger(g_annual_log,",%6.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%d,%d,%d,%d,%d,%3.4f"
 										",%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f"
 										",%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f"
-										",%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f",
+										",%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f",
 										s->value[YEARLY_GPP],
 										s->value[YEARLY_GPP_SUN]   / s->value[YEARLY_GPP],
 										s->value[YEARLY_GPP_SHADE] / s->value[YEARLY_GPP],
@@ -5641,6 +5647,12 @@ void EOY_print_output_cell_level_mc(cell_t *const c, const int year, const int y
 										s->value[MAI],
 										s->value[VOLUME],
 										s->value[TREE_VOLUME],
+										s->value[TREE_CAI2],
+										s->value[TREE_MAI2],
+										s->value[CAI2],
+										s->value[MAI2],
+										s->value[VOLUME2],
+										s->value[TREE_VOLUME2],
 										(s->value[TREE_CAI]*100.)/s->value[TREE_VOLUME],
 										s->value[DELTA_AGB],
 										s->value[DELTA_BGB],
@@ -5681,6 +5693,8 @@ void EOY_print_output_cell_level_mc(cell_t *const c, const int year, const int y
 			c->annual_iwue,
 			c->volume,
 			c->cum_volume,
+			c->volume2,
+			c->cum_volume2,
 			c->annual_out_flow,
 			c->litrC,
 			c->litr1C,
@@ -5752,7 +5766,7 @@ void EOY_print_output_cell_level_mc(cell_t *const c, const int year, const int y
 	{
 
       //printf("PRINT OUTPUT c->annual_hwp %g \n ",c->annual_hwp); 
-		//TODO ALESSIOC TO ALLESSIOR PRINT EMPTY SPACES WHEN N_TREE = 0
+		//TODO ALESSIOC TO ALLESSIOR PRINT EMPTY SPACES WHEN N_TREE = 0 DONE!!
 
 		// sept 2024 when basically there are no more trees in the cells 
       
