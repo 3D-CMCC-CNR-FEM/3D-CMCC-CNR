@@ -98,6 +98,7 @@ enum {
 #define SOIL4_CN                10.0      /* C:N for recalcitrant SOM pool (humus) */
 #define DENITRIF_PROPORTION     0.01      /* fraction of mineralization to volatile */
 #define MOBILEN_PROPORTION       0.1      /* fraction mineral N avail for leaching */
+
 /* use this block of constants to include the dynamics for slowest soil pool (s4) */
 /* respiration fractions for fluxes between compartments (unitless) */
 #define	RFL1S1                  0.39      /* transfer from litter 1 to soil 1 */
@@ -106,6 +107,7 @@ enum {
 #define	RFS1S2                  0.28      /* transfer from soil 1 to soil 2 */
 #define	RFS2S3                  0.46      /* transfer from soil 2 to soil 3 */
 #define	RFS3S4                  0.55      /* transfer from soil 3 to soil 4 */
+
 /* base (maximum) decomposition rate constants (1/day) */
 #define KL1_BASE                0.7       /* labile litter pool */
 #define KL2_BASE               0.07       /* cellulose litter pool */
@@ -116,6 +118,9 @@ enum {
 #define KS4_BASE             0.0001       /* recalcitrant SOM (humus) pool */
 #define KFRAG_BASE            0.001       /* physical fragmentation of coarse woody debris */
 
+// thresholds/constant  
+#define thinning_threshold      35        /* [year] age limit to perform thinning when shelterwood is performed */
+#define coppice_rf              0.10       /* reduction factor of stem density-replanting after each clear cut for coppice */
 
 
 //MARCONI CONSTANTS::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
