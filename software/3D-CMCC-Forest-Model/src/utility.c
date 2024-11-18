@@ -247,10 +247,11 @@ void reset_annual_cell_variables(cell_t *const c)
 	c->annual_et =                      0.;
 	c->annual_lh_flux =                 0.;
 	c->annual_sh_flux =                 0.;
-	c->basal_area =                     0.;
+	//c->basal_area =                     0.;  // compute every time annual_structure is called
 	c->agb =                            0.;
 	c->bgb =                            0.;
 	c->volume =                         0.;
+	c->volume2 =                         0.;
 	c->yearly_C_to_wood =               0.;	
 	//c->dead_tree =                    0;
 	c->daily_dead_tree  =               0;
