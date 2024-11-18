@@ -189,13 +189,32 @@ void tree_biomass_remove (cell_t *const c, const int height, const int dbh, cons
 	s = &c->heights[height].dbhs[dbh].ages[age].species[species];
 	double branch_perc_remove;  
 
-	branch_perc_remove = 1. ;  // can be provided externally or species-specific
+	//branch_perc_remove = 1. ;  // now provided externally or species-specific
+    branch_perc_remove = MAX(g_settings->thinning_branch_rem/100.,1.);
+
+	//printf(" BIOMASS REMOVE   branch_perc_remove  %f!!!\n",branch_perc_remove  );
 
 	logger(g_debug_log, "\n* TREE BIOMASS REMOVE *\n");
 
 	/******************************************************************************************/
     /* update class carbon pools */
-#if 1
+
+	#if 0
+ 			printf(" BIOMASS REMOVE ANFANG   reserve to remove   %f!!!\n",(s->value[TREE_RESERVE_C]    * tree_remove) * 1e6 / g_settings->sizeCell );
+
+			printf(" BIOMASS REMOVE   c->leaf_carbon   %f!!!\n",c->leaf_carbon  );
+			printf(" BIOMASS REMOVE    c->croot_carbon   %f!!!\n",c->croot_carbon   );
+			printf(" BIOMASS REMOVE    c->froot_carbon   %f!!!\n",c->froot_carbon   );
+			printf(" BIOMASS REMOVE   c->stem_carbon   %f!!!\n",c->stem_carbon  );
+			printf(" BIOMASS REMOVE    c->branch_carbon   %f!!!\n",c->branch_carbon  );
+			printf(" BIOMASS REMOVE E   c->reserve_carbon   %f!!!\n",c->reserve_carbon  );
+			printf(" BIOMASS REMOVE    c->fruit_carbon   %f!!!\n",c->fruit_carbon  );
+			printf(" BIOMASS REMOVE    c->soilC  %f!!!\n",c->soilC  );
+			printf(" BIOMASS REMOVE    c->cwd_C   %f!!!\n",c->cwd_C  );
+			printf(" BIOMASS REMOVE    c->litrC   %f!!!\n",c->litrC  );
+ 	#endif	
+
+	#if 1
   
 	s->value[LEAF_C]    -= (s->value[TREE_LEAF_C]    * tree_remove);
 	s->value[FROOT_C]   -= (s->value[TREE_FROOT_C]   * tree_remove);
@@ -242,13 +261,11 @@ void tree_biomass_remove (cell_t *const c, const int height, const int dbh, cons
 	c->reserve_carbon           -= ((s->value[TREE_RESERVE_C]    * tree_remove) * 1e6 / g_settings->sizeCell);
 	c->fruit_carbon             -= ((s->value[TREE_FRUIT_C]    * tree_remove)  * 1e6 / g_settings->sizeCell);
 
-		//	printf(" IN BIOMASS REMOVE  MORTALITY  !!!\n"  );
+		
 
-#if 0
-
-printf(" BIOMASS REMOVE   reserve to remove   %f!!!\n",(s->value[TREE_RESERVE_C]    * tree_remove) * 1e6 / g_settings->sizeCell );
-
-			printf(" BIOMASS REMOVE   c->leaf_carbon   %f!!!\n",c->leaf_carbon  );
+ 	#if 0
+            printf(" IN BIOMASS REMOVE  MORTALITY  !!!\n"  );
+			printf(" BIOMASS REMOVE  AFTER   c->leaf_carbon   %f!!!\n",c->leaf_carbon  );
 			printf(" BIOMASS REMOVE    c->croot_carbon   %f!!!\n",c->croot_carbon   );
 			printf(" BIOMASS REMOVE    c->froot_carbon   %f!!!\n",c->froot_carbon   );
 			printf(" BIOMASS REMOVE   c->stem_carbon   %f!!!\n",c->stem_carbon  );
@@ -258,7 +275,7 @@ printf(" BIOMASS REMOVE   reserve to remove   %f!!!\n",(s->value[TREE_RESERVE_C]
 			printf(" BIOMASS REMOVE    c->soilC  %f!!!\n",c->soilC  );
 			printf(" BIOMASS REMOVE    c->cwd_C   %f!!!\n",c->cwd_C  );
 			printf(" BIOMASS REMOVE    c->litrC   %f!!!\n",c->litrC  );
-#endif	
+ 	#endif	
 
 	/* check */
 	CHECK_CONDITION ( c->leaf_carbon,    < , ZERO_C );
@@ -274,9 +291,9 @@ printf(" BIOMASS REMOVE   reserve to remove   %f!!!\n",(s->value[TREE_RESERVE_C]
 
 #if 1 
 
-/* carbon to litter fluxes */
+    /* carbon to litter fluxes */
 
- // Aggregate the fluxes toward CWD pool 
+    // Aggregate the fluxes toward CWD pool 
 
 	if ( ! nat_man )
 	{
@@ -387,6 +404,9 @@ printf(" BIOMASS REMOVE   reserve to remove   %f!!!\n",(s->value[TREE_RESERVE_C]
 							s->value[TREE_BRANCH_C]* (1.-branch_perc_remove) +
 							s->value[TREE_FRUIT_C] ) * tree_remove ;
 
+	//printf(" BIOMASS REMOVE   s->value[C_TO_LITR]     %f!!!\n",s->value[C_TO_LITR]   );
+	//printf(" BIOMASS REMOVE    s->value[C_TO_CWD]      %f!!!\n", s->value[C_TO_CWD]   );
+
 	}
 	/******************************************************************************************/
 	/* accounting for harvested/thinned wood products (HWP) */
@@ -397,6 +417,7 @@ printf(" BIOMASS REMOVE   reserve to remove   %f!!!\n",(s->value[TREE_RESERVE_C]
 	if ( nat_man && s->counter[THINNING_HAPPENS] == 1 || s->counter[HARVESTING_HAPPENS] == 1 )   // TODO include the condition nat_man=1  
 	{
 		/* compute woody biomass removed (tC/ha/yr) */
+
 		s->value[C_HWP]          += (s->value[TREE_STEM_C] + s->value[TREE_BRANCH_C]*branch_perc_remove)* tree_remove;
 		s->value[CUM_C_HWP]      += s->value[C_HWP];
 
@@ -405,11 +426,15 @@ printf(" BIOMASS REMOVE   reserve to remove   %f!!!\n",(s->value[TREE_RESERVE_C]
 
 		c->annual_hwp += ((s->value[TREE_STEM_C] + s->value[TREE_BRANCH_C]*branch_perc_remove)* tree_remove * 1e6 / g_settings->sizeCell);
  
-       //printf(" ____daily_hwp_fluxes  **************************    = %f gC/m2/day\n", c->annual_hwp);
+        //printf(" ____daily_hwp_fluxes  **************************    = %f gC/m2/day\n", c->annual_hwp);
   
 		/* compute stem volume removed (m3/ha/yr) */
 		s->value[VOLUME_HWP]     += s->value[TREE_VOLUME] * tree_remove;
 		s->value[CUM_VOLUME_HWP] += s->value[TREE_VOLUME] * tree_remove;
+
+        // computing using Elia's conversion factor
+	    s->value[VOLUME2_HWP]     += s->value[TREE_VOLUME2] * tree_remove;
+		s->value[CUM_VOLUME2_HWP] += s->value[TREE_VOLUME2] * tree_remove;
 	}
 
 #else  //5p5 and 5p6
