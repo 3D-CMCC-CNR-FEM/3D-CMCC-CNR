@@ -64,6 +64,8 @@ extern logger_t* g_debug_log;
 extern settings_t* g_settings;
 extern dataset_t* g_dataset;
 
+static const char sz_management[] = "TCN";
+
 
 //extern const char sz_err_out_of_memory[];
 
@@ -253,6 +255,7 @@ int Tree_model_daily (matrix_t *const m, const int cell, const int day, const in
 							s = &m->cells[cell].heights[height].dbhs[dbh].ages[age].species[species];
 
 							//printf(" IN TREE MODEL SPECIES  %s!!!\n", s->name);
+							//printf(" IN TREE MODEL management type for the species  %c !!!\n", sz_management[s->management]);
 
 							logger(g_debug_log,"*****************************************************************************\n"
 									"*                              species = %s                         *\n"
@@ -492,6 +495,12 @@ int Tree_model_daily (matrix_t *const m, const int cell, const int day, const in
 											/* Mortality based on stochasticity */
 											stochastic_mortality ( c, height, dbh, age, species );
 							      	}
+
+                                    // update 
+
+									s->value[STAND_BASAL_AREA]    = s->value[BASAL_AREA]    * s->counter[N_TREE];
+	                                s->value[STAND_BASAL_AREA_m2] = s->value[BASAL_AREA_m2] * s->counter[N_TREE];
+
 
 									// update canopy cover projection 
                                      
