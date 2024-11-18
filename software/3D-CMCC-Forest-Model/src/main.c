@@ -1395,6 +1395,9 @@ int main(int argc, char *argv[]) {
 			logger(g_debug_log, "Processing soil data files for cell at %d,%d...\n", matrix->cells[cell].x, matrix->cells[cell].y);
 			logger(g_debug_log, "input_soil_path = %s\n", g_sz_soil_file);
 
+            // counter for the number of time respruting occurs when coppice management 
+            matrix->cells[cell].cell_coppice_count = 1 ;
+
 			for ( i = 0; i < soil_settings_count; ++i )
 			{
 				if ( (matrix->cells[cell].x == (int)s[i].values[SOIL_X])
@@ -1781,6 +1784,7 @@ int main(int argc, char *argv[]) {
 			matrix->cells[cell].years[year].yearly_mean.rh_f /= MONTHS_COUNT;
 			matrix->cells[cell].years[year].yearly_mean.incoming_par /= MONTHS_COUNT;
 			matrix->cells[cell].years[year].yearly_mean.par /= MONTHS_COUNT;
+			
 		}
 
 		for ( month = 0; month < MONTHS_COUNT; ++month )
@@ -1804,6 +1808,7 @@ int main(int argc, char *argv[]) {
 				for ( cell = 0; cell < matrix->cells_count; ++cell )
 				{
 
+                    
                     if( !day && !month && year ) matrix->cells[cell].cell_age += 1;
 				
 					//printf("PRINT AGE CELL  %d \n", matrix->cells[cell].cell_age);
@@ -1821,6 +1826,8 @@ int main(int argc, char *argv[]) {
 
 					/* print cell data */
 					if (matrix->cells_count > 0.) print_daily_cell_data ( &matrix->cells[cell] );
+
+                    
 
 					/************************************************************************/
 					/* note: if spinup 'on' tree_model_daily doesn't run */
