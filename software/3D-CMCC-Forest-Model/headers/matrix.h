@@ -114,6 +114,7 @@ enum {
 	THINNING,                            /* thinning regime (based on year simulation) */
 	THINNING_REGIME,                     /* thinning regime (0 = above, 1 = below) */
 	THINNING_INTENSITY,                  /* thinning intensity (% of Basal Area/N-tree to remove) */
+    CONV_VOL_FACTOR,                     // conversion factor from stem carbon sto stem volume (GSV)
 
 	MINSTOCKGROW,
 	THINNING_80,
@@ -154,11 +155,19 @@ enum {
 	STAND_BASAL_AREA_m2,                 /* (m2/class) Class Basal Area of overall class */
 	MASS_DENSITY,                        /* (tDM/m3) mass density */
 	VOLUME,                              /* (m3/class) Stem Volume */
-	TREE_VOLUME,                         /* (m3/tree) Single Tree Volume */
+	TREE_VOLUME,                         /* (m3/tree) Single Tree-stem  Volume */
 	CAI,                                 /* (m3/class/year) Current Annual Volume Increment */
-	TREE_CAI,                            /* (m3/tree/year) Single Tree Current Annual Volume Increment */
+	TREE_CAI,                            /* (m3/tree/year) Single Tree-stem  Current Annual Volume Increment */
 	MAI,                                 /* (m3/class/year) Mean Annual Volume Increment */
-	TREE_MAI,                            /* (m3/tree/year) Single Tree Mean Annual Volume Increment */
+	TREE_MAI,                            /* (m3/tree/year) Single Tree-stem  Mean Annual Volume Increment */
+
+	VOLUME2,                              /* (m3/class) Stem Volume using conversion factor  */
+	TREE_VOLUME2,                         /* (m3/tree) Single Tree-stem  Volume using conversion factor*/
+	CAI2,                                 /* (m3/class/year) Current Annual Volume Increment using VOLUME2 */
+	TREE_CAI2,                            /* (m3/tree/year) Single Tree-stem Current Annual Volume Increment using VOLUME2 */
+	MAI2,                                 /* (m3/class/year) Mean Annual Volume Increment using VOLUME2 */
+	TREE_MAI2,                            /* (m3/tree/year) Single Tree-stem  Mean Annual Volume Increment using VOLUME2 */
+	
 	STEMCONST,                           /* constant in the stem mass vs. diameter relationship */
 	MAX_SPECIES_COVER,                   /* (DIM) maximum species-specific cell cover */
     
@@ -542,6 +551,9 @@ enum {
 	CUM_C_HWP,                          /* (tC/cell) cumulated harvested woody products removed from stand */
 	VOLUME_HWP,                         /* (m3/cell/yr) annual volume harvested woody products removed from stand */
 	CUM_VOLUME_HWP,                     /* (m3/cell) annual volume harvested woody products removed from stand */
+    
+    VOLUME2_HWP,                         /* (m3/cell/yr) annual volume harvested woody products removed from stand using VOLUME2*/
+	CUM_VOLUME2_HWP,                     /* (m3/cell) annual volume harvested woody products removed from stand using VOLUME2*/
     
 
 	C_STEM_TO_HWP,                      /* (tC/cell/yr) annual harvested woody products removed from stand as stem */
@@ -1067,7 +1079,9 @@ typedef struct
 	int cell_height_class_counter;
 	int canopy_int_cell_height_class_counter;
     int cell_age;                                                         // age of the stand (abovegraound/soprassuolo)
-
+ 
+    int cell_coppice_count;                                             //  reduction counter for coppice density
+   
 	int year_stand;                                                       /* input stand.txt row stand year : used when man = var */
  
 	int x;                                                                /* cell index within the matrix */
@@ -1111,8 +1125,10 @@ typedef struct
 	double basal_area;                                                    /* (m2/cell) cumulated basal area at cell level */
 	double agb;                                                           /* (tC/cell) current above ground biomass at cell level */
 	double bgb;                                                           /* (tC/cell) current below ground biomass at cell level */
-	double volume;                                                        /* (m3/cell) current volume */
-	double cum_volume;                                                    /* (m3/cell) cumulated volume */
+	double volume;                                                        /* (m3/cell) current stem volume */
+	double cum_volume;                                                    /* (m3/cell) cumulated stem volume */
+	double volume2;                                                        /* (m3/cell) current stem volume using conversion factors for volume*/
+	double cum_volume2;                                                    /* (m3/cell) cumulated stem volume using conversion factorsfor volume */
 	double standing_wood;                                                 /* (tC/cell) standing wood biomass */
 	double yearly_C_to_wood;                                              /* (tC/cell/year) Annual Carbon stocked into wood pool */
 	double cum_yearly_C_to_wood;                                          /* (tC/cell) Cumulated Annual Carbon stocked into wood pool */
