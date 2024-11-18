@@ -68,13 +68,15 @@ typedef struct {
 	double Tbase_resp;                   /* T base temperature for respiration (°C) */
 	char Photo_accl;
 	char Resp_accl;                      /* acclimation of repiration must be 'on' or 'off' */
-//	char Cold_accl;                      /* acclimation of GPP from winter to spring must be 'on' or 'off' */    //ddalmo 29.04.24
+	char Cold_accl;                      /* acclimation of GPP from winter to spring must be 'on' or 'off' */    //5p7
+	char N_reg;                          /* downregulation of the GPP via soil fertility acclimation of GPP from winter to spring must be 'on' or 'off' */    //5p7
 	char regeneration;                   /* regeneration must be 'on' or 'off' */
 	char management;                     /* management must be 'on' of 'off' */
 	char management_type;                /* optional: 0 ( default ) for bau, 1 for local */
 	int year_start_management;           /* start year management (if management is on) */
 	char Prog_Aut_Resp;                  /* Prognostic autotrophic respiration */
 	char thinning_regime;                /* thinning regime above = A or below = B */
+	int  thinning_branch_rem;                /* percentage of branches left in the stand as CWD after thinning harvest*/
 	char regeneration_species[SETTINGS_REGENERATION_SPECIES_MAX_SIZE]; /* species name of regeneration species */
 	// ALESSIOR: use e_management from matrix.h not char
 	char regeneration_management;        /*this is a mandatory variables that each class has to have AND DETERMINES HABITUS OF PLANT*/
