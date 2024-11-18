@@ -31,7 +31,7 @@ void littering ( cell_t *const c, species_t *const s )
 	s->value[CWD_TO_LITR4C]        = s->value[C_TO_CWD]       * s->value[DEADWOOD_LIGN_FRAC];
 	/* check */
 	CHECK_CONDITION ( s->value[CWD_TO_LITR2C] + s->value[CWD_TO_LITR3C] + s->value[CWD_TO_LITR4C] , == , s->value[CWD_TO_LITRC] + eps );
-   // printf("s->value[CWD_TO_LITRC]           = %g tC/cell/day\n", (s->value[CWD_TO_LITRC] * 1e6 / g_settings->sizeCell));
+    //printf("c->value[CWD_TO_LITRC]           = %g tC/cell/day\n", (s->value[CWD_TO_LITRC] * 1e6 / g_settings->sizeCell));
 
 	/*** compute cell-level cwd carbon pools (gC/m2) ***/
 	c->cwd_C                      += s->value[CWD_TO_LITRC]   * 1e6 / g_settings->sizeCell;
@@ -52,7 +52,7 @@ void littering ( cell_t *const c, species_t *const s )
 	s->value[LEAF_TO_LITR4C]            = s->value[C_LEAF_TO_LITR]      * s->value[LEAF_LITR_LIGN_FRAC];
 	/* check */
 	CHECK_CONDITION ( s->value[LEAF_TO_LITR1C] + s->value[LEAF_TO_LITR2C] + s->value[LEAF_TO_LITR3C] + s->value[LEAF_TO_LITR4C] , == , s->value[LEAF_TO_LITRC] + eps );
-   // printf("s->value[LEAF_TO_LITRC]           = %g tC/cell/day\n", (s->value[LEAF_TO_LITRC]* 1e6 / g_settings->sizeCell));
+  //  printf("c->value[LEAF_TO_LITRC]           = %g tC/cell/day\n", (s->value[LEAF_TO_LITRC]* 1e6 / g_settings->sizeCell));
 
 	/*** update cell-level leaf litter carbon fluxes (gC/m2/day) ****/
 	c->daily_leaf_to_litrC             += s->value[LEAF_TO_LITRC]       * 1e6 / g_settings->sizeCell;
@@ -62,7 +62,7 @@ void littering ( cell_t *const c, species_t *const s )
 	c->daily_leaf_to_litr4C            += s->value[LEAF_TO_LITR4C]      * 1e6 / g_settings->sizeCell;
 	/* check */
 	CHECK_CONDITION ( c->daily_leaf_to_litr1C + c->daily_leaf_to_litr2C + c->daily_leaf_to_litr3C + c->daily_leaf_to_litr4C , == , c->daily_leaf_to_litrC + eps );
-   //printf("c->daily_leaf_to_litrC           = %g tC/cell/day\n",c->daily_leaf_to_litrC );
+   // printf("c->daily_leaf_to_litrC           = %g tC/cell/day\n",c->daily_leaf_to_litrC );
 
 	/*** compute cell-level leaf litter carbon pools (gC/m2) ***/
 	c->leaf_litrC                      += s->value[LEAF_TO_LITRC]       * 1e6 / g_settings->sizeCell;
@@ -85,7 +85,7 @@ void littering ( cell_t *const c, species_t *const s )
 	/* check */
 	CHECK_CONDITION ( s->value[LEAF_TO_LITR1C] + s->value[LEAF_TO_LITR2C] + s->value[LEAF_TO_LITR3C] + s->value[LEAF_TO_LITR4C], == , s->value[LEAF_TO_LITRC] + eps );
 
-    //printf("s->value[FROOT_TO_LITRC]           = %g tC/cell/day\n", (s->value[FROOT_TO_LITRC]* 1e6 / g_settings->sizeCell));
+   // printf("c->value[FROOT_TO_LITRC]           = %g tC/cell/day\n", (s->value[FROOT_TO_LITRC]* 1e6 / g_settings->sizeCell));
 
 
 	/*** update cell-level fine root litter carbon fluxes (gC/m2/day) ****/
@@ -96,7 +96,7 @@ void littering ( cell_t *const c, species_t *const s )
 	c->daily_froot_to_litr4C           += s->value[FROOT_TO_LITR4C]     * 1e6 / g_settings->sizeCell;
 	/* check */
 	CHECK_CONDITION ( c->daily_froot_to_litr1C + c->daily_froot_to_litr2C + c->daily_froot_to_litr3C + c->daily_froot_to_litr4C , == , c->daily_froot_to_litrC + eps );
-  //  printf("c->daily_froot_to_litrC           = %g tC/cell/day\n",c->daily_froot_to_litrC );
+  // printf("c->daily_froot_to_litrC           = %g tC/cell/day\n",c->daily_froot_to_litrC );
 
 
 	/*** compute cell-level fine root litter carbon pools (gC/m2) ***/
@@ -113,7 +113,7 @@ void littering ( cell_t *const c, species_t *const s )
 	s->value[RESERVE_TO_LITRC]             = s->value[C_RESERVE_TO_LITR];
 	s->value[RESERVE_TO_LITR1C]            = s->value[C_RESERVE_TO_LITR] ;
 
-	// printf("s->value[RESERVE_TO_LITRC]            = %g tC/cell/day\n", (s->value[RESERVE_TO_LITRC]* 1e6 / g_settings->sizeCell));
+//	printf("c->value[RESERVE_TO_LITRC]            = %g tC/cell/day\n", (s->value[RESERVE_TO_LITRC]* 1e6 / g_settings->sizeCell));
 
 	/*** update cell-level leaf litter carbon fluxes (gC/m2/day) ****/
 	c->daily_reserve_to_litrC             += s->value[RESERVE_TO_LITRC]       * 1e6 / g_settings->sizeCell;
