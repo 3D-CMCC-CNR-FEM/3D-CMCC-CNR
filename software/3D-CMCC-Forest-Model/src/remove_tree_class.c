@@ -259,10 +259,10 @@ int tree_class_remove(cell_t *const c, const int height, const int dbh, const in
 		}
 	}
 
-#if 1
+  #if 1
 
-//printf("in height remove2 c->heights[0], %0.10f\n",c->heights[0]);
-//	printf("in height remove2 c->heights[1], %0.10f\n",c->heights[1]);
+ //printf("in height remove2 c->heights[0], %0.10f\n",c->heights[0]);
+ //	printf("in height remove2 c->heights[1], %0.10f\n",c->heights[1]);
 
 
 	/* remove class if N_TREE == 0 or if called by harvesting function, growth efficiency mortality */
