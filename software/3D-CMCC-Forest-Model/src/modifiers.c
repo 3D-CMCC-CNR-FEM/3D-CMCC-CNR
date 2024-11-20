@@ -434,6 +434,8 @@ void modifiers(cell_t *const c, const int layer, const int height, const int dbh
 	//5p7
 	if ( g_settings->Cold_accl )
 	{ 
+
+	//	printf("COLD ACCLIMATATION ");
 	tau_acl =   s->value[TAU]     ; 
         S_acl_MAX = s->value[Smax]    ; 
         XO  =       s->value[X0]      ;
@@ -474,8 +476,10 @@ void modifiers(cell_t *const c, const int layer, const int height, const int dbh
   //#endif 
 	
 
-    }  //TODO end flag cold acclimatation
+    }  else { //TODO end flag cold acclimatation
+    s->value[F_ACCL] = 1. ; 
 
+	} 
 	/********************************************************************************************/
 
         //TODO add flag for N modifier
@@ -489,6 +493,8 @@ void modifiers(cell_t *const c, const int layer, const int height, const int dbh
 
 if ( g_settings->N_reg )
 	{
+
+		//printf("NREGULATION  ACCLIMATATION ");
 
 	/* SOIL NUTRIENT MODIFIER */
 	s->value[F_NUTR] = 1. - ( 1. - c->fn0 ) * pow ( ( 1. - c->fr), c->fnn );
