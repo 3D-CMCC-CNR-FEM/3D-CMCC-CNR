@@ -88,8 +88,8 @@ int Tree_model_daily (matrix_t *const m, const int cell, const int day, const in
 	int dbh;
 	int age;
 	int species;
-        int row = 0;
-        int year_dens_fin = 0;  // only used if MANAGEMENT == VAR or VAR1
+    int row = 0;
+    int year_dens_fin = 0;  // only used if MANAGEMENT == VAR or VAR1
 
 
 	/* shortcuts */
