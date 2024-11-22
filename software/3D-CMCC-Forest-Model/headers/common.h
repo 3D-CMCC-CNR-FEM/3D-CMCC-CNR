@@ -50,6 +50,7 @@ void print_model_settings(logger_t*const log);
 extern logger_t* g_daily_log;
 extern logger_t* g_monthly_log;
 extern logger_t* g_annual_log;
+extern logger_t* g_annual_man_log;
 //extern logger_t* g_soil_log;
 
 #define CHECK_CONDITION(x,c,y) {					\
@@ -94,6 +95,13 @@ extern logger_t* g_annual_log;
 				print_model_paths(g_annual_log);	\
 				print_model_settings(g_annual_log);	\
 			}										\
+			if ( g_annual_man_log ) {					\
+				g_annual_man_log->std_output = 0;		\
+				g_annual_man_log->file_output = 1;		\
+				logger(g_annual_man_log, buf);			\
+				print_model_paths(g_annual_man_log);	\
+				print_model_settings(g_annual_man_log);	\
+			}	                                    \
 			exit(1);								\
 		}											\
 }
