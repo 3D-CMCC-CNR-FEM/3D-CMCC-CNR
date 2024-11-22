@@ -56,6 +56,7 @@ typedef struct {
 	char daily_output;                   /* daily output must be 'on' or 'off' */
 	char monthly_output;                 /* monthly output must be 'on' or 'off' */
 	char yearly_output;                  /* annual output must be 'on' or 'off' */
+	char yearly_man_output;              /* annual management output must be 'on' or 'off' */
 	char soil_output;                    /* soil output must be 'on' or 'off' */
 	char netcdf_output;                  /* netcdf output must be 'on' or 'off' */
 	int year_start;                      /* starting year of simulation */
@@ -78,6 +79,7 @@ typedef struct {
 	char thinning_regime;                /* thinning regime above = A or below = B */
 	int  thinning_branch_rem;                /* percentage of branches left in the stand as CWD after thinning harvest*/
 	char regeneration_species[SETTINGS_REGENERATION_SPECIES_MAX_SIZE]; /* species name of regeneration species */
+	
 	// ALESSIOR: use e_management from matrix.h not char
 	char regeneration_management;        /*this is a mandatory variables that each class has to have AND DETERMINES HABITUS OF PLANT*/
 
