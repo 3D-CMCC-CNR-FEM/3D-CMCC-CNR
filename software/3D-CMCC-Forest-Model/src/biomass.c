@@ -183,6 +183,8 @@ void tree_branch_and_bark (cell_t *const c, const int height, const int dbh, con
 	else s->value[FRACBB] = s->value[FRACBB1] + ( s->value[FRACBB0] - s->value[FRACBB1] )* exp( -LN2 * ( (double)a->value / s->value[TBB] ) );
 }
 
+
+
 void tree_biomass_remove (cell_t *const c, const int height, const int dbh, const int age, const int species, const int tree_remove, const int nat_man)
 {
 	species_t *s;
@@ -423,6 +425,11 @@ void tree_biomass_remove (cell_t *const c, const int height, const int dbh, cons
 
         s->value[C_STEM_TO_HWP]   +=   (s->value[TREE_STEM_C])* tree_remove;
 		s->value[C_BRANCH_TO_HWP] +=   (s->value[TREE_BRANCH_C]*branch_perc_remove)* tree_remove;
+
+        //printf(" IN REMOVE BIOMASS branch_perc_remove %g \n", branch_perc_remove);
+		//printf("  IN REMOVE BIOMASS s->value[C_BRANCH_TO_HWP] %g \n", s->value[C_BRANCH_TO_HWP]);
+
+
 
 		c->annual_hwp += ((s->value[TREE_STEM_C] + s->value[TREE_BRANCH_C]*branch_perc_remove)* tree_remove * 1e6 / g_settings->sizeCell);
  
