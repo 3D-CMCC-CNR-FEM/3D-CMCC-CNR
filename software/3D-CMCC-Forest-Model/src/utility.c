@@ -354,7 +354,7 @@ void reset_daily_class_variables(cell_t *const c)
 				{
 					s = &a->species[species];
 
-					//s->counter[DEAD_TREE] =                0;
+					
 					s->counter[THINNING_HAPPENS] =         0;
 					s->counter[HARVESTING_HAPPENS] =       0;
 
@@ -690,8 +690,14 @@ void reset_annual_class_variables(cell_t *const c)
 				{
 					s = &a->species[species];
 
+					s->counter[DEAD_TREE] =                0;  // 5p7 then for every year it is clear how many trees for each species and classes died
+					s->counter[THINNED_TREE] =                0;  // 5p7 then for every year it is clear how many trees for each species and classes died
+
+
 					s->value[C_HWP] =                       0.;
 					s->value[VOLUME_HWP] =                  0.;
+					s->value[VOLUME2_HWP] =                  0.;
+					
          
 		            s->value[C_STEM_TO_HWP] =               0.;
 					s->value[C_BRANCH_TO_HWP] =             0.;
