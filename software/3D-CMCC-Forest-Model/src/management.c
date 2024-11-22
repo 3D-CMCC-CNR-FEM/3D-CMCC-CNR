@@ -87,6 +87,7 @@ int forest_management (cell_t *const c, const int day, const int month, const in
 
     // 5p7
 	int counter_thinning = 0; 
+	c->removal = 0; // flag to indicate if thinning or harvest happens
 
 	height_t *h;
 	dbh_t *d;
@@ -214,6 +215,8 @@ int forest_management (cell_t *const c, const int day, const int month, const in
 					{
 						logger(g_debug_log,"**FOREST MANAGEMENT**\n");
 						logger(g_debug_log,"**THINNING**\n");
+ 
+                        printf(" SONO IN MANAGEMENT THINNING  \n");
 
 						s->counter[THINNING_HAPPENS] = 1;
                          
@@ -222,12 +225,13 @@ int forest_management (cell_t *const c, const int day, const int month, const in
 						/* reset counter */
 						s->counter[YEARS_THINNING] = 0;
 						++ counter_thinning ;  
+					    c->removal = 1;
 					}
 
 					/* increment counter */
 					++s->counter[YEARS_THINNING];
 
-					/*************************************** HARVESTING AND REPLANTING *************************************/
+					/*************************************** HARVESTING  *************************************/
 
 					flag = 0;
 					if ( MANAGEMENT_ON == g_settings->management )
@@ -298,6 +302,7 @@ int forest_management (cell_t *const c, const int day, const int month, const in
                         s->counter[YEARS_THINNING]   = 1;
                         s->counter[THINNING_HAPPENS] = 1;
 						c->harvesting                = 1;
+					    c->removal = 1;
 
 			        }
 
@@ -308,18 +313,42 @@ int forest_management (cell_t *const c, const int day, const int month, const in
 
 	 }	
 	
+//		printf(" SONO INMANAGEMENT AFTER LOOP  c->tree_layers_count %d \n", c->tree_layers_count);
+
+
+ // ISSUE: quando abbiamo la rimozione di una classe, putroppo 
+ // la classe viene rimossa e quindi non si è salvato da nessuna parte il dato di rimozione del 
+ // hpw. Al momeno funziona bene con il thinning  e management_type =0 
+ // quindi il problema è quando appunto ho harvest e quando ho thinning from below or above e rimuovo classi
+ // intere. devo in ogni caso salvare il dato. 
+ //
+		// print only the year we have thinning or harvest but before replanting, otherwuse it saves
+		// the info about 
+
+	 if (c->removal )
+		{
+   EOY_print_output_cell_level_mc_management(c, year);
+       c->tree_layers_count_temp =0 ;
+
+
+     }
+
 
        // NOTE: We assume that when harvest occurr, all classes are harvested.
 
     	if (c->harvesting )
 		{
   
+         
+
+
 			if ( ! add_tree_class_for_replanting( c , day, month, year) )
 				{
 					logger_error(g_debug_log, "unable to add new replanted class! (exit)\n");
 					exit(1);
 				}
     	}
+
 	
     }
         else  // SHELTERWOOD CASE WITH PRESCRIBED REGENERATION : only in combination with MAN = VAR
@@ -396,7 +425,7 @@ int forest_management (cell_t *const c, const int day, const int month, const in
 							if ( year && c->years[year].year <= year_dens_fin)
 							{
 
-							printf(" IN SHELTERWOOD: PRESCRIBED THINNING \n") ;
+							//printf(" IN SHELTERWOOD: PRESCRIBED THINNING \n") ;
 
 				        	/* management forced by stand data */
 					    	 //if ( year )
@@ -432,7 +461,7 @@ int forest_management (cell_t *const c, const int day, const int month, const in
 							//if ( flag )
 							{
 
-								printf(" IN SHELTERWOOD: THINNING  \n") ;
+								//printf(" IN SHELTERWOOD: THINNING  \n") ;
 
 								logger(g_debug_log,"**FOREST MANAGEMENT**\n");
 								logger(g_debug_log,"**THINNING**\n");
@@ -444,6 +473,7 @@ int forest_management (cell_t *const c, const int day, const int month, const in
 								/* reset counter */
 								s->counter[YEARS_THINNING] = 0;
 								++ counter_thinning ;  
+								c->removal = 1;
 
 							}
 
@@ -512,6 +542,7 @@ int forest_management (cell_t *const c, const int day, const int month, const in
 
 								// DO NOT set this as 1, otherwise it does not enter annual structure
 								//c->harvesting                = 1;
+							    c->removal = 1;
 							}
                         }
 			    }	
@@ -521,6 +552,16 @@ int forest_management (cell_t *const c, const int day, const int month, const in
                     //if( g_settings->regeneration && (MANAGEMENT_VAR == g_settings->management))
                     //{
 
+         // print only the year we have thinning or harvest
+
+	 if (c->removal )
+		{
+      EOY_print_output_cell_level_mc_management(c, year);
+       c->tree_layers_count_temp =0 ;
+
+
+     }
+	 
         /*************************************** REGENERATION  *************************************/
 		
 		// assuming regeneration depends only on the year
@@ -548,7 +589,7 @@ int forest_management (cell_t *const c, const int day, const int month, const in
       	 int rsi;               /* replanted species index */
 	   	 rsi=0;
 
-     	printf(" REPLANTING c->heights_count %d\n",c->heights_count);
+     	//printf(" REPLANTING c->heights_count %d\n",c->heights_count);
 
     	 //for ( rsi = 0 ;  rsi <=g_settings->replanted_count -1 ; ++rsi )
        	//  {
@@ -566,9 +607,23 @@ int forest_management (cell_t *const c, const int day, const int month, const in
 		// }
       c->harvesting                = 1;  // it does not enter annual structure. 
 
-	}
+	 }
 	
+    
+
     }
+
+	//// print output harvest_thinning (eventually it prints 0)
+
+    // EOY_print_output_cell_level_mc_management(c, year);
+
+   // #if 0
+     
+	
+	//#endif 
+
+
+
 	end_tree1 :
 	return 0;
 
@@ -633,7 +688,7 @@ void thinning (cell_t *const c, const int height, const int dbh, const int age, 
 	{
             index =	 THINNING_INDEX;
 
-            thinning_intensity_prescribed = g_management->thinning_intensity[index]
+            thinning_intensity_prescribed = g_management->thinning_intensity[index];
 
         }
             else
