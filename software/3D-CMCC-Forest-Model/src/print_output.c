@@ -915,7 +915,7 @@ void EOY_print_output_cell_level_mc(cell_t *const c, const int year, const int y
 	species_t *s;
 
 
-     printf(" SONO IN OUTPUT ANNUAL  print_header %d \n", print_header);
+     //printf(" SONO IN OUTPUT ANNUAL  print_header %d \n", print_header);
 
 	/* return if annual logging is off*/
 	if ( ! g_annual_log ) return;
@@ -1112,7 +1112,7 @@ void EOY_print_output_cell_level_mc(cell_t *const c, const int year, const int y
 	
 			for ( layer = c->tree_layers_count - 1; layer >= 0; --layer )
 		{
-			printf(" SONO IN OUTPUT ANNUAL 33 c->tree_layers_count_temp %d \n", c->tree_layers_count_temp);
+			//printf(" SONO IN OUTPUT ANNUAL 33 c->tree_layers_count_temp %d \n", c->tree_layers_count_temp);
 			qsort(c->heights, c->heights_count, sizeof(height_t), sort_by_heights_desc);
 
 			for ( height = 0; height < c->heights_count; ++height )
