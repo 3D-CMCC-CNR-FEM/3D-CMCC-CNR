@@ -13,6 +13,7 @@ logger_t* g_debug_log = NULL;
 logger_t* g_daily_log = NULL;
 logger_t* g_monthly_log = NULL;
 logger_t* g_annual_log = NULL;
+logger_t* g_annual_man_log = NULL;
 logger_t* g_daily_soil_log = NULL;
 logger_t* g_monthly_soil_log = NULL;
 logger_t* g_annual_soil_log = NULL;
@@ -100,6 +101,9 @@ void error_log(const char *text, ...) {
 	if ( g_daily_log && g_daily_log->std_output ) { g_daily_log->std_output = 0; std_out[DAILY_LOG] = 1; }
 	if ( g_monthly_log && g_monthly_log->std_output ) { g_monthly_log->std_output = 0; std_out[MONTHLY_LOG] = 1; }
 	if ( g_annual_log && g_annual_log->std_output ) { g_annual_log->std_output = 0; std_out[YEARLY_LOG] = 1; }
+	
+	if ( g_annual_man_log && g_annual_man_log->std_output ) { g_annual_man_log->std_output = 0; std_out[YEARLY_MAN_LOG] = 1; }
+	
 	if ( g_daily_soil_log && g_daily_soil_log->std_output ) { g_daily_soil_log->std_output = 0; std_out[SOIL_DAILY_LOG] = 1; }
 	if ( g_monthly_soil_log && g_monthly_soil_log->std_output ) { g_monthly_soil_log->std_output = 0; std_out[SOIL_MONTHLY_LOG] = 1; }
 	if ( g_annual_soil_log && g_annual_soil_log->std_output ) { g_annual_soil_log->std_output = 0; std_out[SOIL_YEARLY_LOG] = 1; }
@@ -114,6 +118,9 @@ void error_log(const char *text, ...) {
 	if ( g_daily_log && g_daily_log->f ) fputs(buffer, g_daily_log->f);
 	if ( g_monthly_log && g_monthly_log->f ) fputs(buffer, g_monthly_log->f);
 	if ( g_annual_log && g_annual_log->f ) fputs(buffer, g_annual_log->f);
+
+	if ( g_annual_man_log && g_annual_man_log->f ) fputs(buffer, g_annual_man_log->f);
+
 	if ( g_daily_soil_log && g_daily_soil_log->f ) fputs(buffer, g_daily_soil_log->f);
 	if ( g_monthly_soil_log && g_monthly_soil_log->f ) fputs(buffer, g_monthly_soil_log->f);
 	if ( g_annual_soil_log && g_annual_soil_log->f ) fputs(buffer, g_annual_soil_log->f);
@@ -122,6 +129,9 @@ void error_log(const char *text, ...) {
 	if ( std_out[DAILY_LOG] ) g_daily_log->std_output = 1;
 	if ( std_out[MONTHLY_LOG] ) g_monthly_log->std_output = 1;
 	if ( std_out[YEARLY_LOG] ) g_annual_log->std_output = 1;
+
+	if ( std_out[YEARLY_MAN_LOG] ) g_annual_man_log->std_output = 1;
+
 	if ( std_out[SOIL_DAILY_LOG] ) g_daily_soil_log->std_output = 1;
 	if ( std_out[SOIL_MONTHLY_LOG] ) g_monthly_soil_log->std_output = 1;
 	if ( std_out[SOIL_YEARLY_LOG] ) g_annual_soil_log->std_output = 1;
@@ -133,6 +143,9 @@ extern logger_t* g_debug_log;
 extern logger_t* g_daily_log;
 extern logger_t* g_monthly_log;
 extern logger_t* g_annual_log;
+
+extern logger_t* g_annual_man_log;
+
 extern logger_t* g_daily_soil_log;
 extern logger_t* g_monthly_soil_log;
 extern logger_t* g_annual_soil_log;
