@@ -352,7 +352,8 @@ enum {
 	LEAF_TEMP_K,                        /* (K) leaf temperature */
 	CANOPY_TEMP_K,                      /* (K) canopy temperature */
 	CANOPY_TEMP_K_OLD,                  /* (K) previous time canopy temperature */
-        MONTHLY_LAI_PROJ,                  /* (m2/m2) monthly mean LAI */
+    MONTHLY_LAI_PROJ,                  /* (m2/m2) monthly mean LAI */
+	
 	/* assimilation Farqhuar */
 	A_SUN,
 	Av_SUN,
@@ -1049,6 +1050,7 @@ typedef struct
 	/* tree layer struct */
 	tree_layer_t* tree_layers;
 	int tree_layers_count;
+	int tree_layers_count_temp;
 	int t_layers_avail;
 
 	/* soil layer struct */
@@ -1064,6 +1066,7 @@ typedef struct
 
     // FLAGS 
 	int harvesting;                                                       /* 0 = off, 1 = on */
+    int removal;                                                          // 0=off, 1 =0n (set if removal in the stand is performed)
     int GREFFMORT_HAPPENS;                 /* 0 = no classes removed because of growth efficiency mortality, 1 = at least one class removed  */
    
 	/* for logger */
