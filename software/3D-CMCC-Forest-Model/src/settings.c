@@ -20,6 +20,7 @@ enum {
 	, SETTINGS_DAILY_OUTPUT
 	, SETTINGS_MONTHLY_OUTPUT
 	, SETTINGS_YEARLY_OUTPUT
+	, SETTINGS_YEARLY_MAN_OUTPUT
 	, SETTINGS_SOIL_OUTPUT
 	, SETTINGS_NETCDF_OUTPUT
 	, SETTINGS_YEAR_START
@@ -98,6 +99,7 @@ const char* sz_settings[SETTINGS_COUNT] = {
 	, "DAILY_OUTPUT"
 	, "MONTHLY_OUTPUT"
 	, "ANNUAL_OUTPUT"
+	, "ANNUAL_MAN_OUTPUT"
 	, "SOIL_OUTPUT"
 	, "NETCDF_OUTPUT"
 	, "YEAR_START"
@@ -1111,6 +1113,12 @@ settings_t* settings_import(const char *const filename) {
 			case SETTINGS_YEARLY_OUTPUT:
 				if ( ! string_compare_i(token, "on") ) {
 					s->yearly_output = 1;
+				}
+			break;
+
+			case SETTINGS_YEARLY_MAN_OUTPUT:
+				if ( ! string_compare_i(token, "on") ) {
+					s->yearly_man_output = 1;
 				}
 			break;
 
