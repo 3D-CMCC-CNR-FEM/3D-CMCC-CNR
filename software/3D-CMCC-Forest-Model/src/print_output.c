@@ -1702,7 +1702,7 @@ void EOY_print_output_cell_level_mc_management(cell_t *const c, const int year)
 // void tree_biomass_remove (cell_t *const c, const int height, const int dbh, const int age, const int species, const int tree_remove, const int nat_man)
 
 //void EOY_print_output_cell_level_mc_management_runtime(cell_t *const c, const int height, const int dbh, const int age, const int species, const int year, const int PRINT_MAN_HEADER)
-void EOY_print_output_cell_level_mc_management_runtime(cell_t *const c, const int height, const int dbh, const int age, const int species, const int year)
+void EOY_print_output_class_level_management(cell_t *const c, const int height, const int dbh, const int age, const int species, const int year)
 {
                                                                           //  height, dbh, age, species, year
 // this version allow to print for each output date, for each row the output according to each class
