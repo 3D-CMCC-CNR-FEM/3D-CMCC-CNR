@@ -15,6 +15,10 @@ void EOM_cell_msg(void);
 void EOY_print_output_cell_level(cell_t *const, const int, const int);
 void EOY_cell_msg(void);
 
+void EOY_print_output_cell_level_mc_management_runtime(cell_t *const c, const int height, const int dbh , const int age , const int species, const int year );
+//void EOY_cell_msg(void);
+
+
 void EOD_print_output_soil_cell_level(cell_t *const, const int, const int, const int, const int);
 void EOD_soil_msg(void);
 
