@@ -31,7 +31,7 @@ static const char sz_management[] = "TCN";
 
 // 5p7 nov 2024
 
-static int harvesting (cell_t *const c, const int height, const int dbh, const int age, const int species)
+static int harvesting (cell_t *const c, const int height, const int dbh, const int age, const int species, const int year)
 {
 	int nat_man;   /* natural or managed mortality 0 = natural; 1 = managed */
 	species_t *s;
@@ -54,6 +54,16 @@ static int harvesting (cell_t *const c, const int height, const int dbh, const i
 
     // update class level n_trees
      c->n_trees -=   s->counter[N_TREE];
+
+    // save info for printing
+
+	 		c->thinned_tree_to_print   =      s->counter[THINNED_TREE]     ;     
+            c->hwp_to_print            =      s->value[C_HWP];
+            c->thinned_branch_to_print =      s->value[C_BRANCH_TO_HWP]     ; /*  stem volume removed (m3/ha/yr) */
+            c->thinned_stem_to_print   =  s->value[VOLUME_HWP] ;
+			c->thinned_stem2_to_print  =   s->value[VOLUME2_HWP];
+
+    EOY_print_output_cell_level_mc_management_runtime(c, height, dbh, age, species, year);
 
 	/* remove completely all trees */
 
@@ -95,6 +105,29 @@ int forest_management (cell_t *const c, const int day, const int month, const in
 	species_t *s;
 
     //printf(" MANAGEMENT c->tree_layers_count %d\n",c->tree_layers_count);
+
+
+    printf(" MANAGEMENT PREPARING THE HEADER \n");
+	printf(" MANAGEMENT c->dos %d\n",c->dos);
+    //static int print_header = 0;
+ 
+    if ( (c->dos == 1) & ((MANAGEMENT_VAR == g_settings->management) || (MANAGEMENT_ON == g_settings->management)))
+	{
+
+		printf("SONO QUA IN MAN *********+++++++\n");
+ 
+    // we know we are going to cut something at some point. 
+
+	c->PRINT_MAN_HEADER = 0  ;    // serve per eventualmente stampare l header dell output file 
+
+	 EOY_print_output_cell_level_mc_management_runtime(c, 0, 0, 0, 0, year);
+
+	 
+
+	}
+	c->PRINT_MAN_HEADER = 1 ; 
+	//print_header = 
+
 
     // NO SHELTERWOOD 
 		
@@ -167,6 +200,13 @@ int forest_management (cell_t *const c, const int day, const int month, const in
 						{
 							flag = 1;
 						}
+ 
+                        // if management = ON, thinning can not happen when cell_age is == rotation) 
+                        if ( c->cell_age == s->value[ROTATION] )
+						{
+                        flag = 0;
+						}
+
 					}
 					else if ( (MANAGEMENT_VAR == g_settings->management) || (MANAGEMENT_VAR1 == g_settings->management) )
 					{
@@ -209,9 +249,11 @@ int forest_management (cell_t *const c, const int day, const int month, const in
 							}
 						}
 					}
+                       
+
 
 					/* thinning */
-					if ( flag )
+					if ( flag ) 
 					{
 						logger(g_debug_log,"**FOREST MANAGEMENT**\n");
 						logger(g_debug_log,"**THINNING**\n");
@@ -226,6 +268,15 @@ int forest_management (cell_t *const c, const int day, const int month, const in
 						s->counter[YEARS_THINNING] = 0;
 						++ counter_thinning ;  
 					    c->removal = 1;
+
+						printf("AFTER THINNING 11 c->thinned_tree_to_print %d \n", c->thinned_tree_to_print ) ;
+
+
+                // &c->heights[height].dbhs[dbh].ages[age].species[species];
+				// no need to provide information about the layer in this case 
+
+				// 
+
 					}
 
 					/* increment counter */
@@ -246,7 +297,7 @@ int forest_management (cell_t *const c, const int day, const int month, const in
 						//if ( a->value == s->value[ROTATION] )
 						if ( c->cell_age == s->value[ROTATION] )
 						{
-							 printf("in MANAGEMENT.c  CHECK \n");
+							 printf("in MANAGEMENT.c  IN HARVESTING CHECK \n");
 							flag = 1;
 						}
 					}
@@ -277,7 +328,7 @@ int forest_management (cell_t *const c, const int day, const int month, const in
 
 						/* remove tree class */
 						//if (  ! harvesting ( c, height, dbh, age, species, rsi ) ) //ddamo: no need to pass rsi
-                        if (  ! harvesting ( c, height, dbh, age, species ) )
+                        if (  ! harvesting ( c, height, dbh, age, species,year ) )
 
 						{
 							logger_error(g_debug_log, "unable to harvesting! (exit)\n");
@@ -294,11 +345,19 @@ int forest_management (cell_t *const c, const int day, const int month, const in
 
 						// TODO: fix for output 5p7
 
-                        harvested_carbon =      s->value[C_HWP]     ;      /* woody biomass removed (tC/ha/yr) */
-                        harvested_carbon_cum =  s->value[CUM_C_HWP] ;
-                        harvested_volume =      s->value[VOLUME_HWP]     ; /*  stem volume removed (m3/ha/yr) */
-                        harvested_volume_cum =  s->value[CUM_VOLUME_HWP] ;
-                  
+                       // harvested_carbon =      s->value[C_HWP]     ;      /* woody biomass removed (tC/ha/yr) */
+                       // harvested_carbon_cum =  s->value[CUM_C_HWP] ;
+                       // harvested_volume =      s->value[VOLUME_HWP]     ; /*  stem volume removed (m3/ha/yr) */
+                       // harvested_volume_cum =  s->value[CUM_VOLUME_HWP] ;
+                       
+					   printf("AFTER HARVEST c->thinned_tree_to_print %d \n", c->thinned_tree_to_print ) ;
+					   printf("AFTER HARVEST c->hwp_to_print  %g \n", c->hwp_to_print  ) ;
+					   printf("AFTER HARVEST c->thinned_branch_to_print %g  \n", c->thinned_branch_to_print ) ;
+					   printf("AFTER HARVEST c->thinned_stem_to_print %g \n", c->thinned_stem_to_print ) ;
+
+
+					 
+
                         s->counter[YEARS_THINNING]   = 1;
                         s->counter[THINNING_HAPPENS] = 1;
 						c->harvesting                = 1;
@@ -327,7 +386,7 @@ int forest_management (cell_t *const c, const int day, const int month, const in
 
 	 if (c->removal )
 		{
-   EOY_print_output_cell_level_mc_management(c, year);
+      //EOY_print_output_cell_level_mc_management(c, year);
        c->tree_layers_count_temp =0 ;
 
 
@@ -340,6 +399,7 @@ int forest_management (cell_t *const c, const int day, const int month, const in
 		{
   
          
+		  printf("in MANAGEMENT READY FOR REPLANTING \n");
 
 
 			if ( ! add_tree_class_for_replanting( c , day, month, year) )
@@ -514,7 +574,7 @@ int forest_management (cell_t *const c, const int day, const int month, const in
 
                       			s->counter[YEARS_THINNING] =   1; 
 								
-								if (  ! harvesting ( c, height, dbh, age, species ) )
+								if (  ! harvesting ( c, height, dbh, age, species ,year ) )
 								{
 							 		logger_error(g_debug_log, "unable to harvesting! (exit)\n");
 									exit(1);
@@ -554,14 +614,14 @@ int forest_management (cell_t *const c, const int day, const int month, const in
 
          // print only the year we have thinning or harvest
 
-	 if (c->removal )
-		{
-      EOY_print_output_cell_level_mc_management(c, year);
-       c->tree_layers_count_temp =0 ;
+	 //if (c->removal )
+	//	{
+     // EOY_print_output_cell_level_mc_management(c, year);
+      // c->tree_layers_count_temp =0 ;
 
 
-     }
-	 
+    // }
+
         /*************************************** REGENERATION  *************************************/
 		
 		// assuming regeneration depends only on the year
@@ -814,6 +874,20 @@ void thinning (cell_t *const c, const int height, const int dbh, const int age, 
 			/* remove trees */
 			s->counter[N_TREE] -= trees_to_remove;
 
+            // let s save here the info we need 
+
+
+            c->thinned_tree_to_print   =      s->counter[THINNED_TREE]     ;     
+            c->hwp_to_print            =      s->value[C_HWP];
+            c->thinned_branch_to_print =      s->value[C_BRANCH_TO_HWP]     ; /*  stem volume removed (m3/ha/yr) */
+            c->thinned_stem_to_print   =  s->value[VOLUME_HWP] ;
+			c->thinned_stem2_to_print  =   s->value[VOLUME2_HWP];
+                  
+                                   // we need to trasfer the information to print 
+						// only the first time we need to print the header, then somehow it needs to be set to 1 
+
+                        EOY_print_output_cell_level_mc_management_runtime(c, height, dbh, age, species, year);
+
 
 		}
 			else   // comment: this should not happen! anyhow we should set a minimum we have to leave in the stand.
@@ -824,6 +898,19 @@ void thinning (cell_t *const c, const int height, const int dbh, const int age, 
 			tree_biomass_remove ( c, height, dbh, age, species, s->counter[N_TREE], nat_man );
 
         	littering             ( c, s );
+
+			// let s save here the info we need  
+
+			c->thinned_tree_to_print   =      s->counter[THINNED_TREE]     ;     
+            c->hwp_to_print            =      s->value[C_HWP];
+            c->thinned_branch_to_print =      s->value[C_BRANCH_TO_HWP]     ; /*  stem volume removed (m3/ha/yr) */
+            c->thinned_stem_to_print   =  s->value[VOLUME_HWP] ;
+			c->thinned_stem2_to_print  =   s->value[VOLUME2_HWP];
+
+			                        // we need to trasfer the information to print 
+						// only the first time we need to print the header, then somehow it needs to be set to 1 
+
+                        EOY_print_output_cell_level_mc_management_runtime(c, height, dbh, age, species, year);	  
 
 			/* remove completely all trees */
 			tree_class_remove   (c, height, dbh, age, species );
