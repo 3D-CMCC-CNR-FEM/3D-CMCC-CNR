@@ -900,6 +900,8 @@ enum {
 	                                    // FIXME the followings should be moved to a different ENUM
 	THINNING_HAPPENS,                   /* 0 = thinning off, 1 = thinning on */
 	HARVESTING_HAPPENS,                 /* 0 = harvesting off, 1 = harvesting on */
+
+	
 	                                     
 	COUNTERS
 };
@@ -1068,7 +1070,8 @@ typedef struct
 	int harvesting;                                                       /* 0 = off, 1 = on */
     int removal;                                                          // 0=off, 1 =0n (set if removal in the stand is performed)
     int GREFFMORT_HAPPENS;                 /* 0 = no classes removed because of growth efficiency mortality, 1 = at least one class removed  */
-   
+    int PRINT_MAN_HEADER;                  /* 0 = printing header, 1 = printing off */
+
 	/* for logger */
 	int initial_tree_layers_count;
 	int initial_heights_count;
@@ -1125,6 +1128,14 @@ typedef struct
 	int annual_dead_tree ;                                                /* (trees/cell/year) annual number of dead tree */
 	int saplings_counter;                                                 /* (trees/cell) number of class as sapling */
 	
+    // auxiliary variable to print management related variables
+	int thinned_tree_to_print     ;     
+    double hwp_to_print              ;
+    double thinned_branch_to_print   ; 
+    double thinned_stem_to_print     ;
+	double thinned_stem2_to_print    ;
+	
+
 	double basal_area;                                                    /* (m2/cell) cumulated basal area at cell level */
 	double agb;                                                           /* (tC/cell) current above ground biomass at cell level */
 	double bgb;                                                           /* (tC/cell) current below ground biomass at cell level */
