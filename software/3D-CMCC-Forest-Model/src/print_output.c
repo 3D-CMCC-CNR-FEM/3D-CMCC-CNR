@@ -1697,6 +1697,182 @@ void EOY_print_output_cell_level_mc_management(cell_t *const c, const int year)
 	}
 }
 
+// print annual data for Management 
+
+// void tree_biomass_remove (cell_t *const c, const int height, const int dbh, const int age, const int species, const int tree_remove, const int nat_man)
+
+//void EOY_print_output_cell_level_mc_management_runtime(cell_t *const c, const int height, const int dbh, const int age, const int species, const int year, const int PRINT_MAN_HEADER)
+void EOY_print_output_cell_level_mc_management_runtime(cell_t *const c, const int height, const int dbh, const int age, const int species, const int year)
+{
+                                                                          //  height, dbh, age, species, year
+// this version allow to print for each output date, for each row the output according to each class
+	
+	//int layer;
+	//int height;
+	//int dbh;
+	//int age;
+	//int species;
+
+	//static int print_header = 0;
+	
+	//printf(" SONO IN OUTPUT ANNUAL MANAGEMENT INIZIO   print_header %d \n", print_header);
+
+	int print_cell = 0;   // print cell level value
+
+	species_t *s;
+
+	//if (print_head == 0)
+
+	//{
+	//	print_header = print_head; 
+
+	//}  else {
+    //print_header = print_head; 
+
+	//}
+
+//	logger(log, " SONO IN OUTPUT ANNUAL MANAGEMENT ");
+	//printf(" SONO IN OUTPUT ANNUAL MANAGEMENT \n");
+	//printf(" SONO IN OUTPUT ANNUAL MANAGEMENT print_header %d \n", print_header);
+
+  //s = &m->cells[cell].heights[height].dbhs[dbh].ages[age].species[species];
+  //s = &m->cells[0].heights[0].dbhs[0].ages[0].species[0]; 
+
+	/* return if annual logging is off*/
+
+	/* return if annual logging is off*/
+	//if ( ! g_annual_log ) return;
+
+
+	if ( ! g_annual_man_log ) return;
+
+  //printf(" SONO IN OUTPUT ANNUAL MANAGEMENT2 \n");
+   //printf(" SONO IN OUTPUT ANNUAL MANAGEMENT c->PRINT_MAN_HEADER  %d \n", c->PRINT_MAN_HEADER );
+	/* heading */
+	//if ( ! print_header )
+	if (! c->PRINT_MAN_HEADER)
+	{
+	 // print_header = 1;
+
+	 // printf(" SONO IN OUTPUT ANNUAL MANAGEMENT : PRINTING THE HEADER  \n");
+
+		
+		// 5p6 The output is written for each class in separated rows.  
+                // at the end the information at cell level is provided in each row. This of course is redundant
+                // TODO: save in a separate file 
+		
+                logger(g_annual_man_log, "X,Y,YEAR,HEIGHT,DBH,AGE,SPECIE,MANAGEMENT");
+                logger(g_annual_man_log,
+										",THINNEDTREE"
+										",C_HWP"
+										",C_BRANCH_HWP"
+										",VOLUME_HWP"
+										",VOLUME2_HWP");
+
+		/************************************************************************/
+
+		/* end heading */
+		logger(g_annual_man_log,"\n");
+		/************************************************************************/
+
+	}
+
+	/*****************************************************************************************************/
+  //printf(" SONO IN OUTPUT ANNUAL MANAGEMENT 4 print_header %d \n", print_header);
+
+
+	
+
+
+	//printf("PRINTING MAN OUTTPUT c->thinned_tree_to_print %d \n", c->thinned_tree_to_print ) ;
+
+	//printf("AFTER THINNING c->thinned_tree_to_print %d \n", c->thinned_tree_to_print ) ;
+
+	//printf("AFTER THINNING c->thinned_tree_to_print %d \n", c->thinned_tree_to_print ) ;
+
+	if (c->PRINT_MAN_HEADER)
+		{
+
+          //    printf(" SONO IN OUTPUT ANNUAL MANAGEMENT : PRINTING DATA  \n");
+            // printf(" age %d \n", age ) ;
+			 // printf(" dbh %d \n", dbh ) ;
+			  // printf(" species %d \n", species ) ;
+			  //  printf(" height %d \n", height ) ;
+				//printf(" c->years[year].year)  %d \n", c->years[year].year) ;
+
+								s  = &c->heights[height].dbhs[dbh].ages[age].species[species];
+							
+
+								  //printf(" SONO IN OUTPUT ANNUAL MANAGEMENT s->counter[THINNED_TREE]  %d \n", s->counter[THINNED_TREE]);
+
+                                     /* values */
+                                	logger(g_annual_man_log, "%d,%d,%d", c->x, c->y, c->years[year].year);
+
+                              
+
+					                 /* print layer */
+					                // logger(g_annual_man_log,",%d", layer);
+
+					                 /* print height */
+					                 logger(g_annual_man_log,",%g", c->heights[height].value);
+
+							
+					                 
+                                                        /* print dbh */
+						            logger(g_annual_man_log,",%g", c->heights[height].dbhs[dbh].value);
+	 
+						         
+						          	/* print age */
+									logger(g_annual_man_log,",%d", c->heights[height].dbhs[dbh].ages[age].value);
+             
+			                      
+
+									/* print species name */
+									logger(g_annual_man_log,",%s", c->heights[height].dbhs[dbh].ages[age].species[species].name);
+
+                                    
+
+									/* print management */
+									logger(g_annual_man_log,",%c", sz_management[c->heights[height].dbhs[dbh].ages[age].species[species].management]);
+ 
+                                    #if 0
+
+									/* print variables at layer-class level */
+									logger(g_annual_man_log,",%d,%3.4f,%3.4f,%3.4f,%3.4f",
+										s->counter[THINNED_TREE],
+										s->value[C_HWP],
+										s->value[C_BRANCH_TO_HWP],
+										s->value[VOLUME_HWP],
+										s->value[VOLUME2_HWP]);
+
+                                    #else 
+
+									/* print variables at layer-class level */
+									logger(g_annual_man_log,",%d,%3.4f,%3.4f,%3.4f,%3.4f",
+										c->thinned_tree_to_print ,
+										c->hwp_to_print,
+										c->thinned_branch_to_print ,
+										c->thinned_stem_to_print,
+										c->thinned_stem2_to_print);
+
+									c->thinned_tree_to_print   =  0     ;     
+            						c->hwp_to_print            =  0.  ;
+            						c->thinned_branch_to_print =   0.     ; /*  stem volume removed (m3/ha/yr) */
+            						c->thinned_stem_to_print   = 0. ;
+									c->thinned_stem2_to_print  =  0. ;
+
+			                        #endif
+										
+							 			/************************************************************************/
+	    								  /* printing variables at cell level only if there's more than one layer */  //Note: in the 5p6 we write the data anyhow
+           
+                   
+                  						 /* end print */
+	          							 logger(g_annual_man_log,"\n");
+	
+		}
+}
+
 
 void EOY_cell_msg(void)
 {
