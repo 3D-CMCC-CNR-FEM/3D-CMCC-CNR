@@ -57,21 +57,17 @@ static int harvesting (cell_t *const c, const int height, const int dbh, const i
 
     // save info for printing
 
-	 		c->thinned_tree_to_print   =      s->counter[THINNED_TREE]     ;     
-            c->hwp_to_print            =      s->value[C_HWP];
-            c->thinned_branch_to_print =      s->value[C_BRANCH_TO_HWP]     ; /*  stem volume removed (m3/ha/yr) */
-            c->thinned_stem_to_print   =  s->value[VOLUME_HWP] ;
-			c->thinned_stem2_to_print  =   s->value[VOLUME2_HWP];
+	c->thinned_tree_to_print   =      s->counter[THINNED_TREE]     ;     
+    c->hwp_to_print            =      s->value[C_HWP];
+	c->thinned_branch_to_print =      s->value[C_BRANCH_TO_HWP]     ; /*  stem volume removed (m3/ha/yr) */
+    c->thinned_stem_to_print   =  s->value[VOLUME_HWP] ;
+	c->thinned_stem2_to_print  =   s->value[VOLUME2_HWP];
 
     EOY_print_output_class_level_management(c, height, dbh, age, species, year);
 
-	/* remove completely all trees */
-
     /* litter fluxes and pools */
 	littering             ( c, s );
-
 	return tree_class_remove (c, height, dbh, age, species );
-
 }
 
 
@@ -103,41 +99,23 @@ int forest_management (cell_t *const c, const int day, const int month, const in
 	dbh_t *d;
 	age_t *a;
 	species_t *s;
-
-    //printf(" MANAGEMENT c->tree_layers_count %d\n",c->tree_layers_count);
-
-
-    printf(" MANAGEMENT PREPARING THE HEADER \n");
-	printf(" MANAGEMENT c->dos %d\n",c->dos);
-    //static int print_header = 0;
  
     if ( (c->dos == 1) & ((MANAGEMENT_VAR == g_settings->management) || (MANAGEMENT_ON == g_settings->management)))
 	{
+	   c->PRINT_MAN_HEADER = 0  ;    // serve per eventualmente stampare l header dell output file 
 
-		printf("SONO QUA IN MAN *********+++++++\n");
- 
-    // we know we are going to cut something at some point. 
-
-	c->PRINT_MAN_HEADER = 0  ;    // serve per eventualmente stampare l header dell output file 
-
-	 EOY_print_output_class_level_management(c, 0, 0, 0, 0, year);
-
-	 
-
+	   EOY_print_output_class_level_management(c, 0, 0, 0, 0, year);
 	}
+
 	c->PRINT_MAN_HEADER = 1 ; 
-	//print_header = 
 
-
-    // NO SHELTERWOOD 
-		
+    // NO SHELTERWOOD 	
 	if (!g_settings->regeneration)
     {
 
 		// sort by above or below ?
 		// ALESSIOR TO ALESSIOC FIXME
 		// ALESSIOR commented on 10/07/2017
-
 		#ifndef USE_NEW_OUTPUT
    		    //g_settings->thinning_regime = 1;  // for test purpose
 			// if thinning from above, sort by desc
@@ -147,25 +125,16 @@ int forest_management (cell_t *const c, const int day, const int month, const in
 		);
 		#endif
 
-        // printf(" MANAGEMENT c->tree_layers_count %d\n",c->tree_layers_count);
-
-     for ( height = c->heights_count -1 ; height >= 0; --height )
-     {
-
+     	for ( height = c->heights_count -1 ; height >= 0; --height )
+     	{
 		/* assign shortcut */
 		h = &c->heights[height];
-
-		    //printf(" MANAGEMENT height              = %d  \n", height);
-		    //printf(" c->heights_count              = %d \n ", c->heights_count);
-			////printf(" l->layer_z             = %d \n ", l->layer_z);
-            //printf("in MANAGEMENT.c  c->heights[height] %g,\n",c->heights[height].value);
 
 		/* loop on each dbh starting from highest to lower */
 		for ( dbh = h->dbhs_count - 1; dbh >= 0; --dbh )
 		{
 			/* assign shortcut */
 			d = &h->dbhs[dbh];
-
 			/* loop on each age class */
 			for ( age = d->ages_count - 1 ; age >= 0 ; --age )
 			{
@@ -213,7 +182,6 @@ int forest_management (cell_t *const c, const int day, const int month, const in
 						 
 						// Management var: prescribed by external file 
 
-
 					    // compute last year of available stand density data
 					    // if more years of data are available, prescribed 
 						// thinning is applied, however this option 
@@ -231,8 +199,7 @@ int forest_management (cell_t *const c, const int day, const int month, const in
 
 							prescribed_thinning ( c, height, dbh, age, species, c->years[year].year );
 						}
-
-                        
+            
 						if ( g_management && g_management->thinning_years_count )
 						{
 
@@ -250,15 +217,14 @@ int forest_management (cell_t *const c, const int day, const int month, const in
 						}
 					}
                        
+					// ******************************  thinning ***************************************************
 
-
-					/* thinning */
 					if ( flag ) 
 					{
 						logger(g_debug_log,"**FOREST MANAGEMENT**\n");
 						logger(g_debug_log,"**THINNING**\n");
  
-                        printf(" SONO IN MANAGEMENT THINNING  \n");
+                        //printf(" SONO IN MANAGEMENT THINNING  \n");
 
 						s->counter[THINNING_HAPPENS] = 1;
                          
@@ -268,14 +234,6 @@ int forest_management (cell_t *const c, const int day, const int month, const in
 						s->counter[YEARS_THINNING] = 0;
 						++ counter_thinning ;  
 					    c->removal = 1;
-
-						printf("AFTER THINNING 11 c->thinned_tree_to_print %d \n", c->thinned_tree_to_print ) ;
-
-
-                // &c->heights[height].dbhs[dbh].ages[age].species[species];
-				// no need to provide information about the layer in this case 
-
-				// 
 
 					}
 
@@ -290,9 +248,6 @@ int forest_management (cell_t *const c, const int day, const int month, const in
 						/* check */
 						CHECK_CONDITION( s->counter[YEARS_THINNING], >, s->value[ROTATION] );
                 
-				        //printf("in MANAGEMENT.c  c->cell_age %d,\n",c->cell_age);
-						// printf("in MANAGEMENT.c  s->value[ROTATION] %d,\n",s->value[ROTATION]);
-
 						/* check for harvesting */
 						//if ( a->value == s->value[ROTATION] )
 						if ( c->cell_age == s->value[ROTATION] )
@@ -317,7 +272,7 @@ int forest_management (cell_t *const c, const int day, const int month, const in
 						}
 					}
 
-					if ( flag )   // HARVEST
+					if ( flag )   // HARVEST **********************************************************
 					{
 						int rsi;               /* replanted species index used up to 5p6 to be removed*/
 
@@ -335,29 +290,6 @@ int forest_management (cell_t *const c, const int day, const int month, const in
 							exit(1);
 						}
 
-                         // august 2021
-
-                        // with 'harvest' we remove the class, with replanting we create a new class in the same
-                        // virtual space (as result the value of e.g. s->value[C_HWP] is simply set to 0 once the replanted class
-                        // is added. For this reason We save hence some key variables belonging to the old removed layer
-                        // and we save it in the new replanted layer object.
-                        // no tests have been yet performed With multilayer or multispecie
-
-						// TODO: fix for output 5p7
-
-                       // harvested_carbon =      s->value[C_HWP]     ;      /* woody biomass removed (tC/ha/yr) */
-                       // harvested_carbon_cum =  s->value[CUM_C_HWP] ;
-                       // harvested_volume =      s->value[VOLUME_HWP]     ; /*  stem volume removed (m3/ha/yr) */
-                       // harvested_volume_cum =  s->value[CUM_VOLUME_HWP] ;
-                       
-					   printf("AFTER HARVEST c->thinned_tree_to_print %d \n", c->thinned_tree_to_print ) ;
-					   printf("AFTER HARVEST c->hwp_to_print  %g \n", c->hwp_to_print  ) ;
-					   printf("AFTER HARVEST c->thinned_branch_to_print %g  \n", c->thinned_branch_to_print ) ;
-					   printf("AFTER HARVEST c->thinned_stem_to_print %g \n", c->thinned_stem_to_print ) ;
-
-
-					 
-
                         s->counter[YEARS_THINNING]   = 1;
                         s->counter[THINNING_HAPPENS] = 1;
 						c->harvesting                = 1;
@@ -372,44 +304,23 @@ int forest_management (cell_t *const c, const int day, const int month, const in
 
 	 }	
 	
-//		printf(" SONO INMANAGEMENT AFTER LOOP  c->tree_layers_count %d \n", c->tree_layers_count);
-
-
- // ISSUE: quando abbiamo la rimozione di una classe, putroppo 
- // la classe viene rimossa e quindi non si è salvato da nessuna parte il dato di rimozione del 
- // hpw. Al momeno funziona bene con il thinning  e management_type =0 
- // quindi il problema è quando appunto ho harvest e quando ho thinning from below or above e rimuovo classi
- // intere. devo in ogni caso salvare il dato. 
- //
-		// print only the year we have thinning or harvest but before replanting, otherwuse it saves
-		// the info about 
-
+	 // previous output printing option 
 	 if (c->removal )
 		{
-      //EOY_print_output_cell_level_mc_management(c, year);
-       c->tree_layers_count_temp =0 ;
-
-
-     }
-
+      		//EOY_print_output_cell_level_mc_management(c, year);
+       		c->tree_layers_count_temp =0 ;
+     	}
 
        // NOTE: We assume that when harvest occurr, all classes are harvested.
 
     	if (c->harvesting )
 		{
-  
-         
-		  printf("in MANAGEMENT READY FOR REPLANTING \n");
-
-
 			if ( ! add_tree_class_for_replanting( c , day, month, year) )
 				{
 					logger_error(g_debug_log, "unable to add new replanted class! (exit)\n");
 					exit(1);
 				}
-    	}
-
-	
+    	}	
     }
         else  // SHELTERWOOD CASE WITH PRESCRIBED REGENERATION : only in combination with MAN = VAR
 		      // TODO: check if we can merge with the case MAN=VAR and REG=off
@@ -426,25 +337,9 @@ int forest_management (cell_t *const c, const int day, const int month, const in
         // Thinning/harvest is performed in the dominant layer only: to do this
 		// and with a good approximation, we avoid cutting when age class is lower than
 		// a specific treshold e.g. 35 years
- 
-        //printf(" IN SHELTERWOOD \n") ;
-        //printf(" IN SHELTERWOOD c->tree_layers_count %d\n",c->tree_layers_count);
-	    //printf(" IN SHELTERWOOD c->heights_count              = %d \n ", c->heights_count);
-
+	
         for ( height = c->heights_count -1 ; height >= 0; --height )
         {
-
-		    //printf(" MANAGEMENT height              = %d  \n", height);
-			////printf(" l->layer_z             = %d \n ", l->layer_z);
-            //printf("in MANAGEMENT.c  c->heights[height] %g,\n",c->heights[height].value);
-         
-         	//height = c->heights_count -1 ;
-         
-
-	    	 // printf("SHELTERWOOD  height  %d\n",height);
-		     // printf("SHELTERWOOD  height_count  %d\n",c->heights_count);
-        	//printf("SHELTERWOOD  c->tree_layers_count %d\n",c->tree_layers_count);
-
 		    /* assign shortcut */
 			h = &c->heights[height];
 
@@ -474,7 +369,6 @@ int forest_management (cell_t *const c, const int day, const int month, const in
 
 					  	//MANAGEMENT = VAR when REGENERATION = ON
 
-                  
                            // only if we have one evenaged forest (1 layer)
                             row = g_dataset->rows_count ;
 
@@ -484,8 +378,6 @@ int forest_management (cell_t *const c, const int day, const int month, const in
 							// if ( year )
 							if ( year && c->years[year].year <= year_dens_fin)
 							{
-
-							//printf(" IN SHELTERWOOD: PRESCRIBED THINNING \n") ;
 
 				        	/* management forced by stand data */
 					    	 //if ( year )
@@ -513,7 +405,7 @@ int forest_management (cell_t *const c, const int day, const int month, const in
 							 	}
 							}
 
-							/* thinning */
+							/* thinning */ //*********************************************************************
 
 							// we remove trees only if the class is old.
 
@@ -580,20 +472,9 @@ int forest_management (cell_t *const c, const int day, const int month, const in
 									exit(1);
 								}
 
-                        		// 5p7 TO BE FIX! save data of the removed layer
-
-                        		harvested_carbon =      s->value[C_HWP]     ;      /* woody biomass removed (tC/ha/yr) */
-                       		 	harvested_carbon_cum =  s->value[CUM_C_HWP] ;
-                        		harvested_volume =      s->value[VOLUME_HWP]     ; /*  stem volume removed (m3/ha/yr) */
-                        		harvested_volume_cum =  s->value[CUM_VOLUME_HWP] ;
-   
-                      			  //printf("SHELTERWOOD : BEFORE CALLUNG ANNUAL FOREST STRUCTURE \n");
-
                        			if (c->n_trees ==0) 
  								{
-
     								goto end_tree1;
-
  								}
 
 								/* reset years_for_thinning */
@@ -609,18 +490,12 @@ int forest_management (cell_t *const c, const int day, const int month, const in
 		    }
 	    } // end height loop 
 
-                    //if( g_settings->regeneration && (MANAGEMENT_VAR == g_settings->management))
-                    //{
-
-         // print only the year we have thinning or harvest
-
-	 //if (c->removal )
-	//	{
-     // EOY_print_output_cell_level_mc_management(c, year);
-      // c->tree_layers_count_temp =0 ;
-
-
-    // }
+       // previous print output option
+	   //if (c->removal )
+	   //	{
+       // EOY_print_output_cell_level_mc_management(c, year);
+       // c->tree_layers_count_temp =0 ;
+       // }
 
         /*************************************** REGENERATION  *************************************/
 		
@@ -648,45 +523,17 @@ int forest_management (cell_t *const c, const int day, const int month, const in
    
       	 int rsi;               /* replanted species index */
 	   	 rsi=0;
-
-     	//printf(" REPLANTING c->heights_count %d\n",c->heights_count);
-
-    	 //for ( rsi = 0 ;  rsi <=g_settings->replanted_count -1 ; ++rsi )
-       	//  {
-      	// v5.6
-
-			//printf(" IN REPLANTING 2 ADDING SPECIES rsi %d \n",rsi) ;
 			//if ( ! add_tree_class_for_replanting( c , day, month, year, rsi ) )
 				if ( ! add_tree_class_for_replanting_reg( c , day, month, year) )
 					{
 						logger_error(g_debug_log, "unable to add new regenerated class! (exit)\n");
 						exit(1);
 					}
-			//	}	
-
-		// }
-      c->harvesting                = 1;  // it does not enter annual structure. 
-
+       c->harvesting  = 1;  // it does not enter annual structure. 
 	 }
-	
-    
-
     }
-
-	//// print output harvest_thinning (eventually it prints 0)
-
-    // EOY_print_output_cell_level_mc_management(c, year);
-
-   // #if 0
-     
-	
-	//#endif 
-
-
-
 	end_tree1 :
 	return 0;
-
 }
 
 /*****************************************************************************************************************************************/
@@ -757,29 +604,17 @@ void thinning (cell_t *const c, const int height, const int dbh, const int age, 
             thinning_intensity_prescribed = s->value[THINNING_INTENSITY];
 	}
 
-      //printf("SONO IN MANAGEMENT TYPE 1 thinning_intensity_prescribed %d \n", thinning_intensity_prescribed );
-
     if (counter_thinning == 0 )  // compute only for the first class
 	 { 
       BA_TBR  = c->basal_area * (thinning_intensity_prescribed/100.) ;
 	 }
 	   
-	    //printf("SONO IN MANAGEMENT TYPE 1 c->basal_area %g \n", c->basal_area );
-	    //printf("SONO IN MANAGEMENT TYPE 1 BA_TBR %g \n",BA_TBR );
-	    //printf("SONO IN MANAGEMENT TYPE 1 s->value[BASAL_AREA_m2]%g \n", s->value[BASAL_AREA_m2] );
-		//printf("SONO IN MANAGEMENT TYPE 1 s->value[STAND_BASAL_AREA_m2]%g \n", s->value[STAND_BASAL_AREA_m2] );
-
      // check 
 	if (BA_TBR > eps && BA_TBR  <= s->value[STAND_BASAL_AREA_m2] ) 
 	{
-		 // printf("SONO IN MANAGEMENT TYPE 1 remove from one class until TBR : \n");
-		 //   printf("SONO IN MANAGEMENT TYPE 1 ------ BA_TBR %g \n",BA_TBR );
-
          // remove  BA_TBR from the class 
 
 		trees_to_remove = ROUND(BA_TBR/s->value[BASAL_AREA_m2]);
-
-		  //printf("SONO IN MANAGEMENT TYPE 1  trees_to_remove %d\n", trees_to_remove);
 
          BA_TBR = 0. ;
 
@@ -788,20 +623,12 @@ void thinning (cell_t *const c, const int height, const int dbh, const int age, 
         // remove entire class and update 
 	if (BA_TBR > eps && BA_TBR  > s->value[STAND_BASAL_AREA_m2] ) 
 	{
-
-		//printf("SONO IN MANAGEMENT TYPE 1 remove the entire class until TBR : \n");
-
 		trees_to_remove = s->counter[N_TREE];
-
-		//printf("SONO IN MANAGEMENT TYPE 1  trees_to_remove %d\n", trees_to_remove);
 		// update BA to be removed for the next DBH class 
 
         BA_TBR -= s->value[STAND_BASAL_AREA_m2] ;
 
-		//printf("SONO IN MANAGEMENT TYPE 1 update BA_TBR %g \n",BA_TBR );
 	 }
-
-	// printf("SONO IN MANAGEMENT TYPE 1  ------ trees_to_remove %d\n", trees_to_remove);
 
     //   thinning based on stand volume to be left in the stand/based on growth  
 	// TBD with Alessio and Issam for 5p7
@@ -864,7 +691,6 @@ void thinning (cell_t *const c, const int height, const int dbh, const int age, 
     if  (trees_to_remove > 0 )  // in management_type =1 it can happen that we remove only for a class, and for the others
 	                            // it is automatically 0
 	{ 
-		//printf(" SONO IN THINNING: NEED TO REMOVE TREES \n");
 		if ( trees_to_remove < s->counter[N_TREE] )
 		{
 			/* update C and N biomass */   //FIXME: no update of the stand data is performed in tree_biomass_remove!! The update is done at
@@ -879,20 +705,16 @@ void thinning (cell_t *const c, const int height, const int dbh, const int age, 
 
             c->thinned_tree_to_print   =      s->counter[THINNED_TREE]     ;     
             c->hwp_to_print            =      s->value[C_HWP];
-            c->thinned_branch_to_print =      s->value[C_BRANCH_TO_HWP]     ; /*  stem volume removed (m3/ha/yr) */
+            c->thinned_branch_to_print =      s->value[C_BRANCH_TO_HWP]     ;
             c->thinned_stem_to_print   =  s->value[VOLUME_HWP] ;
 			c->thinned_stem2_to_print  =   s->value[VOLUME2_HWP];
                   
-                                   // we need to trasfer the information to print 
-						// only the first time we need to print the header, then somehow it needs to be set to 1 
-
-                        EOY_print_output_class_level_management(c, height, dbh, age, species, year);
-
+            // we need to trasfer the information to print 
+            EOY_print_output_class_level_management(c, height, dbh, age, species, year);
 
 		}
 			else   // comment: this should not happen! anyhow we should set a minimum we have to leave in the stand.
 		{
-			//printf(" SONO IN THINNING: NEED TO REMOVE ENTIRE CLASS \n");
 
 			/* update C and N biomass */
 			tree_biomass_remove ( c, height, dbh, age, species, s->counter[N_TREE], nat_man );
@@ -903,12 +725,9 @@ void thinning (cell_t *const c, const int height, const int dbh, const int age, 
 
 			c->thinned_tree_to_print   =      s->counter[THINNED_TREE]     ;     
             c->hwp_to_print            =      s->value[C_HWP];
-            c->thinned_branch_to_print =      s->value[C_BRANCH_TO_HWP]     ; /*  stem volume removed (m3/ha/yr) */
+            c->thinned_branch_to_print =      s->value[C_BRANCH_TO_HWP]     ; 
             c->thinned_stem_to_print   =  s->value[VOLUME_HWP] ;
 			c->thinned_stem2_to_print  =   s->value[VOLUME2_HWP];
-
-			                        // we need to trasfer the information to print 
-						// only the first time we need to print the header, then somehow it needs to be set to 1 
 
             EOY_print_output_class_level_management(c, height, dbh, age, species, year);	  
 
@@ -926,7 +745,6 @@ void thinning (cell_t *const c, const int height, const int dbh, const int age, 
 	c->n_trees          -= trees_to_remove;
 	c->annual_dead_tree += trees_to_remove;
 
-}
 /*****************************************************************************************************************************************/
 
 void prescribed_thinning (cell_t *const c, const int height, const int dbh, const int age, const int species, const int year)
