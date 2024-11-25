@@ -120,7 +120,7 @@ int forest_management (cell_t *const c, const int day, const int month, const in
 
 	c->PRINT_MAN_HEADER = 0  ;    // serve per eventualmente stampare l header dell output file 
 
-	 EOY_print_output_cell_level_mc_management_runtime(c, 0, 0, 0, 0, year);
+	 EOY_print_output_class_level_management(c, 0, 0, 0, 0, year);
 
 	 
 
