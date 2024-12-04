@@ -754,3 +754,85 @@ void Daily_Ndeposition (const cell_t *const c, int day, int month, int year)
 }
 
 
+/********************* CLIMATIC VARIABLE FOR REGENERATION ******************/ 
+// SAPONARO
+
+#if 0
+
+void Thermic_sum_spring (const cell_t * c, const meteo_daily_t *const meteo_daily, const int day, const int month, const int year) {
+
+   double spring_thermic_sum = 0.;
+
+   // Spring condition (March-May)
+   if ( day == 30 && month == MAY) {
+
+   //Adding this chain of vector can export the results in other modules
+   c->years[year].m[month].d[day].spring_thermic_sum = c->years[year].m[month].d[day].thermic_sum;
+
+   } else {
+
+   c->years[year].m[month].d[day].thermic_sum = 0.;
+   c->years[year].m[month].d[day].spring_thermic_sum = 0.;
+
+   }
+
+   return spring_thermic_sum;
+   //printf("Thermicsum = %f\n", meteo_daily->spring_thermic_sum);
+}
+
+void Soil_winter_temperature (const cell_t *const c, const meteo_daily_t *const meteo_daily, int day, int month, int year) {
+
+
+   double winter_soil = 0.;
+
+    //Winter condition (January-March)
+    if (month >= JANUARY && month <= MARCH) {
+
+    c->years[year].m[month].d[day].winter_soil = c->years[year].m[month].d[day].tsoil;
+
+    } else {
+
+    winter_soil = 0.;
+
+    }
+  //printf("Winter soil temp = %f\n", c->years[year].m[month].d[day].winter_soil);
+}
+
+void Seedling_soil_par (const cell_t *const c, const meteo_daily_t *const meteo_daily , int day, int month, int year) {
+
+  double seedling_par = 0.;
+
+
+  //Summer condition (June-August)
+  if (month >= JUNE && month <= AUGUST) {
+
+  c->years[year].m[month].d[day].seedling_par = meteo_daily->par;
+
+  } else {
+
+  seedling_par = 0.;
+
+  }
+  //printf("Soil par seedlings = \t%f\n", meteo_daily->seedling_par);
+
+}
+
+void Seedling_temp (const cell_t *const c, const meteo_daily_t *const meteo_daily , int day, int month, int year) {
+
+  double seedling_temp = 0.;
+
+  //Summer condition (June-August)
+  if (month >= JUNE && month <= AUGUST) {
+
+   c->years[year].m[month].d[day].seedling_temp = c->years[year].m[month].d[day].tavg;
+
+   } else {
+
+  seedling_temp = 0.;
+
+  }
+  //printf(" Temp seedlings = \t%f\n", meteo_daily->seedling_temp);
+
+}
+
+#endif 
