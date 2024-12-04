@@ -745,6 +745,8 @@ void thinning (cell_t *const c, const int height, const int dbh, const int age, 
 	c->n_trees          -= trees_to_remove;
 	c->annual_dead_tree += trees_to_remove;
 
+}
+
 /*****************************************************************************************************************************************/
 
 void prescribed_thinning (cell_t *const c, const int height, const int dbh, const int age, const int species, const int year)
