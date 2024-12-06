@@ -131,6 +131,7 @@ int add_tree_class_for_replanting (cell_t *const c, const int day, const int mon
 	int DaysInMonth [] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
     int age_temp=0;
+	int age_temp_min=100;
 	rsi=0;
 
 	species_t *s;
@@ -228,6 +229,7 @@ int add_tree_class_for_replanting (cell_t *const c, const int day, const int mon
 				{
   
                     age_temp =MAX(age_temp, c->heights[height].dbhs[dbh].ages[age].value) ;
+					age_temp_min =MIN(age_temp_min, c->heights[height].dbhs[dbh].ages[age].value) ;
 
 					for ( species = c->heights[height].dbhs[dbh].ages[age].species_count - 1; species >= 0; --species )
 					{
@@ -269,7 +271,8 @@ int add_tree_class_for_replanting (cell_t *const c, const int day, const int mon
 	}}}}
 
     // define age of the stand Hp: is the highest age among DBH classes.
-    c->cell_age =  age_temp; 						
+    c->cell_age =  age_temp; 	
+	c->cell_age_min =  age_temp_min; 					
 
 	return 1;
 }
@@ -362,6 +365,7 @@ int add_tree_class_for_replanting_reg (cell_t *const c, const int day, const int
 
     int rsi;               /* replanted species index */
     int age_temp=0;
+	int age_temp_min=100;
 	rsi=0;
 
     species_t *s;
@@ -371,8 +375,8 @@ int add_tree_class_for_replanting_reg (cell_t *const c, const int day, const int
 	/* it is used only mimicing natural regeneration by mean of a replanting function */
 	logger(g_debug_log, "Replanting as regeneration\n");
 
-	// printf("BEFORE FILL CELLE FOR REPL  c->heights_count %d,\n", c->heights_count);  //ok
-	// printf(" BEFORE FILL CELLE FOR REPL  c->tree_layers_count              = %d \n ", c->tree_layers_count  ); 
+	 //printf("BEFORE FILL CELLE FOR REPL  c->heights_count %d,\n", c->heights_count);  //ok
+	 //printf(" BEFORE FILL CELLE FOR REPL  c->tree_layers_count              = %d \n ", c->tree_layers_count  ); 
 
     //height = c->heights_count -1 ;  // 5p6
 
@@ -401,7 +405,7 @@ int add_tree_class_for_replanting_reg (cell_t *const c, const int day, const int
 
 			if ( ! fill_cell_for_replanting( c, rsi ) ) return 0;  
 
-   			// printf("AFTER FILL CELLE FOR REPL  c->heights_count %d,\n", c->heights_count);  //ok
+   			 //printf("AFTER FILL CELLE FOR REPL  c->heights_count %d,\n", c->heights_count);  //ok
 
 			height = c->heights_count - 1;
 			dbh = c->heights[height].dbhs_count - 1;
@@ -483,7 +487,7 @@ int add_tree_class_for_replanting_reg (cell_t *const c, const int day, const int
 	carbon_pool_fraction               ( c );
 
 	/* initialize new forest structure */ 
-	initialization_forest_structure    (c , day, month, year);
+	initialization_forest_structure    (c , day, month, year);   // entro in annual forest structure
 
     #if 0
 
@@ -537,7 +541,8 @@ int add_tree_class_for_replanting_reg (cell_t *const c, const int day, const int
 
   	#endif 
 
-  	//printf(" AFTER INIT FOREST STRUCT  c->tree_layers_count              = %d \n ", c->tree_layers_count  ); 
+  //	printf(" AFTER INIT FOREST STRUCT  c->tree_layers_count              = %d \n ", c->tree_layers_count  ); 
+ // 	printf(" AFTER INIT FOREST STRUCT c->heights_count              = %d \n ", c->heights_count  ); 
   	// printf(" ***************************** DDALMO add tree class before initialization  height        = %d  \n", height);
   
  	// inizialize ONLY the new classes added 
@@ -551,6 +556,7 @@ int add_tree_class_for_replanting_reg (cell_t *const c, const int day, const int
 				{
   
                     age_temp =MAX(age_temp, c->heights[height].dbhs[dbh].ages[age].value) ;
+					 age_temp_min =MIN(age_temp_min, c->heights[height].dbhs[dbh].ages[age].value) ;
 
 					for ( species = c->heights[height].dbhs[dbh].ages[age].species_count - 1; species >= 0; --species )
 					{
@@ -606,6 +612,20 @@ int add_tree_class_for_replanting_reg (cell_t *const c, const int day, const int
 
   		 // define age of the stand Hp: is the highest age among DBH classes.
         c->cell_age =  age_temp; 
+		c->cell_age_min =  age_temp_min; 
+ 
+		// as annual_forest_structure is called before computing the effective minimum age of the stand
+		// recall here:
+
+	    if ( (c->cell_age_min) < reg_threshold)
+    	{
+	 		c->seedl_layer=1 ;  // regeneration layer already exist or we do not let the possibility to have 
+	                     // the layer, we might want to consider the smaller DBH class treshold.
+  		//printf("STRUCTURE 1 c->seedl_layer) !! %d\n",c->seedl_layer);
+		} else {
+		c->seedl_layer=0; 
+
+		}
 
 	return 1;
 }
