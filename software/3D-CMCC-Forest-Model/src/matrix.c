@@ -1677,6 +1677,7 @@ void forest_initialization ( const matrix_t* const m, const int day, const int m
 	int dbh;
 	int height;
 	int age_temp =0 ;
+	int age_temp_min = 100 ;
 
 	assert (m);
 	for ( cell = 0; cell < m->cells_count; ++cell )
@@ -1789,6 +1790,8 @@ void forest_initialization ( const matrix_t* const m, const int day, const int m
 				{
   
                     age_temp =MAX(age_temp, m->cells[cell].heights[height].dbhs[dbh].ages[age].value) ;
+					age_temp_min =MIN(age_temp_min, m->cells[cell].heights[height].dbhs[dbh].ages[age].value) ;
+
 
 					for ( species = m->cells[cell].heights[height].dbhs[dbh].ages[age].species_count - 1; species >= 0; --species )
 					{
@@ -1816,6 +1819,21 @@ void forest_initialization ( const matrix_t* const m, const int day, const int m
 
         // define age of the stand Hp: is the highest age among DBH classes.
         m->cells[cell].cell_age =  age_temp; 
+		 m->cells[cell].cell_age_min =  age_temp_min; 
+
+        // as annual_forest_structure is called before computing the effective minimum age of the stand
+		// recall here:
+
+    	if ( (m->cells[cell].cell_age_min) < reg_threshold)
+    	{
+	 	m->cells[cell].seedl_layer=1 ;  // regeneration layer already exist or we do not let the possibility to have 
+	                     // the layer, we might want to consider the smaller DBH class treshold.
+  		//printf("STRUCTURE 1 c->seedl_layer) !! %d\n",m->cells[cell].seedl_layer);
+		} else {
+		m->cells[cell].seedl_layer=0; 
+
+		}
+
 
 		logger(g_debug_log, "\n*******FOREST POOLS*******\n");
 		logger(g_debug_log, "***FOREST CELL POOLS (CARBON)***\n");
