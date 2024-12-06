@@ -62,7 +62,9 @@ typedef struct {
 	double cloud_cover_frac_corr;               /* (ratio) daily cloud cover fraction */
 	double Ndeposition;                         /* (gN/m2/day) nitrogen deposition scaled from annual */
 
-	double Net_rad_threePG;
+	double Net_rad_threePG;                     // net shortwave radiation estimate (thus considering the riflected part from the canopy)
+
+	
 } meteo_daily_t;
 
 typedef struct {
@@ -79,6 +81,8 @@ typedef struct {
 	double incoming_par;
 	double par;
 	double asw;
+
+	
 } meteo_mean_t;
 
 typedef struct {
@@ -92,6 +96,8 @@ typedef struct {
 	meteo_t m[METEO_MONTHS_COUNT];
 	meteo_mean_t monthly_mean[METEO_MONTHS_COUNT];
 	meteo_mean_t yearly_mean;
+	double seedling_par;                        /* Soil par for summer (June-August) */   //SAPONARO
+	
 } meteo_annual_t;
 
 int import_meteo_data(const char *const file, int *const yos_count, void* _cell);
