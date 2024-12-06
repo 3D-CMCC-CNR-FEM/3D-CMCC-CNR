@@ -117,7 +117,6 @@ int Tree_model_daily (matrix_t *const m, const int cell, const int day, const in
 	/* compute single tree average biomass */
 	average_tree_pools ( c );
 
-
 	/****************************************************************************/
 
 	if ( ! day && ! month )
@@ -136,7 +135,6 @@ int Tree_model_daily (matrix_t *const m, const int cell, const int day, const in
     // i.e. this condition might occurr when harvest happens, without replanting 
 	if ( c->n_trees ==0 ) goto end_tree;
 
-    //printf(" IN TREE DAILY ANFANG  c->tree_layers_count %d\n",c->tree_layers_count);
 
 	/****************************************************************************/
 
@@ -150,9 +148,6 @@ int Tree_model_daily (matrix_t *const m, const int cell, const int day, const in
 
 
 	}
-
-  //printf(" IN TREE DAILY ANFANG2  c->tree_layers_count %d\n",c->tree_layers_count);
-	 //printf(" in tree model c->tree_layers_count             = %d \n ", c->tree_layers_count);
 
 	/* daily forest structure*/
 	daily_forest_structure ( c,  meteo_daily, year);
@@ -611,6 +606,49 @@ int Tree_model_daily (matrix_t *const m, const int cell, const int day, const in
 	// printf(" IN TREE DAILY ENDE  c->tree_layers_count %d\n",c->tree_layers_count);
 	logger(g_debug_log, "****************END OF LAYER CLASS***************\n");
 	/* ok */
+
+
+    //Compute par that reach the soil in summer
+    Seedling_soil_par (c, meteo_daily, day, month, year);
+
+    // Regeneration: check if conditions for regeneration sussist
+	// 5.7 we consider regerenration as prescribed and with MAN = OFF 
+
+    if ( c->doy == ( IS_LEAP_YEAR ( c->years[year].year ) ? 366 : 365) )
+
+       	{
+
+			 printf(" END OF THE YEAR CALCULATING SEEDLINGD PAR! \n");
+
+
+         double seedlings_par_cum ;
+		 double seedlings_par_ave ;
+		 double seedl_par_threshold;
+
+		 seedl_par_threshold = 4.0 ;  // mmol etetc (intanto lo settiamo internamente)
+
+         seedlings_par_cum = c->years[year].seedling_par ;
+
+		 seedlings_par_ave = c->years[year].seedling_par/90. ;   // NOTE: in first approximation 90 days
+         
+
+         printf(" seedlings_par_ave= %g \n",  seedlings_par_ave);
+
+         if (seedlings_par_ave >= seedl_par_threshold) 
+		 {
+           c->seedl_reg = 1; 
+         printf(" CONDITION FOR REGENERATION IS ON!  c->seedl_reg= %d \n",   c->seedl_reg);
+
+
+		 } else {
+
+            c->seedl_reg = 0; 
+		  	
+		 }
+		   printf(" CONDITION FOR REGENERATION:  c->seedl_reg= %d \n",   c->seedl_reg);
+		}
+  
+    
 
 	end_tree:  
 	return 1;
