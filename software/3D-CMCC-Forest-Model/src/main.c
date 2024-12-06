@@ -1169,7 +1169,7 @@ void sort_all(matrix_t* m)
 }
 
 
-
+// START MAIN FILE  ****************************************************************************************
 
 #if 1
 //note: 02/february/2017
@@ -1235,9 +1235,9 @@ int main(int argc, char *argv[]) {
 		return 0;
 	}
 
-#ifdef BENCHMARK_ONLY
-	goto benchmark;
-#endif
+	#ifdef BENCHMARK_ONLY
+		goto benchmark;
+	#endif
 
 	printf("import settings file %s...", g_sz_settings_file);
 	g_settings = settings_import(g_sz_settings_file);
@@ -1282,12 +1282,12 @@ int main(int argc, char *argv[]) {
 		puts(msg_ok);
 	}  */
         
-           // 5p6 load management file (when MANAGEMENT == VAR and the thinning/clear cut is prescribed)
+        // 5p6 load management file (when MANAGEMENT == VAR and the thinning/clear cut is prescribed)
 
-           if ( MANAGEMENT_VAR == g_settings->management )  
-	   {
-		char *p;
-		char buffer[256];
+        if ( MANAGEMENT_VAR == g_settings->management )  
+	   		{
+			char *p;
+			char buffer[256];
  
 
                // if management file info is provided, check if the file exists
@@ -1295,28 +1295,27 @@ int main(int argc, char *argv[]) {
    
 	        if ( g_sz_manag_file ) {      // not necessarily we do need the management file (e.s.if MAN=VAR and the simulation cover the historical only 
                                               // with all density data observed
-		  p = concatenate_path(g_sz_input_path, g_sz_manag_file); 
-                  printf("g_sz_manag_file concatenate P  %s\n", p);
-		  if ( ! p ) 
-	     	  {
-			puts(sz_err_out_of_memory);
-			goto err;
-		  }
-		  //free(g_sz_manag_file);
-		  ////  g_sz_manag_file = p;  //
+		  		p = concatenate_path(g_sz_input_path, g_sz_manag_file); 
+                printf("g_sz_manag_file concatenate P  %s\n", p);
+		  		if ( ! p ) 
+	     	  	{
+				puts(sz_err_out_of_memory);
+				goto err;
+		 	 	}
+		  		//free(g_sz_manag_file);
+		  		////  g_sz_manag_file = p;  //
 		  
-		   if ( ! file_copy(p, g_sz_input_data_path) )
-	           {
-		    printf("warning: unable to copy management file %s to %s\n", g_sz_manag_file, g_sz_input_data_path);
-	           }
-	
+		   		if ( ! file_copy(p, g_sz_input_data_path) )
+	           	{
+		    		printf("warning: unable to copy management file %s to %s\n", g_sz_manag_file, g_sz_input_data_path);
+	           	}
 
-                  g_management = management_load_presc(p);
+                g_management = management_load_presc(p);
  
-                  if ( g_sz_input_path ) free(p);
-                  if ( ! g_management ) goto err;
+                if ( g_sz_input_path ) free(p);
+                if ( ! g_management ) goto err;
 
-		  puts(msg_ok);
+		  		puts(msg_ok);
 
 	        }            
 	   }
@@ -1371,7 +1370,7 @@ int main(int argc, char *argv[]) {
 
 	g_year_start_index = -1;
 
-#if 0
+	#if 0
 	/* add elev to each cells */
 	for ( cell = 0; cell < matrix->cells_count; ++cell )
 	{
@@ -1402,7 +1401,10 @@ int main(int argc, char *argv[]) {
 
 	/* sort cells */
 	qsort(matrix->cells, matrix->cells_count, sizeof*matrix->cells, cells_sort);
-#endif
+	#endif
+
+    // IMPORT SOIL/TOPO/METEO DATA ***************************************************************
+
 
 	for ( cell = 0; cell < matrix->cells_count; ++cell )
 	{
@@ -1600,9 +1602,16 @@ int main(int argc, char *argv[]) {
 	sort_all(matrix);
 #endif
 
+    // COMPUTE AUX VARIABLES **************************************************************
+
 	/* for monthly and yearly means */
 	for ( cell = 0; cell < matrix->cells_count; ++cell )
 	{
+
+					                            // initialization 
+           // matrix->cells[cell].seedl_reg   = 0 ; 
+		   //  matrix->cells[cell].seedl_layer = 0 ; 
+
 		for ( year = 0; year < years_of_simulation; ++year )
 		{
 			matrix->cells[cell].years[year].yearly_mean.solar_rad     = 0.;
@@ -1617,6 +1626,9 @@ int main(int argc, char *argv[]) {
 			matrix->cells[cell].years[year].yearly_mean.rh_f          = 0.;
 			matrix->cells[cell].years[year].yearly_mean.incoming_par  = 0.;
 			matrix->cells[cell].years[year].yearly_mean.par           = 0.;
+
+			matrix->cells[cell].years[year].seedling_par              = 0.;  // SAPONARO
+
 
 			for ( month = 0; month < MONTHS_COUNT; ++month )
 			{
@@ -1636,6 +1648,8 @@ int main(int argc, char *argv[]) {
 		}
 	}
 
+   
+    // ******************************* START ******************************************************
 
 	for ( year = 0; year < years_of_simulation; ++year )
 	{
@@ -1645,6 +1659,7 @@ int main(int argc, char *argv[]) {
 
 		current_doy = 0;
 		leap_year = IS_LEAP_YEAR(g_settings->year_start + year);
+
 
 		if ( g_settings->year_restart == g_settings->year_start+year )
 		{
@@ -1808,6 +1823,8 @@ int main(int argc, char *argv[]) {
 			
 		}
 
+
+
 		for ( month = 0; month < MONTHS_COUNT; ++month )
 		{
 			days_per_month = DaysInMonth[month];
@@ -1829,8 +1846,10 @@ int main(int argc, char *argv[]) {
 				for ( cell = 0; cell < matrix->cells_count; ++cell )
 				{
 
-                    
+
+
                     if( !day && !month && year ) matrix->cells[cell].cell_age += 1;
+                    if( !day && !month && year ) matrix->cells[cell].cell_age_min += 1;
 				
 					//printf("PRINT AGE CELL  %d \n", matrix->cells[cell].cell_age);
 
