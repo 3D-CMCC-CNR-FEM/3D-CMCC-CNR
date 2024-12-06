@@ -1071,6 +1071,9 @@ typedef struct
     int removal;                                                          // 0=off, 1 =0n (set if removal in the stand is performed)
     int GREFFMORT_HAPPENS;                 /* 0 = no classes removed because of growth efficiency mortality, 1 = at least one class removed  */
     int PRINT_MAN_HEADER;                  /* 0 = printing header, 1 = printing off */
+	int seedl_reg ;                        /* 0 = no conditions for seedlings/regeneration, 1 = conditions for regeneration */
+    int seedl_layer ;                      /* 0 = no regeneration layer , 1 = regeneration layer exist */
+
 
 	/* for logger */
 	int initial_tree_layers_count;
@@ -1085,7 +1088,8 @@ typedef struct
 	int cell_height_class_counter;
 	int canopy_int_cell_height_class_counter;
     int cell_age;                                                         // age of the stand (abovegraound/soprassuolo)
- 
+    int cell_age_min;                                                     // yougest age class in the stand
+
     int cell_coppice_count;                                             //  reduction counter for coppice density
    
 	int year_stand;                                                       /* input stand.txt row stand year : used when man = var */
@@ -1135,7 +1139,6 @@ typedef struct
     double thinned_stem_to_print     ;
 	double thinned_stem2_to_print    ;
 	
-
 	double basal_area;                                                    /* (m2/cell) cumulated basal area at cell level */
 	double agb;                                                           /* (tC/cell) current above ground biomass at cell level */
 	double bgb;                                                           /* (tC/cell) current below ground biomass at cell level */
