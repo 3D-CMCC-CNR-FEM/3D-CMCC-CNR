@@ -162,7 +162,9 @@ void carbon_allocation ( cell_t *const c, age_t *const a, species_t *const s, co
 		s->value[MAX_FRUIT_C] += s->value[C_TO_FRUIT];
 	}
 
-	/* compute maximum and minimum annual NSC concentration */
+	/* compute maximum and minimum annual NSC concentration */   // NB: we consider when RESERVE is at it maaximum value
+	// below is wrong
+
 	if ( s->value[RESERVE_C] > s->value[OLD_RESERVE_C] )
 	{
 		s->value[MAX_ANN_RESERVE_C]      = s->value[RESERVE_C];
@@ -447,7 +449,7 @@ void carbon_allocation_new ( cell_t *const c, age_t *const a, species_t *const s
 		/* special case for fruit */
 		s->value[MAX_FRUIT_C] += s->value[C_TO_FRUIT];
 	}
-    // Compute Reserve-pool variables
+
 
     if ( s->value[RESERVE_C] > s->value[MAX_ANN_RESERVE_C])
 	{
@@ -464,6 +466,7 @@ void carbon_allocation_new ( cell_t *const c, age_t *const a, species_t *const s
 
     // compute annual maximum and minimum of NSC concentration 
 	// in relation to the actual ratio between reserve and sapwood available
+	// this is in the OUTPUT
        
     RESERVE_C_CONC = ( s->value[RESERVE_C] / (s->value[TOT_SAPWOOD_C] * GC_GDM ) ) * 100.;
         
