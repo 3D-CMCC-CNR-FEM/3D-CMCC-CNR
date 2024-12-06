@@ -618,7 +618,7 @@ int Tree_model_daily (matrix_t *const m, const int cell, const int day, const in
 
        	{
 
-			 printf(" END OF THE YEAR CALCULATING SEEDLINGD PAR! \n");
+		 //printf(" END OF THE YEAR CALCULATING SEEDLINGD PAR! \n");
 
 
          double seedlings_par_cum ;
@@ -632,12 +632,12 @@ int Tree_model_daily (matrix_t *const m, const int cell, const int day, const in
 		 seedlings_par_ave = c->years[year].seedling_par/90. ;   // NOTE: in first approximation 90 days
          
 
-         printf(" seedlings_par_ave= %g \n",  seedlings_par_ave);
+         //printf(" seedlings_par_ave= %g \n",  seedlings_par_ave);
 
          if (seedlings_par_ave >= seedl_par_threshold) 
 		 {
            c->seedl_reg = 1; 
-         printf(" CONDITION FOR REGENERATION IS ON!  c->seedl_reg= %d \n",   c->seedl_reg);
+         //printf(" CONDITION FOR REGENERATION IS ON!  c->seedl_reg= %d \n",   c->seedl_reg);
 
 
 		 } else {
@@ -645,7 +645,7 @@ int Tree_model_daily (matrix_t *const m, const int cell, const int day, const in
             c->seedl_reg = 0; 
 		  	
 		 }
-		   printf(" CONDITION FOR REGENERATION:  c->seedl_reg= %d \n",   c->seedl_reg);
+		   //printf(" CONDITION FOR REGENERATION:  c->seedl_reg= %d \n",   c->seedl_reg);
 		}
   
     
