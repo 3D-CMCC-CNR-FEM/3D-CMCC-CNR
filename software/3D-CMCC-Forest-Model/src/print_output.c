@@ -1662,7 +1662,7 @@ void EOY_print_output_class_level_management(cell_t *const c, const int height, 
         // set to 0 
 				c->thinned_tree_to_print   =  0     ;     
             	c->hwp_to_print            =  0.  ;
-            	c->thinned_branch_to_print =   0.     
+            	c->thinned_branch_to_print =   0. ;    
             	c->thinned_stem_to_print   = 0. ;
 				c->thinned_stem2_to_print  =  0. ;
 							
