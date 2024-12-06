@@ -215,6 +215,28 @@ int annual_forest_structure(cell_t* const c, const int year)
 
 	logger(g_debug_log, "*zeta_count %d*\n\n", zeta_count);
 	logger(g_debug_log, "*c->t_layers_count %d*\n\n", c->tree_layers_count);
+
+	// check if a regereneration layer already exist 5p7
+
+    //if (c->tree_layers_count >1)   // more than one layer 
+	//{
+     // in realtaà potrei avere che la simulazione parte con il solo layer di rigenerazione 
+    // decidere con Elia, come mettiamo il limite per far apparire il layer di rigenerazione
+
+    // TEST!!!!!!!! 
+	//printf(" in ANNUAL_FOREST_STRUCTURE: ETA' PIU BASSA c->cell_age_min) !! %d\n",c->cell_age_min);
+
+    if ( (c->cell_age_min) < reg_threshold)
+    {
+	 c->seedl_layer=1 ;  // regeneration layer already exist or we do not let the possibility to have 
+	                     // the layer, we might want to consider the smaller DBH class treshold.
+     //printf("STRUCTURE 1 c->seedl_layer) !! %d\n",c->seedl_layer);
+		} else {
+		c->seedl_layer=0; 
+
+	}
+
+    //printf(" in ANNUAL_FOREST_STRUCTURE:  2 c->seedl_layer) !! %d\n",c->seedl_layer);
  
  	/*****************************************************************************************/
 
