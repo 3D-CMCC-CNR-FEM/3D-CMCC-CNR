@@ -93,7 +93,11 @@ int forest_management (cell_t *const c, const int day, const int month, const in
 
     // 5p7
 	int counter_thinning = 0; 
+
+	// variable initialization
 	c->removal = 0; // flag to indicate if thinning or harvest happens
+	// this is important as it set if we need to enter the annual_forest_structure function 
+    c->harvesting                = 0;
 
 	height_t *h;
 	dbh_t *d;
@@ -108,6 +112,32 @@ int forest_management (cell_t *const c, const int day, const int month, const in
 	}
 
 	c->PRINT_MAN_HEADER = 1 ; 
+
+    // REGENERATION WHEN MAN = OFF 
+
+	if ( (g_settings->regeneration) & (MANAGEMENT_OFF == g_settings->management) )
+    {
+
+		//printf("N MANAGEMENT.c  c->seedl_reg %d\n",c->seedl_reg);
+		//printf("N MANAGEMENT.c   c->seedl_layer) !! %d\n",c->seedl_layer);
+
+		if ((!c->seedl_layer) && (c->seedl_reg) )   // a reg layer does not exist and do exist favourable conditions for reg
+			{
+   
+        // printf("THERE ARE CONDITIONS FOR REGENERATION TO APPEAR !! \n");
+
+			//if ( ! add_tree_class_for_replanting( c , day, month, year, rsi ) )
+				if ( ! add_tree_class_for_replanting_reg( c , day, month, year) )
+					{
+						logger_error(g_debug_log, "unable to add new regenerated class! (exit)\n");
+						exit(1);
+					}
+       	c->harvesting  = 1;  // it does not enter again annual structure. 
+	 }
+
+	}
+
+    // in teoria non dovrebbe nemmeno entrare qua.
 
     // NO SHELTERWOOD 	
 	if (!g_settings->regeneration)
@@ -155,6 +185,7 @@ int forest_management (cell_t *const c, const int day, const int month, const in
 
 					if ( MANAGEMENT_ON == g_settings->management )
 					{
+
 						/* check at the beginning of simulation */
 						if( ! year )
 						{
@@ -179,6 +210,7 @@ int forest_management (cell_t *const c, const int day, const int month, const in
 					}
 					else if ( (MANAGEMENT_VAR == g_settings->management) || (MANAGEMENT_VAR1 == g_settings->management) )
 					{
+
 						 
 						// Management var: prescribed by external file 
 
@@ -252,7 +284,7 @@ int forest_management (cell_t *const c, const int day, const int month, const in
 						//if ( a->value == s->value[ROTATION] )
 						if ( c->cell_age == s->value[ROTATION] )
 						{
-							 printf("in MANAGEMENT.c  IN HARVESTING CHECK \n");
+							 //printf("in MANAGEMENT.c  IN HARVESTING CHECK \n");
 							flag = 1;
 						}
 					}
@@ -322,10 +354,11 @@ int forest_management (cell_t *const c, const int day, const int month, const in
 				}
     	}	
     }
-        else  // SHELTERWOOD CASE WITH PRESCRIBED REGENERATION : only in combination with MAN = VAR
+             // SHELTERWOOD CASE WITH PRESCRIBED REGENERATION : only in combination with MAN = VAR
 		      // TODO: check if we can merge with the case MAN=VAR and REG=off
-    {
 
+	 else if ( (g_settings->regeneration) && (MANAGEMENT_VAR == g_settings->management))
+    {
 
 		// sort by above or below 
 		#ifndef USE_NEW_OUTPUT
@@ -405,6 +438,7 @@ int forest_management (cell_t *const c, const int day, const int month, const in
 							 	}
 							}
 
+                    
 							/* thinning */ //*********************************************************************
 
 							// we remove trees only if the class is old.
