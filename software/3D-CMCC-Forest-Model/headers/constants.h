@@ -118,10 +118,10 @@ enum {
 #define KS4_BASE             0.0001       /* recalcitrant SOM (humus) pool */
 #define KFRAG_BASE            0.001       /* physical fragmentation of coarse woody debris */
 
-// thresholds/constant  
+// thresholds/constant  5p7
 #define thinning_threshold      35        /* [year] age limit to perform thinning when shelterwood is performed */
 #define coppice_rf              0.10       /* reduction factor of stem density-replanting after each clear cut for coppice */
-
+#define reg_threshold      30        /* [year] age threshold of the youngest forest class to set seedl_layer to 1 (regeneration layer exists) */
 
 //MARCONI CONSTANTS::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 //soil constants
