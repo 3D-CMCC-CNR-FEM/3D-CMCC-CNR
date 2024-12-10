@@ -825,9 +825,9 @@ void Seedling_temp (const cell_t *const c, const meteo_daily_t *const meteo_dail
 
 #endif 
 
-	void Seedling_soil_par (const cell_t *const c, const meteo_daily_t *const meteo_daily ,  int month, int year) {
+	void Seedling_soil_par (const cell_t *const c, const meteo_daily_t *const meteo_daily, int month, int year) {
 
-  	double seedling_par = 0.;
+  	//double seedling_par = 0.;
 
   	//Summer condition (June-August)
   	if (month >= JUNE && month <= AUGUST) {
@@ -837,7 +837,7 @@ void Seedling_temp (const cell_t *const c, const meteo_daily_t *const meteo_dail
   	c->years[year].seedling_par += meteo_daily->par;
 
   	} 
-  
+
 
 }
 
