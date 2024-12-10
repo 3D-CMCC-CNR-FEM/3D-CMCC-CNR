@@ -607,9 +607,8 @@ int Tree_model_daily (matrix_t *const m, const int cell, const int day, const in
 	logger(g_debug_log, "****************END OF LAYER CLASS***************\n");
 	/* ok */
 
-
     //Compute par that reach the soil in summer
-    Seedling_soil_par (c, meteo_daily, day, month, year);
+    Seedling_soil_par (c, meteo_daily, month, year);
 
     // Regeneration: check if conditions for regeneration sussist
 	// 5.7 we consider regerenration as prescribed and with MAN = OFF 
