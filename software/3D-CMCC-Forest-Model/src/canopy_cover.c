@@ -36,7 +36,7 @@ void dbhdc_function ( cell_t *const c, const int layer, const int height, const 
 	double previous_dbhdc_eff  = 0.;
 	double max_dbhdc_incr      = 0.1;      /* fraction of maximum dbhdc increment */ //note: this was 0.001 in v.5.4
 	//double max_dbhdc_decr      = 0.001;  /* fraction of maximum dbhdc decrement */
-    //double max_dbhdc_incr      = 0.05;   //ddalmo october 2024 test to reduce further, when in particular
+    //double max_dbhdc_incr      = 0.01;   //ddalmo october 2024 test to reduce further, when in particular
 	                                    // one specie suddently is in a new layer (dominant)
     int tree_l_number = 0; 
 	dbh_t *d;
@@ -83,8 +83,14 @@ void dbhdc_function ( cell_t *const c, const int layer, const int height, const 
    // printf(" CANOPY _ COVER 1 s->value[DBHDC_EFF] %g!!!\n", s->value[DBHDC_EFF]);
 
 
+   // 5p7 switching from year to year to a new conditions (e.g. from a forest class in one layer to a layer with other forest class/species)
+   // can lead to unrealistic and dratisc increment/decrement of DBHDC. For this reason, and with a very simplify
+   // approach we keep an average of the DBHDH_eff between two consecutive year
+   //if  ( s->counter[YOS] ) 
+   //{     s->value[DBHDC_EFF] = (s->value[DBHDC_EFF] + previous_dbhdc_eff)*0.5 ; 
+  // }
 	/* check if current dbhdc_eff grows too much (case when there's thinning) */
-	/* this is checked to avoid unrealistic crown area increment */
+	/* this is checked to avoid unrealistic crown area increment */ 
 
 	/* note: max_dbhdc_incr corresponds to an arbitrary increment of n value */
 	/* note: not used in the first year of simulation */
@@ -96,6 +102,12 @@ void dbhdc_function ( cell_t *const c, const int layer, const int height, const 
 	if ( ( s->counter[YOS] ) && ( s->value[DBHDC_EFF] > ( previous_dbhdc_eff + ( previous_dbhdc_eff * max_dbhdc_incr ) ) ) )
 	{
 		s->value[DBHDC_EFF] = previous_dbhdc_eff + ( previous_dbhdc_eff * max_dbhdc_incr );
+		//printf(" CRESCE TROPPO IN FRETTA \n") ;
+	}
+
+	if ( ( s->counter[YOS] ) && ( s->value[DBHDC_EFF] < ( previous_dbhdc_eff - ( previous_dbhdc_eff * max_dbhdc_incr ) ) ) )
+	{
+		s->value[DBHDC_EFF] = previous_dbhdc_eff - ( previous_dbhdc_eff * max_dbhdc_incr );
 		//printf(" CRESCE TROPPO IN FRETTA \n") ;
 	}
 
