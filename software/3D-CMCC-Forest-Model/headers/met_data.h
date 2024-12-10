@@ -38,5 +38,9 @@ void Averaged_temperature(const cell_t *const c, const e_averaged_var var, int d
 void Weighted_average_temperature(const cell_t *const c, const e_weighted_average_var var, int day, int month, int year);
 void Soil_temperature(const cell_t *const c, int day, int month, int year);
 void Daily_Ndeposition(const cell_t *const c, int day, int month, int year_iyearndex);
+// 5.7
+//void Seedling_soil_par (const cell_t *const c, const meteo_daily_t *const meteo_daily, int day, int month, int year);
+void Seedling_soil_par (const cell_t *const c, const meteo_daily_t *const meteo_daily, int month, int year);
+
 
 #endif /* MET_DATA_H_ */
