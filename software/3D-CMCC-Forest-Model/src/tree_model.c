@@ -515,6 +515,7 @@ int Tree_model_daily (matrix_t *const m, const int cell, const int day, const in
 								}
 
 								//printf("TREE DAILZ s->counter[N_TREE]           = %d \n",s->counter[N_TREE] );
+                                //printf("TREE DAILZ s->value[sTEM_C]           = %g \n",s->value[STEM_C] );
 
                                // printf("IN TREE MODEL c->daily_leaf_to_litrC           = %g tC/cell/day\n",c->daily_leaf_to_litrC );
                                // printf("IN TREE MODEL BEFORE LITTERING \n");
@@ -547,6 +548,7 @@ int Tree_model_daily (matrix_t *const m, const int cell, const int day, const in
 							else
 							{
 
+                         
 								 
 								//FIXME here model should remove class just after have checked that the balances are closed
 								//so model has to include c fluxes that go out to litter and cwd
@@ -597,7 +599,6 @@ int Tree_model_daily (matrix_t *const m, const int cell, const int day, const in
 		}
 		//printf(" FINITO GIRO SULLE ALTEZZE  \n");
 		 //printf(" height              = %d  \n", height);
-		//printf(" m->cells[cell].heights_count               = %d \n ", m->cells[cell].heights_count);
 								 
 
 		height_end:
@@ -609,6 +610,9 @@ int Tree_model_daily (matrix_t *const m, const int cell, const int day, const in
 
     //Compute par that reach the soil in summer
     Seedling_soil_par (c, meteo_daily, month, year);
+
+
+    
 
     // Regeneration: check if conditions for regeneration sussist
 	// 5.7 we consider regerenration as prescribed and with MAN = OFF 
