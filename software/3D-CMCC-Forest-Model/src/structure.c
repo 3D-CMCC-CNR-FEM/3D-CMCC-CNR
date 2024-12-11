@@ -488,6 +488,7 @@ int annual_forest_structure(cell_t* const c, const int year)
 						{
 							s = &c->heights[height].dbhs[dbh].ages[age].species[species];
 
+						
 							/*************** self-thinning ****************/
 
                                                         // compute last year of available stand density data
@@ -500,9 +501,8 @@ int annual_forest_structure(cell_t* const c, const int year)
 
                                                         if ( c->years[year].year > year_dens_fin )
 							  {
-							//	printf(" annual structure self thin 3 species %s!!!\n", s->name);
-							//	printf(" annual structure self thin  3 s->value[DBHDC_EFF] %f!!!\n",s->value[DBHDC_EFF]);
-
+								
+                      
 								if ( s->value[DBHDC_EFF] <= s->value[DBHDCMIN] )   //ddalmo may23: test include if layer_cc_proj > max_layer_cc_proj
 								{
 							//		printf(" annual structure self thin  LAYER %d!!!\n",layer); 
@@ -510,11 +510,19 @@ int annual_forest_structure(cell_t* const c, const int year)
 
 								// i transfer as well the number of trees to be remove 
                                     tree_remove_st = s->value[tree_remove_crowded] ; 
+
+									  
 							//		 printf(" ENTRO IN SELF THINNING tree_remove_st %d!!!\n", tree_remove_st);
 									self_thinning_mortality_new( c, layer, year , tree_remove_st);
 									//self_thinning_mortality ( c, layer, year );
 
+									 goto for_class_end; 
+                                   
 								}
+							
+
+								   // esco direttamente, me ne basta una forest class per fare il selfthinning 
+
 							  }
 
 							/* note: special case for ISIMIP, avoid self thinning when management is 'var' */
@@ -527,18 +535,24 @@ int annual_forest_structure(cell_t* const c, const int year)
 									self_thinning_mortality ( c, layer, year );
 								}
 							} */
-
-
+                        
+							
 						}
 					}
+					  
 				}
+				
 			}
+			
 		}
+		 
 	}
+	for_class_end:
 	logger(g_debug_log, "**************************************\n");
 	logger(g_debug_log, "**************************************\n");
 	/*************************************************************************************/
 
+    
 	/** compute total number of trees **/
 
 	//printf(" compute total number of trees !!!\n");
