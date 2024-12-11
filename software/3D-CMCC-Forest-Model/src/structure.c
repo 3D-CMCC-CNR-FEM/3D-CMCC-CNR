@@ -454,7 +454,7 @@ int annual_forest_structure(cell_t* const c, const int year)
 							//		 printf(" ENTRO IN SELF THINNING tree_remove_st %d!!!\n", tree_remove_st);
 									self_thinning_mortality_new( c, layer, year , tree_remove_st);
 									//self_thinning_mortality ( c, layer, year );
-                             
+                                  goto for_class_end ; 
 								}
 							  }
 
@@ -476,6 +476,7 @@ int annual_forest_structure(cell_t* const c, const int year)
 			}
 		}
 	}
+	for_class_end :
 	logger(g_debug_log, "**************************************\n");
 	logger(g_debug_log, "**************************************\n");
 	/*************************************************************************************/
