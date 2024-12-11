@@ -105,12 +105,12 @@ void dbhdc_function ( cell_t *const c, const int layer, const int height, const 
 		//printf(" CRESCE TROPPO IN FRETTA \n") ;
 	}
 
-	if ( ( s->counter[YOS] ) && ( s->value[DBHDC_EFF] < ( previous_dbhdc_eff - ( previous_dbhdc_eff * max_dbhdc_incr ) ) ) )
+    if ( ( s->counter[YOS] ) && ( s->value[DBHDC_EFF] < ( previous_dbhdc_eff - ( previous_dbhdc_eff * max_dbhdc_incr ) ) ) )
 	{
 		s->value[DBHDC_EFF] = previous_dbhdc_eff - ( previous_dbhdc_eff * max_dbhdc_incr );
 		//printf(" CRESCE TROPPO IN FRETTA \n") ;
 	}
-
+	
      //printf(" CANOPY _ COVER s->counter[YOS] %d!!!\n", s->counter[YOS]);
 
 	/***************************************************************************************************/
