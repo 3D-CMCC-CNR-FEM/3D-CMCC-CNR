@@ -88,7 +88,7 @@ void self_thinning_mortality_new(cell_t *const c, const int layer, const int yea
 
 	if( layer == c->heights[height].height_z )
 		{
-  //printf(" ENTRO IN LAYER -- MORTALITY !!!\n");
+
 
 		for ( dbh = h->dbhs_count - 1; dbh >= 0; --dbh)
 		{
@@ -120,12 +120,7 @@ void self_thinning_mortality_new(cell_t *const c, const int layer, const int yea
 					//deadtree = tree_remove_st;
 				
 					livetree -= deadtree;
-
-					printf(" SELF THINNING 1 species %s!!!\n", s->name);
-					printf(" SELF THINNING N trees to remove tree_remove_st  %d!!!\n", tree_remove_st);
-                    printf(" SELF THINNING N trees to remove  %d!!!\n", deadtree);
-                    printf(" SELF THINNING LIVETREE  %d!!!\n", livetree);
-					
+	
                     // check if this is larger than the number of trees in the class
 					// if so, remove the entire class and go on.
                     // 
@@ -183,6 +178,9 @@ void self_thinning_mortality_new(cell_t *const c, const int layer, const int yea
 
 						} else {   // removing more trees than the ones in the class
 
+
+                     
+
                         deadtree = s->counter[N_TREE];
 						// remove the ENTIRE CLASS; 
 						//the issue is, go on, 
@@ -207,6 +205,8 @@ void self_thinning_mortality_new(cell_t *const c, const int layer, const int yea
 		s->counter[N_TREE]    = 0;
 		c->n_trees -= deadtree;
 
+		
+
 		/* remove dead C and N biomass */
 		tree_biomass_remove ( c, height, dbh, age, species, deadtree , nat_man);
 
@@ -221,14 +221,16 @@ void self_thinning_mortality_new(cell_t *const c, const int layer, const int yea
 			exit(1);
 		}
 
-		//printf("in SELFTHINNING AFTER REMOVING CLASS heights_count             = %d  \n",  c->heights_count);
-
+		
 					deadtree = 0;
 					livetree = 0;
 
 					/* check */
 					CHECK_CONDITION( s->value[CANOPY_COVER_PROJ] ,  > , s->value[CANOPY_COVER_PROJ] + eps );
                           c->GREFFMORT_HAPPENS = 1 ;
+
+						  
+
                          goto height_end; 
 
 
@@ -297,7 +299,7 @@ void self_thinning_mortality_new(cell_t *const c, const int layer, const int yea
 	logger(g_debug_log, "-number of trees  = %d layer\n", c->tree_layers[layer].layer_n_trees);
 	logger(g_debug_log, "-density          = %f layer\n", c->tree_layers[layer].layer_density);
 	logger(g_debug_log, "-Dead tree(s)     = %d trees\n", deadtree);
-   
+
      //printf("c->daily_dead_tree SELF THINNING %d \n",c->daily_dead_tree );
 	/* reset dead tree */
 	deadtree = 0;
