@@ -36,6 +36,7 @@ void self_thinning_mortality_new(cell_t *const c, const int layer, const int yea
 	int deadtree;
 	int livetree;
 	int nat_man;   /* natural or managed mortality 0 = natural; 1 = managed */
+    int tree_to_rm2 = 0 ;
 
 	height_t *h;
 	dbh_t *d;
@@ -108,7 +109,15 @@ void self_thinning_mortality_new(cell_t *const c, const int layer, const int yea
 					livetree = s->counter[N_TREE];
 					//deadtree = 0;
 					// we know that usually starting from the last height class, there is only one DBH and one age...
-					deadtree = tree_remove_st;
+				
+				   // for forest navigator test: we use a relaxation factor. so that we remove smoothly the trees
+					// after some test, with 10% we have an exponential decrease of living trees
+
+					tree_to_rm2 = round(tree_remove_st*0.1)  ;
+					deadtree = tree_to_rm2;
+
+					//deadtree = tree_remove_st;
+				
 				
 					livetree -= deadtree;
 
