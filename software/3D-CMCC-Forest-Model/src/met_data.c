@@ -834,6 +834,8 @@ void Seedling_temp (const cell_t *const c, const meteo_daily_t *const meteo_dail
 
   	//c->years[year].m[month].d[day].seedling_par = meteo_daily->par;
 
+	//printf(" SEEDLING SOIL PAR meteo_daily->par %g",meteo_daily->par);
+
   	c->years[year].seedling_par += meteo_daily->par;
 
   	} 
