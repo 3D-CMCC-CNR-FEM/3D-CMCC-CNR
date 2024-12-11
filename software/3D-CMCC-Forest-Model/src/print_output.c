@@ -295,7 +295,7 @@ void EOD_print_output_cell_level_mc(cell_t *const c, const int day, const int mo
 	{
 
 	 //printf(" **************************************IN PRINT OUTPUT layer             = %d \n ", layer );
-               
+    
 		qsort(c->heights, c->heights_count, sizeof(height_t), sort_by_heights_desc);
 
 		for ( height = 0; height < c->heights_count; ++height )
@@ -314,6 +314,7 @@ void EOD_print_output_cell_level_mc(cell_t *const c, const int day, const int mo
 						{
 							s  = &c->heights[height].dbhs[dbh].ages[age].species[species];
 
+							
                                                         /* values */
            				        	logger(g_daily_log, "%d,%d,%d,%d,%d", c->x, c->y, c->years[year].year, month + 1, day + 1);
 
@@ -336,6 +337,9 @@ void EOD_print_output_cell_level_mc(cell_t *const c, const int day, const int mo
 							logger(g_daily_log,",%c", sz_management[c->heights[height].dbhs[dbh].ages[age].species[species].management]);
 
 							/* print variables at layer-class level */
+
+							
+
 
 							logger(g_daily_log,",%6.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%d,"
 									"%d,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f"
