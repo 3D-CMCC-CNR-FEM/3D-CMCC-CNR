@@ -573,7 +573,7 @@ void carbon_allocation_new ( cell_t *const c, age_t *const a, species_t *const s
 	// 5p606
 	// update tree level carbon pools
 	
-	
+	// changed from double to float
 					/* compute tree average C pools */
 					s->value[TREE_LEAF_C]                = (s->value[LEAF_C]             / (double)s->counter[N_TREE]);
 					s->value[TREE_STEM_C]                = (s->value[STEM_C]             / (double)s->counter[N_TREE]);
