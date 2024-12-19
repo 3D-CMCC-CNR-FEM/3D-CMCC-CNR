@@ -156,18 +156,23 @@ enum {
 	MASS_DENSITY,                        /* (tDM/m3) mass density */
 	VOLUME,                              /* (m3/class) Stem Volume */
 	TREE_VOLUME,                         /* (m3/tree) Single Tree-stem  Volume */
-	CAI,                                 /* (m3/class/year) Current Annual Volume Increment */
-	TREE_CAI,                            /* (m3/tree/year) Single Tree-stem  Current Annual Volume Increment */
-	MAI,                                 /* (m3/class/year) Mean Annual Volume Increment */
+	CAI,                                 /* (m3/class/year) Current Annual Volume Increment  - stem level - */
+	TREE_CAI,                            /* (m3/tree/year) Single Tree-stem  Current Annual Volume Increment  */
+	MAI,                                 /* (m3/class/year) Mean Annual Volume Increment - stem level - */
 	TREE_MAI,                            /* (m3/tree/year) Single Tree-stem  Mean Annual Volume Increment */
+	GROSS_INCR,                           /* (m3/tree/year) class level annual gross increment (i.e. before mortaliy) - stem level -*/
+    
+    
 
 	VOLUME2,                              /* (m3/class) Stem Volume using conversion factor  */
 	TREE_VOLUME2,                         /* (m3/tree) Single Tree-stem  Volume using conversion factor*/
-	CAI2,                                 /* (m3/class/year) Current Annual Volume Increment using VOLUME2 */
+	CAI2,                                 /* (m3/class/year) Current Annual Volume Increment using VOLUME2 - stem level -*/
 	TREE_CAI2,                            /* (m3/tree/year) Single Tree-stem Current Annual Volume Increment using VOLUME2 */
-	MAI2,                                 /* (m3/class/year) Mean Annual Volume Increment using VOLUME2 */
+	MAI2,                                 /* (m3/class/year) Mean Annual Volume Increment using VOLUME2 - stem level - */
 	TREE_MAI2,                            /* (m3/tree/year) Single Tree-stem  Mean Annual Volume Increment using VOLUME2 */
-	
+	GROSS_INCR2,                           /* (m3/tree/year) class level annual gross increment (i.e. before mortaliy) - stem level - using conversion factor */
+    
+
 	STEMCONST,                           /* constant in the stem mass vs. diameter relationship */
 	MAX_SPECIES_COVER,                   /* (DIM) maximum species-specific cell cover */
     
