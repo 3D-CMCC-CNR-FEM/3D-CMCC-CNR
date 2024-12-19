@@ -321,6 +321,82 @@ void annual_tree_increment(cell_t *const c, const int height, const int dbh, con
 	else { CHECK_CONDITION( s->value[TREE_VOLUME2], < , tree_prev_vol2 - eps ); }
 }
 
+
+void annual_gross_tree_increment(cell_t *const c, const int height, const int dbh, const int age, const int species, const int year)
+{
+	double prev_vol;
+    double prev_vol2;
+
+	double current_vol;       
+	double tree_current_vol;
+
+	double current_vol2;
+	double tree_current_vol2;
+
+	height_t *h;
+	dbh_t *d;
+	age_t *a;
+	species_t *s;
+
+	h = &c->heights[height];
+	d = &c->heights[height].dbhs[dbh];
+	a = &c->heights[height].dbhs[dbh].ages[age];
+	s = &c->heights[height].dbhs[dbh].ages[age].species[species];
+
+	/* in m^3/cell/yr */
+	/* assumption: CAI = Volume t1 - Volume t0 */
+	/* assumption: MAI = Volume t1 / Age t1 */
+
+	/* CURRENT GROSS ANNUAL INCREMENT */
+
+	logger(g_debug_log, "*** GROSS ANNUAL INCREMENT***\n");
+
+	/* STAND VOLUME-(STEM VOLUME) */
+	/* assign previous volume to temporary variables */
+	prev_vol              = s->value[VOLUME];
+	logger(g_debug_log, "Previous stand volume        = %f m^3/cell\n", prev_vol );
+
+	/* compute single tree volume */
+	tree_current_vol = (Pi * s->value[FORM_FACTOR] * pow((d->value / 100.) , 2.) * h->value) / 4.;
+	logger(g_debug_log, "-Single tree volume = %g m3/tree\n", tree_current_vol);
+
+	/* compute class volume */
+	current_vol      = tree_current_vol * s->counter[N_TREE];
+	logger(g_debug_log, "-Class volume = %g m3/sizeCell\n", current_vol);
+
+	/* GROSS Annual Increment */
+	s->value[GROSS_INCR]         = current_vol      - prev_vol;
+	logger(g_debug_log, "CAI-Current Annual Increment = %f m^3DM/cell/yr\n", s->value[GROSS_INCR]);
+
+    // compute data from volume2 (Vangi Elia's conversion factors)
+
+		/* in m^3/cell/yr */
+	
+	/* CURRENT GROSS ANNUAL INCREMENT */
+
+	logger(g_debug_log, "*** GROSS ANNUAL INCREMENT 2 (Vangi's factors) ***\n");
+
+	/* STAND VOLUME2-(STEM VOLUME2) */
+	/* assign previous volume to temporary variables */
+	prev_vol2              = s->value[VOLUME2];
+	logger(g_debug_log, "Previous stand volume2        = %f m^3/cell\n", prev_vol2 );
+
+	/* compute single tree volume */
+	tree_current_vol2 = (s->value[TREE_STEM_C]*GC_GDM)/s->value[CONV_VOL_FACTOR] ; //(Pi * s->value[FORM_FACTOR] * pow((d->value / 100.) , 2.) * h->value) / 4.;
+	logger(g_debug_log, "-Single tree-stem volume2 = %g m3/tree\n", tree_current_vol2 );
+
+	/* compute class volume */
+	current_vol2      = tree_current_vol2 * s->counter[N_TREE];
+	logger(g_debug_log, "-Class volume2 = %g m3/sizeCell\n", current_vol2);
+
+	/* Current GROSS Annual Increment */
+	s->value[GROSS_INCR2]         = current_vol2      - prev_vol2;
+	logger(g_debug_log, "CAI2-Current Annual Increment = %f m^3DM/cell/yr\n", s->value[GROSS_INCR2]);
+
+
+}
+
+
 void annual_minimum_reserve (species_t *const s)
 {
 
