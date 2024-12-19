@@ -462,6 +462,11 @@ int annual_forest_structure(cell_t* const c, const int year)
 	for (layer = c->tree_layers_count - 1; layer >= 0; --layer)
 	{
 
+			// 5p7 Self thinning is applied only if the minimum layer DBH is larger than 35 cm 
+			// in some cases, the self thinning is activated when in the layer there are large trees 
+
+		//	if (c->tree_layers[layer].DBH_layer_min <= self_thinning_treshold ) goto next_layer;
+
 		/* note: 04 Oct 2016 */
 		/* call of this function is due to the assumption that:
 			-overall layer canopy cover cannot exceeds its maximum   //DDALMO: where is this condition checked????
@@ -480,6 +485,9 @@ int annual_forest_structure(cell_t* const c, const int year)
 			if( layer == c->heights[height].height_z )
 			{
 				//	printf(" SONO QUA!! layer  !!! %d\n",layer);
+
+
+
 				for ( dbh = 0; dbh < c->heights[height].dbhs_count; ++dbh )
 				{
 					for ( age = 0; age < c->heights[height].dbhs[dbh].ages_count ; ++age )
@@ -541,9 +549,9 @@ int annual_forest_structure(cell_t* const c, const int year)
 				}
 				
 			}
-			
+		    
 		}
-		 
+		next_layer :	
 	}
 	for_class_end :
 	logger(g_debug_log, "**************************************\n");
