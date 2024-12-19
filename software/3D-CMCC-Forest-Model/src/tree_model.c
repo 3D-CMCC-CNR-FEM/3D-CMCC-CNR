@@ -445,14 +445,15 @@ int Tree_model_daily (matrix_t *const m, const int cell, const int day, const in
 								dendrometry_old       ( c, layer, height, dbh, age, species, year );
 
 								
-                                 
-								
-								
 								/** IF END OF YEAR **/
 
 								/* last day of the year */
 								if ( c->doy == ( IS_LEAP_YEAR ( c->years[year].year ) ? 366 : 365) )
 								{
+
+                                     /* annual GROSS volume increment  */  // before mortality happen
+									annual_gross_tree_increment ( c, height, dbh, age, species, year );
+
 
    									if ( g_settings->management == MANAGEMENT_VAR)
                                     {
