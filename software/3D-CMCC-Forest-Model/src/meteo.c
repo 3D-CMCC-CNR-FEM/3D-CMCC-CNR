@@ -140,6 +140,46 @@ static double get_co2_conc(const int year, int*const err) {
 	return co2_conc;
 }
 
+static double get_year_co2_conc(const int year, int*const err) {
+	char buf[256];
+	int _year;
+	int flag;
+	double co2_conc;
+	FILE *f;
+	
+	assert(err);
+	assert(g_sz_co2_conc_file);
+
+	flag = 0;
+	co2_conc = INVALID_VALUE;
+	f = NULL;
+
+	*err = 0;
+
+	f = fopen(g_sz_co2_conc_file, "r");
+	if ( ! f )  { *err = 1; goto quit; }
+	while ( fgets(buf, 256, f) ) {
+		if ( 2 == sscanf(buf, "%d\t%lf", &_year, &co2_conc) ) {
+			if ( year < _year ) {    // when the code read effectively the first year in the file and it is higher than initial year.
+				flag = 1;
+				*err = 1;
+				co2_conc = 0.;
+				break;
+			} else {
+	        if ( year == _year ) {
+				flag = 1;
+				break;
+			}
+			}
+		}
+	}
+
+	quit:
+	if ( f )fclose(f);
+
+	return co2_conc;
+}
+
 static double get_ndep(const int year, int*const err) {
 	char buf[256];
 	int _year;
@@ -2247,9 +2287,14 @@ int import_meteo_data(const char *const file, int *const yos_count, void* _cell)
 		}
 
 		for ( i = 0; i < *yos_count; ++i ) {
-			meteo_annual[i].co2Conc = get_co2_conc(meteo_annual[i].year, &err);
+			
+			//meteo_annual[i].co2Conc = get_co2_conc(meteo_annual[i].year, &err);
+              
+		    meteo_annual[i].co2Conc = get_year_co2_conc(meteo_annual[i].year, &err);
+
 			if ( err ) {
-				logger_error(g_debug_log, "year_start_co2 not found!\n");
+				//logger_error(g_debug_log, "year_start_co2 not found!\n");
+				logger_error(g_debug_log, "at least one year of co2 data not found!\n");
 				free(meteo_annual);
 				return 0;
 			}
