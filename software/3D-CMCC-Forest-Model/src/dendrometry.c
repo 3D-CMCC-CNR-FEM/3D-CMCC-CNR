@@ -344,8 +344,6 @@ void annual_gross_tree_increment(cell_t *const c, const int height, const int db
 	s = &c->heights[height].dbhs[dbh].ages[age].species[species];
 
 	/* in m^3/cell/yr */
-	/* assumption: CAI = Volume t1 - Volume t0 */
-	/* assumption: MAI = Volume t1 / Age t1 */
 
 	/* CURRENT GROSS ANNUAL INCREMENT */
 
