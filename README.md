@@ -93,5 +93,7 @@ For references on **3D-CMCC-FEM**:
 
 21. *"Monitoring and Predicting Forest Growth and Dynamics"*, Collalti A., Dalmonech D., Vangi E., Marano G., Puchi P.F., Morichetti M., Saponaro V., Orrico, M.R., Grieco E.. *CNR Edizioni*, https://doi.org/10.32018/ForModLab-book-2024 - ISBN 978-88-8080-655-4, 2024
 
+22. *"Assessing the combined effects of forest management and climate change on carbon and water fluxes in European beech forests"*, Saponaro V., De Càceres M., Dalmonech D., D'Andrea E., Vangi E., Collalti A.. *Forest Ecosystems*, accepted.
+
 see also at: https://www.forest-modelling-lab.com/publications
 
