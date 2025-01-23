@@ -464,7 +464,7 @@ int annual_forest_structure(cell_t* const c, const int year)
 
 			// 5p7 Self thinning is applied only if the minimum layer DBH is larger than 35 cm 
 			// in some cases, the self thinning is activated when in the layer there are large trees 
-
+            // TODO: we only need to compute DBH_layer_min to make the code faster
 		//	if (c->tree_layers[layer].DBH_layer_min <= self_thinning_treshold ) goto next_layer;
 
 		/* note: 04 Oct 2016 */
