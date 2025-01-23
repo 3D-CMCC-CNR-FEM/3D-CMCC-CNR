@@ -219,6 +219,8 @@ void self_thinning_mortality_new(cell_t *const c, const int layer, const int yea
 		/* litter fluxes and pools */
 		littering             ( c, s );
 
+		// ad this point we should have the printing of the tree biomass removed and everything
+
 		/* call remove_tree_class */
 		if ( ! tree_class_remove(c, height, dbh, age, species) )
 		{
