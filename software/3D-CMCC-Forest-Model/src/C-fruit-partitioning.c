@@ -157,7 +157,7 @@ int Fruit_to_seeds_function (cell_t *const c, const int layer, const age_t *cons
 
             /******************SEEDS PRODUCTION EVERY YEAR NPP FIXED***********************/
 
-#if 1
+#if 0
 
 void Fruit_to_seeds_function_npp (cell_t *const c, const age_t *const a, species_t *const s, const int day, const int month, const int year) {
 
