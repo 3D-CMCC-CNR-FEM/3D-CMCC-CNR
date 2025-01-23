@@ -81,7 +81,7 @@ void regeneration (cell_t *const c, const int height, const int dbh, const int a
 // SAPONARO 12/2022
         /*******************************************REGENERATION MODULE*******************************************************/
 
-#if 1                                 /*******************USE THIS********************/
+#if 0                                /*******************USE THIS********************/
 
 int germination (cell_t *const c, const meteo_daily_t *const meteo_daily, species_t *const s, const int day, const int month, const int year) {
 
@@ -304,7 +304,7 @@ int establishment(cell_t *const c, const meteo_daily_t *const meteo_daily, speci
 
 #endif // 0
 
-#if 1        /**********************************USE THIS****************************/
+#if 0       /**********************************USE THIS****************************/
 
 int establishment (cell_t *const c, const meteo_daily_t *const meteo_daily, species_t *const s, const int day, const int month, const int year) {
 
