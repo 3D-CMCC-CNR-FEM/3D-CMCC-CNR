@@ -116,6 +116,8 @@ enum {
 #define KS4_BASE             0.0001       /* recalcitrant SOM (humus) pool */
 #define KFRAG_BASE            0.001       /* physical fragmentation of coarse woody debris */
 
+#define self_thinning_treshold    35     // cm DBH treshold to activate self thinning within a layer (compared to the smalled class in the layer) 
+
 
 
 //MARCONI CONSTANTS::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
