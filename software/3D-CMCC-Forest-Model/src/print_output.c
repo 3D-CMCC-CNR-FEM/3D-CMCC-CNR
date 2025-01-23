@@ -1492,6 +1492,7 @@ void EOY_print_output_cell_level_mc(cell_t *const c, const int year, const int y
 
 // print annual data for Management : this was a first attempt. However it works only with the
 // option MAN = on, management_type=0 
+// ?' check for other options
 
 void EOY_print_output_cell_level_mc_management(cell_t *const c, const int year)
 {
