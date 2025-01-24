@@ -94,6 +94,11 @@ void self_thinning_mortality_new(cell_t *const c, const int layer, const int yea
 		{
 			d = &c->heights[height].dbhs[dbh];
 
+			// Skip selt-thinning tree removal is large trees
+
+			if (d >= self_thinning_treshold)  goto next_dbh;
+
+
 			for ( age = 0; age < d->ages_count ; ++age )
 			{
 				a = &c->heights[height].dbhs[dbh].ages[age];
