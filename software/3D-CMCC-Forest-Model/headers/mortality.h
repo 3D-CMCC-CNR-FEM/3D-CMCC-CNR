@@ -4,7 +4,7 @@
 
 #include "matrix.h"
 
-int growth_efficiency_mortality        ( cell_t *const c, const int height, const int dbh, const int age, const int species );
+int growth_efficiency_mortality        ( cell_t *const c, const int height, const int dbh, const int age, const int species, const int year );
 
 int annual_growth_efficiency_mortality ( cell_t *const c, const int height, const int dbh, const int age, const int species );
 
@@ -14,9 +14,9 @@ void self_thinning_mortality           ( cell_t *const c, const int layer, const
 
 void self_thinning_mortality_new       ( cell_t *const c, const int layer, const int year , const int tree_remove_st);
 
-void age_mortality                     ( cell_t *const c, const int height, const int dbh, const int age, const int species );
+void age_mortality                     ( cell_t *const c, const int height, const int dbh, const int age, const int species, const int year  );
 
-void stochastic_mortality              ( cell_t *const c, const int height, const int dbh, const int age, const int species );
+void stochastic_mortality              ( cell_t *const c, const int height, const int dbh, const int age, const int species, const int year  );
 
 void mortality                         (cell_t *const c, const int height, const int dbh, const int age, const int species, const int tree_remove);
 
