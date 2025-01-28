@@ -116,8 +116,9 @@ enum {
 #define KS4_BASE             0.0001       /* recalcitrant SOM (humus) pool */
 #define KFRAG_BASE            0.001       /* physical fragmentation of coarse woody debris */
 
-#define self_thinning_treshold    30     // cm DBH treshold to activate self thinning within a layer (compared to the smalled class in the layer) 
-                                         // at some point, it would be worth to include this as a species specific or settings parameter.
+#define self_thinning_treshold    30.0     // cm DBH treshold to activate self thinning within a layer (compared to the smalled class in the layer) 
+#define self_thinning_rf           0.10       /* reduction factor of self-thinning number of stems deafult 0.1 */ 
+
 
 
 //MARCONI CONSTANTS::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
