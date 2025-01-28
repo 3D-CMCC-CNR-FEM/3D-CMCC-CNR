@@ -23,12 +23,17 @@
 extern settings_t* g_settings;
 extern logger_t* g_debug_log;
 
+static const char sz_management[] = "TCN";
+
+
 /******************************************************************************************************************/
 /******************************************************************************************************************/
 
 void self_thinning_mortality_new(cell_t *const c, const int layer, const int year , const int  tree_remove_st)
 {
+	
 	// ddalmo oct.2024 
+	
 	int height;
 	int dbh;
 	int age;
@@ -48,7 +53,7 @@ void self_thinning_mortality_new(cell_t *const c, const int layer, const int yea
 
 	nat_man = 0;
 
-// l->tree_remove_crowded 
+	// l->tree_remove_crowded 
 
     //printf("** IN SELF THINNING MORTALITY **\n");
 
@@ -77,78 +82,79 @@ void self_thinning_mortality_new(cell_t *const c, const int layer, const int yea
 	{
 		/* first of all sort by descending height */
 		/* model makes die lower height-class in each layer first */
+
 #ifndef USE_NEW_OUTPUT
-		qsort (c->heights, c->heights_count, sizeof (height_t), sort_by_heights_desc);
+			qsort (c->heights, c->heights_count, sizeof (height_t), sort_by_heights_desc);
 #endif
 
 		h = &c->heights[height];
 
 			//printf(" in self thin c->heights[height] %f!!!\n",c->heights[height].value);
-	// ddalmo : added, as the selfthinning bc of crown competition is whitin the same layer...
+		// ddalmo : added, as the selfthinning bc of crown competition is whitin the same layer...
 
-	if( layer == c->heights[height].height_z )
-		{
-
-
-		for ( dbh = h->dbhs_count - 1; dbh >= 0; --dbh)
-		{
-			d = &c->heights[height].dbhs[dbh];
-
-			// Skip selt-thinning tree removal is large trees
-
-			if (d >= self_thinning_treshold)  goto next_dbh;
-
-
-			for ( age = 0; age < d->ages_count ; ++age )
+		if( layer == c->heights[height].height_z )
 			{
-				a = &c->heights[height].dbhs[dbh].ages[age];
 
-				for ( species = 0; species < a->species_count; ++species )
+
+			for ( dbh = h->dbhs_count - 1; dbh >= 0; --dbh)
+			{
+				d = &c->heights[height].dbhs[dbh];
+
+				// Skip selt-thinning tree removal is large trees
+
+				if (d >= self_thinning_treshold)  goto next_dbh;
+
+
+				for ( age = 0; age < d->ages_count ; ++age )
 				{
-					s = &c->heights[height].dbhs[dbh].ages[age].species[species];
+					a = &c->heights[height].dbhs[dbh].ages[age];
 
-                    // note: for how we work, for the lowest height in the layer we will be having only one class.
-					// 
-					logger(g_debug_log, "MORTALITY BASED ON HIGH CANOPY COVER height %f species %s dbh %f !!!\n", h->value, s->name, d->value);
+					for ( species = 0; species < a->species_count; ++species )
+					{
+						s = &c->heights[height].dbhs[dbh].ages[age].species[species];
 
-					/* initialize variables */
-					livetree = s->counter[N_TREE];
-					//deadtree = 0;
-					// we know that usually starting from the last height class, there is only one DBH and one age...
-				
-				   // for forest navigator test: we use a relaxation factor. so that we remove smoothly the trees
-					// after some test, with 10% we have an exponential decrease of living trees
+						// note: for how we work, for the lowest height in the layer we will be having only one class.
+						// 
+						logger(g_debug_log, "MORTALITY BASED ON HIGH CANOPY COVER height %f species %s dbh %f !!!\n", h->value, s->name, d->value);
 
-					tree_to_rm2 = round(tree_remove_st*0.1)  ;
-					deadtree = tree_to_rm2;
+						/* initialize variables */
+						livetree = s->counter[N_TREE];
+						//deadtree = 0;
+						// we know that usually starting from the last height class, there is only one DBH and one age...
+					
+						// for forest navigator test: we use a relaxation factor. so that we remove smoothly the trees
+						// after some test, with 10% we have an exponential decrease of living trees
 
-					//deadtree = tree_remove_st;
-				
-				
-					livetree -= deadtree;
-	
-                    // check if this is larger than the number of trees in the class
-					// if so, remove the entire class and go on.
-                    // 
-					//
-					// directly remove the plants, and we should call then 
-                    
-                    // livetree = max(0, livetree) ;
+						tree_to_rm2 = round(tree_remove_st*0.1)  ;
+						deadtree = tree_to_rm2;
 
-					if ( livetree > 0 )
+						//deadtree = tree_remove_st;
+					
+					
+						livetree -= deadtree;
+		
+						// check if this is larger than the number of trees in the class
+						// if so, remove the entire class and go on.
+						// 
+						//
+						// directly remove the plants, and we should call then 
+						
+						// livetree = max(0, livetree) ;
+
+						if ( livetree > 0 )
 						{
 
                             /* update at cell level */
-						c->daily_dead_tree += deadtree;
+							c->daily_dead_tree += deadtree;
 
-						/* update layer trees */
-						c->tree_layers[layer].layer_n_trees -=deadtree;
+							/* update layer trees */
+							c->tree_layers[layer].layer_n_trees -=deadtree;
 
-						/* update layer density */
-						c->tree_layers[layer].layer_density = c->tree_layers[layer].layer_n_trees / g_settings->sizeCell;
+							/* update layer density */
+							c->tree_layers[layer].layer_density = c->tree_layers[layer].layer_n_trees / g_settings->sizeCell;
 
-						/* update layer cover proj */
-						c->tree_layers[layer].layer_cover_proj  -= s->value[CANOPY_COVER_PROJ];
+							/* update layer cover proj */
+							c->tree_layers[layer].layer_cover_proj  -= s->value[CANOPY_COVER_PROJ];
 
 
 							/* recompute dbhdc eff */
@@ -166,86 +172,98 @@ void self_thinning_mortality_new(cell_t *const c, const int layer, const int yea
 
 							//printf(" SONO THIN PRIMA DI TREE BIOMASS REMOVE \n");
 
-					//FIXME
-					/* remove dead C and N biomass */
-					tree_biomass_remove ( c, height, dbh, age, species, deadtree, nat_man );
+							//FIXME
+							/* remove dead C and N biomass */
+							tree_biomass_remove ( c, height, dbh, age, species, deadtree, nat_man );
 
-					/* update live and dead tree (do not move above) */
-					s->counter[DEAD_TREE] += deadtree;
-					s->counter[N_TREE]     = livetree;
-					c->n_trees            -= deadtree;
+							/* update live and dead tree (do not move above) */
+							s->counter[DEAD_TREE] += deadtree;
+							s->counter[N_TREE]     = livetree;
+							c->n_trees            -= deadtree;
 
-					deadtree = 0;
-					livetree = 0;
+							deadtree = 0;
+							livetree = 0;
 
-					/* check */
-					CHECK_CONDITION( s->value[CANOPY_COVER_PROJ] ,  > , s->value[CANOPY_COVER_PROJ] + eps );
-                    goto height_end; 
+							/* check */
+							CHECK_CONDITION( s->value[CANOPY_COVER_PROJ] ,  > , s->value[CANOPY_COVER_PROJ] + eps );
+							goto height_end; 
 
 						} else {   // removing more trees than the ones in the class
 
 
                      
 
-                        deadtree = s->counter[N_TREE];
-						// remove the ENTIRE CLASS; 
-						//the issue is, go on, 
+							deadtree = s->counter[N_TREE];
+							// remove the ENTIRE CLASS; 
+							//the issue is, go on, 
 
-                         /* update at cell level */
-						c->daily_dead_tree +=  s->counter[N_TREE];
+							/* update at cell level */
+							c->daily_dead_tree +=  s->counter[N_TREE];
 
-						/* update layer trees */
-						c->tree_layers[layer].layer_n_trees -= s->counter[N_TREE];
-
-
-						/* update layer density */
-						c->tree_layers[layer].layer_density = c->tree_layers[layer].layer_n_trees / g_settings->sizeCell;
-
-						/* update layer cover proj */
-						c->tree_layers[layer].layer_cover_proj  -= s->value[CANOPY_COVER_PROJ];
+							/* update layer trees */
+							c->tree_layers[layer].layer_n_trees -= s->counter[N_TREE];
 
 
+							/* update layer density */
+							c->tree_layers[layer].layer_density = c->tree_layers[layer].layer_n_trees / g_settings->sizeCell;
 
-		/* reset to zero n_trees */
-		s->counter[DEAD_TREE] += s->counter[N_TREE];
-		s->counter[N_TREE]    = 0;
-		c->n_trees -= deadtree;
+							/* update layer cover proj */
+							c->tree_layers[layer].layer_cover_proj  -= s->value[CANOPY_COVER_PROJ];
 
+
+
+											/* reset to zero n_trees */
+							s->counter[DEAD_TREE] += s->counter[N_TREE];
+							s->counter[N_TREE]    = 0;
+							c->n_trees -= deadtree;
+
+							// jan 2025 save mortality data / save info for printing
+							// if entire class is remove, call here the output print function
+							// save info for printing (auxiliary variables)
+
+							//new var to add 
+							c->dead_tree_to_print     =       deadtree ;  
+							c->dead_stem_b_to_print   =       deadtree * s->value[TREE_STEM_C]  ; 
+							c->dead_branch_b_to_print  =      deadtree * s->value[TREE_BRANCH_C]  ; 
+							c->dead_croot_b_to_print   =      deadtree * s->value[TREE_CROOT_C] ; 
+
+							c->thinned_tree_to_print   =       0    ;     
+							c->hwp_to_print            =       0.   ;
+							c->thinned_branch_to_print =      0.  ; /*  branch volume removed (m3/ha/yr) */
+							c->thinned_stem_to_print   =      0. ;
+							c->thinned_stem2_to_print  =      0.;
+
+							EOY_print_output_class_level_management(c, height, dbh, age, species, year);
 		
 
-		/* remove dead C and N biomass */
-		tree_biomass_remove ( c, height, dbh, age, species, deadtree , nat_man);
+							/* remove dead C and N biomass */
+							tree_biomass_remove ( c, height, dbh, age, species, deadtree , nat_man);
 
-    
-		/* litter fluxes and pools */
-		littering             ( c, s );
-
-		// ad this point we should have the printing of the tree biomass removed and everything
-
-		/* call remove_tree_class */
-		if ( ! tree_class_remove(c, height, dbh, age, species) )
-		{
-			logger_error(g_debug_log, "unable to remove tree class");
-			exit(1);
-		}
-
-		
-					deadtree = 0;
-					livetree = 0;
-
-					/* check */
-					CHECK_CONDITION( s->value[CANOPY_COVER_PROJ] ,  > , s->value[CANOPY_COVER_PROJ] + eps );
-                          c->GREFFMORT_HAPPENS = 1 ;
-
-						  
-
-                         goto height_end; 
-
-
-
-
-						}
 						
+							/* litter fluxes and pools */
+							littering             ( c, s );
+
+							// ad this point we should have the printing of the tree biomass removed and everything
+
+							/* call remove_tree_class */
+							if ( ! tree_class_remove(c, height, dbh, age, species) )
+							{
+								logger_error(g_debug_log, "unable to remove tree class");
+								exit(1);
+							}
+
+		
+							deadtree = 0;
+							livetree = 0;
+
+							/* check */
+							CHECK_CONDITION( s->value[CANOPY_COVER_PROJ] ,  > , s->value[CANOPY_COVER_PROJ] + eps );
+							
+							c->GREFFMORT_HAPPENS = 1 ;
+
+							goto height_end; 
+
+						}	
 				}
 			}
 			next_dbh :
@@ -253,9 +271,11 @@ void self_thinning_mortality_new(cell_t *const c, const int layer, const int yea
 
 		} // loop in the same layer for all the heigth
 	}
+
+
     height_end:
 
-	 //printf("in mortaliy GEff  height              = %d  \n", height);
+	 							//printf("in mortaliy GEff  height              = %d  \n", height);
 								// printf("in mortaliy GEff  m->cells[cell].heights_count               = %d \n ", m->cells[cell].heights_count);
 								//printf(" in SELFTHINNING  c->tree_layers_count             = %d \n ", c->tree_layers_count);
 
@@ -514,14 +534,14 @@ void self_thinning_mortality(cell_t *const c, const int layer, const int year)
 /******************************************************************************************************************/
 /******************************************************************************************************************/
 
-int growth_efficiency_mortality ( cell_t *const c, const int height, const int dbh, const int age, const int species )
+int growth_efficiency_mortality ( cell_t *const c, const int height, const int dbh, const int age, const int species , const int year)
 {
 	/* this function superimpose mortality for all trees in class when reserves
 	 * go under zero assuming that reserve pool hasn't be refilled during the day
 	 * and make the tree class die */
 
 	int nat_man;   /* natural or managed mortality 0 = natural; 1 = managed */
-     int deadtree;
+    int deadtree;
 
 	species_t* s;
 
@@ -541,6 +561,25 @@ int growth_efficiency_mortality ( cell_t *const c, const int height, const int d
 		s->counter[DEAD_TREE] += deadtree;
 		s->counter[N_TREE]    = 0;
 		c->n_trees -= deadtree;
+
+        // jan 2025 save mortality data / save info for printing
+        // if entire class is remove, call here the output print function
+        // save info for printing (auxiliary variables)
+
+		//new var to add 
+		c->dead_tree_to_print     =       deadtree ;  
+		c->dead_stem_b_to_print   =       deadtree * s->value[TREE_STEM_C]  ; 
+		c->dead_branch_b_to_print  =      deadtree * s->value[TREE_BRANCH_C]  ; 
+		c->dead_croot_b_to_print   =      deadtree * s->value[TREE_CROOT_C] ; 
+
+		c->thinned_tree_to_print   =       0    ;     
+		c->hwp_to_print            =       0.;
+		c->thinned_branch_to_print =      0.  ; /*  stem volume removed (m3/ha/yr) */
+		c->thinned_stem_to_print   =   0. ;
+		c->thinned_stem2_to_print  =    0.;
+
+		EOY_print_output_class_level_management(c, height, dbh, age, species, year);
+
 
 		/* remove dead C and N biomass */
 		tree_biomass_remove ( c, height, dbh, age, species,deadtree, nat_man);
@@ -573,6 +612,8 @@ int growth_efficiency_mortality ( cell_t *const c, const int height, const int d
 
 /******************************************************************************************************************/
 /******************************************************************************************************************/
+
+// This function is not called/used
 
 int annual_growth_efficiency_mortality ( cell_t *const c, const int height, const int dbh, const int age, const int species )
 {
@@ -616,7 +657,7 @@ int annual_growth_efficiency_mortality ( cell_t *const c, const int height, cons
 /******************************************************************************************************************/
 
 /* Age mortality function from LPJ-GUESS */
-void age_mortality ( cell_t *const c, const int height, const int dbh, const int age, const int species )
+void age_mortality ( cell_t *const c, const int height, const int dbh, const int age, const int species, const int year )
 {
 	int livetree       = 0;
 	int deadtree       = 0;
@@ -651,7 +692,7 @@ void age_mortality ( cell_t *const c, const int height, const int dbh, const int
 
 	logger(g_debug_log, "dead trees = %d\n", deadtree);
 
-        if ( ( deadtree ) > 1 )  //FIXME set >=1
+    if ( ( deadtree ) > 1 )  //FIXME set >=1
 	{
 		logger(g_debug_log, "**MORTALITY based on Tree Age (LPJ)**\n");
 
@@ -659,9 +700,45 @@ void age_mortality ( cell_t *const c, const int height, const int dbh, const int
 		{
 			/* update C and N biomass */
 			tree_biomass_remove ( c, height, dbh, age, species, deadtree, nat_man );
+
+            /* update at class level */
+		    s->counter[DEAD_TREE] += deadtree;
+		    s->counter[N_TREE]    -= deadtree;
+
+		    /* check */
+		    CHECK_CONDITION(s->counter[N_TREE],    <=, 0);
+		    CHECK_CONDITION(s->counter[DEAD_TREE], <, 0);
+			 
 		}
 		else
 		{
+            deadtree =    s->counter[N_TREE];
+
+			// jan 2025 save mortality data / save info for printing
+        	// if entire class is remove, call here the output print function
+        	// save info for printing (auxiliary variables)
+
+			//new var to add 
+			c->dead_tree_to_print     =       deadtree ;  
+			c->dead_stem_b_to_print   =       deadtree * s->value[TREE_STEM_C]  ; 
+			c->dead_branch_b_to_print  =      deadtree * s->value[TREE_BRANCH_C]  ; 
+			c->dead_croot_b_to_print   =      deadtree * s->value[TREE_CROOT_C] ; 
+
+			c->thinned_tree_to_print   =       0    ;     
+			c->hwp_to_print            =       0.;
+			c->thinned_branch_to_print =      0.  ; /*  stem volume removed (m3/ha/yr) */
+			c->thinned_stem_to_print   =   0. ;
+			c->thinned_stem2_to_print  =    0.;
+
+			EOY_print_output_class_level_management(c, height, dbh, age, species, year);
+		
+
+			/* update C and N biomass */
+			tree_biomass_remove ( c, height, dbh, age, species, deadtree, nat_man );
+
+			/* litter fluxes and pools */
+			littering             ( c, s );
+
 			if ( ! tree_class_remove(c, height, dbh, age, species) )
 			{
 				logger_error(g_debug_log, "unable to remove tree class");
@@ -669,13 +746,7 @@ void age_mortality ( cell_t *const c, const int height, const int dbh, const int
 			}
 		}
 
-		/* update at class level */
-		s->counter[DEAD_TREE] += deadtree;
-		s->counter[N_TREE]    -= deadtree;
-
-		/* check */
-		CHECK_CONDITION(s->counter[N_TREE],    <=, 0);
-		CHECK_CONDITION(s->counter[DEAD_TREE], <, 0);
+		
 
 		/* update at cell level */
 		c->daily_dead_tree   += deadtree;
@@ -695,7 +766,7 @@ void age_mortality ( cell_t *const c, const int height, const int dbh, const int
 /******************************************************************************************************************/
 /******************************************************************************************************************/
 
-void stochastic_mortality ( cell_t *const c, const int height, const int dbh, const int age, const int species )
+void stochastic_mortality ( cell_t *const c, const int height, const int dbh, const int age, const int species, const int year )
 {
 	int livetree         = 0;
 	int deadtree         = 0;
@@ -705,8 +776,6 @@ void stochastic_mortality ( cell_t *const c, const int height, const int dbh, co
 
 	/* stochastic mortality factor which considers that (see BIOME-BGC) a stochastic mortality happens
 	 * BUT for reasons differet (e.g. pests) to age mortality factor */
-
-  //  printf("** IN STOCHASTIC MORTALITY **\n");
 
 	age_t *a;
 	species_t *s;
@@ -734,27 +803,58 @@ void stochastic_mortality ( cell_t *const c, const int height, const int dbh, co
 
 		if ( livetree > deadtree)
 		{
+
 			/* remove C and N biomass */
 			tree_biomass_remove ( c, height, dbh, age, species, deadtree, nat_man );
+
+			
+			/* update at class level */
+			s->counter[DEAD_TREE] += deadtree;
+			s->counter[N_TREE]    -= deadtree;
+
+			//printf("s->counter[N_TREE]  %d \n",s->counter[N_TREE] );
+			//printf("c->daily_dead_tree 1 %d \n",c->daily_dead_tree );
+			/* check */
+			CHECK_CONDITION(s->counter[N_TREE],    <=, 0);
+			CHECK_CONDITION(s->counter[DEAD_TREE], <, 0);
+
 		}
 		else
 		{
+			
+			deadtree =   s->counter[N_TREE];
+
+			// jan 2025 save mortality data / save info for printing
+       		// if entire class is remove, call here the output print function
+        	// save info for printing (auxiliary variables)
+
+			//new var to add 
+			c->dead_tree_to_print     =       deadtree ;  
+			c->dead_stem_b_to_print   =       deadtree * s->value[TREE_STEM_C]  ; 
+			c->dead_branch_b_to_print  =      deadtree * s->value[TREE_BRANCH_C]  ; 
+			c->dead_croot_b_to_print   =      deadtree * s->value[TREE_CROOT_C] ; 
+
+			c->thinned_tree_to_print   =       0    ;     
+			c->hwp_to_print            =       0.;
+			c->thinned_branch_to_print =      0.  ; /*  stem volume removed (m3/ha/yr) */
+			c->thinned_stem_to_print   =   0. ;
+			c->thinned_stem2_to_print  =    0.;
+
+			EOY_print_output_class_level_management(c, height, dbh, age, species, year);
+		
+
+			/* update C and N biomass */
+			tree_biomass_remove ( c, height, dbh, age, species, deadtree, nat_man );
+
+		    /* litter fluxes and pools */
+		    littering             ( c, s );
+
 			if ( ! tree_class_remove(c, height, dbh, age, species) )
 			{
 				logger_error(g_debug_log, "unable to remove tree class");
 				exit(1);
 			}
 		}
-
-		/* update at class level */
-		s->counter[DEAD_TREE] += deadtree;
-		s->counter[N_TREE]    -= deadtree;
-
-	//printf("s->counter[N_TREE]  %d \n",s->counter[N_TREE] );
-//printf("c->daily_dead_tree 1 %d \n",c->daily_dead_tree );
-		/* check */
-		CHECK_CONDITION(s->counter[N_TREE],    <=, 0);
-		CHECK_CONDITION(s->counter[DEAD_TREE], <, 0);
 
 		/* update at cell level */
 		c->daily_dead_tree   += deadtree;
@@ -813,7 +913,7 @@ void self_pruning( cell_t *const c, const int height, const int dbh, const int a
 	// printf(" AFTER PRUNING  s->value[BRANCH_C]  %f!!!\n",s->value[BRANCH_C] );
 
      s->value[BRANCH_SAPWOOD_C] -= ( s->value[BRANCH_SAPWOOD_C]     * ( 1. - self_pruning_ratio ) );
-   s->value[BRANCH_LIVEWOOD_C] -=( s->value[BRANCH_LIVEWOOD_C]     * ( 1. - self_pruning_ratio ) );
+   	s->value[BRANCH_LIVEWOOD_C] -=( s->value[BRANCH_LIVEWOOD_C]     * ( 1. - self_pruning_ratio ) );
     s->value[BRANCH_HEARTWOOD_C] -=( s->value[BRANCH_HEARTWOOD_C]     * ( 1. - self_pruning_ratio ) );
 	 s->value[BRANCH_DEADWOOD_C] -=( s->value[BRANCH_DEADWOOD_C]     * ( 1. - self_pruning_ratio ) );
 
