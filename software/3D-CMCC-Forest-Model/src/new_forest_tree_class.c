@@ -569,9 +569,13 @@ int add_tree_class_for_replanting_reg (cell_t *const c, const int day, const int
 						if ( s->value[STEM_C] ) 
 						{
                        
-					    goto end_init;   // class already initialized
+					    // class already initialized
+						
+					    //goto end_init;   
 
-						}
+						} else {
+
+						
 
     					// qui devo passare l'indice corretto, in quanto all'inizio della subroutine, h è sempre l'ultimo aggiunto
 						// ma in forest structure, l'ordine viene riordinato. 
@@ -601,9 +605,9 @@ int add_tree_class_for_replanting_reg (cell_t *const c, const int day, const int
 						/* print new forest class dataset */
 						print_new_daily_forest_class_data  ( c, height, dbh, age, species );
 
-
+                     }
 					}
-					end_init: 
+				 
 				}
 					
 			}
