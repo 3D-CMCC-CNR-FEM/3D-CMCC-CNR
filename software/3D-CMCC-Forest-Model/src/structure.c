@@ -513,14 +513,14 @@ int annual_forest_structure(cell_t* const c, const int year)
                       
 								if ( s->value[DBHDC_EFF] <= s->value[DBHDCMIN] )   //ddalmo may23: test include if layer_cc_proj > max_layer_cc_proj
 								{
-							//		printf(" annual structure self thin  LAYER %d!!!\n",layer); 
-							//	printf(" ENTRO IN SELF THINNING MORTALITY !!!\n");
+							//	printf(" annual structure self thin  LAYER %d!!!\n",layer); 
+								
 
 								// i transfer as well the number of trees to be remove 
                                     tree_remove_st = s->value[tree_remove_crowded] ; 
 
 									  
-							//		 printf(" ENTRO IN SELF THINNING tree_remove_st %d!!!\n", tree_remove_st);
+									// printf(" ENTRO IN SELF THINNING tree_remove_st %d!!!\n", tree_remove_st);
 									self_thinning_mortality_new( c, layer, year , tree_remove_st);
 									//self_thinning_mortality ( c, layer, year );
                                   goto for_class_end ; 
