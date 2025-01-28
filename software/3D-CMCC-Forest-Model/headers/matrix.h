@@ -1139,10 +1139,19 @@ typedef struct
 	
     // auxiliary variable to print management related variables
 	int thinned_tree_to_print     ;     
-    double hwp_to_print              ;
-    double thinned_branch_to_print   ; 
-    double thinned_stem_to_print     ;
-	double thinned_stem2_to_print    ;
+    double hwp_to_print              ;     // C_HWP (stem and branches)
+    double thinned_branch_to_print   ;      // C_HWP as branches
+    double thinned_stem_to_print     ;      // total stem volume (based stem geometric features)
+	double thinned_stem2_to_print    ;      // total stem volume (based on biomass and conversionf actors)
+
+    // auxiliary variable to print natural mortality related variables
+	
+	int dead_tree_to_print           ;          
+    double dead_stem_b_to_print      ;      // total stem biomass (dead wood)
+    double dead_branch_b_to_print    ;      // total branch biomass (dead wood)
+    double dead_croot_b_to_print     ;      // total croot biomass (dead wood)
+
+
 	
 	double basal_area;                                                    /* (m2/cell) cumulated basal area at cell level */
 	double agb;                                                           /* (tC/cell) current above ground biomass at cell level */
