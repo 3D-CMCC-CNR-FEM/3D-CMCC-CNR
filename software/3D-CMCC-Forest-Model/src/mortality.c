@@ -233,7 +233,7 @@ void self_thinning_mortality_new(cell_t *const c, const int layer, const int yea
 							c->thinned_stem_to_print   =      0. ;
 							c->thinned_stem2_to_print  =      0.;
 
-							EOY_print_output_class_level_management(c, height, dbh, age, species, year);
+							EOY_print_output_class_level_mortality(c, height, dbh, age, species, year);
 		
 
 							/* remove dead C and N biomass */
@@ -578,7 +578,7 @@ int growth_efficiency_mortality ( cell_t *const c, const int height, const int d
 		c->thinned_stem_to_print   =   0. ;
 		c->thinned_stem2_to_print  =    0.;
 
-		EOY_print_output_class_level_management(c, height, dbh, age, species, year);
+		EOY_print_output_class_level_mortality(c, height, dbh, age, species, year);
 
 
 		/* remove dead C and N biomass */
@@ -730,7 +730,7 @@ void age_mortality ( cell_t *const c, const int height, const int dbh, const int
 			c->thinned_stem_to_print   =   0. ;
 			c->thinned_stem2_to_print  =    0.;
 
-			EOY_print_output_class_level_management(c, height, dbh, age, species, year);
+			EOY_print_output_class_level_mortality(c, height, dbh, age, species, year);
 		
 
 			/* update C and N biomass */
@@ -840,7 +840,7 @@ void stochastic_mortality ( cell_t *const c, const int height, const int dbh, co
 			c->thinned_stem_to_print   =   0. ;
 			c->thinned_stem2_to_print  =    0.;
 
-			EOY_print_output_class_level_management(c, height, dbh, age, species, year);
+			EOY_print_output_class_level_mortality(c, height, dbh, age, species, year);
 		
 
 			/* update C and N biomass */
