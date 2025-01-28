@@ -102,177 +102,174 @@ void self_thinning_mortality_new(cell_t *const c, const int layer, const int yea
 
 				// Skip selt-thinning tree removal is large trees
 
-				if (d >= self_thinning_treshold)  goto next_dbh;
+				if (d < self_thinning_treshold)
+                {
 
-
-				for ( age = 0; age < d->ages_count ; ++age )
-				{
-					a = &c->heights[height].dbhs[dbh].ages[age];
-
-					for ( species = 0; species < a->species_count; ++species )
+					for ( age = 0; age < d->ages_count ; ++age )
 					{
-						s = &c->heights[height].dbhs[dbh].ages[age].species[species];
+						a = &c->heights[height].dbhs[dbh].ages[age];
 
-						// note: for how we work, for the lowest height in the layer we will be having only one class.
-						// 
-						logger(g_debug_log, "MORTALITY BASED ON HIGH CANOPY COVER height %f species %s dbh %f !!!\n", h->value, s->name, d->value);
-
-						/* initialize variables */
-						livetree = s->counter[N_TREE];
-						//deadtree = 0;
-						// we know that usually starting from the last height class, there is only one DBH and one age...
-					
-						// for forest navigator test: we use a relaxation factor. so that we remove smoothly the trees
-						// after some test, with 10% we have an exponential decrease of living trees
-
-						tree_to_rm2 = round(tree_remove_st*0.1)  ;
-						deadtree = tree_to_rm2;
-
-						//deadtree = tree_remove_st;
-					
-					
-						livetree -= deadtree;
-		
-						// check if this is larger than the number of trees in the class
-						// if so, remove the entire class and go on.
-						// 
-						//
-						// directly remove the plants, and we should call then 
-						
-						// livetree = max(0, livetree) ;
-
-						if ( livetree > 0 )
+						for ( species = 0; species < a->species_count; ++species )
 						{
+							s = &c->heights[height].dbhs[dbh].ages[age].species[species];
 
-                            /* update at cell level */
-							c->daily_dead_tree += deadtree;
+							// note: for how we work, for the lowest height in the layer we will be having only one class.
+							// 
+							logger(g_debug_log, "MORTALITY BASED ON HIGH CANOPY COVER height %f species %s dbh %f !!!\n", h->value, s->name, d->value);
 
-							/* update layer trees */
-							c->tree_layers[layer].layer_n_trees -=deadtree;
-
-							/* update layer density */
-							c->tree_layers[layer].layer_density = c->tree_layers[layer].layer_n_trees / g_settings->sizeCell;
-
-							/* update layer cover proj */
-							c->tree_layers[layer].layer_cover_proj  -= s->value[CANOPY_COVER_PROJ];
-
-
-							/* recompute dbhdc eff */
-							dbhdc_function         (c, layer, height, dbh, age, species, year);
-
-							/* recompute crown area */
-							crown_allometry        ( c, height, dbh, age, species );
-
-							/* recompute canopy cover with */
-							s->value[CANOPY_COVER_PROJ] = s->value[CROWN_AREA_PROJ] * livetree / g_settings->sizeCell;
-
-							/* check for recompued canopy cover */
-							c->tree_layers[layer].layer_cover_proj += s->value[CANOPY_COVER_PROJ];
-
-
-							//printf(" SONO THIN PRIMA DI TREE BIOMASS REMOVE \n");
-
-							//FIXME
-							/* remove dead C and N biomass */
-							tree_biomass_remove ( c, height, dbh, age, species, deadtree, nat_man );
-
-							/* update live and dead tree (do not move above) */
-							s->counter[DEAD_TREE] += deadtree;
-							s->counter[N_TREE]     = livetree;
-							c->n_trees            -= deadtree;
-
-							deadtree = 0;
-							livetree = 0;
-
-							/* check */
-							CHECK_CONDITION( s->value[CANOPY_COVER_PROJ] ,  > , s->value[CANOPY_COVER_PROJ] + eps );
-							goto height_end; 
-
-						} else {   // removing more trees than the ones in the class
-
-
-                     
-
-							deadtree = s->counter[N_TREE];
-							// remove the ENTIRE CLASS; 
-							//the issue is, go on, 
-
-							/* update at cell level */
-							c->daily_dead_tree +=  s->counter[N_TREE];
-
-							/* update layer trees */
-							c->tree_layers[layer].layer_n_trees -= s->counter[N_TREE];
-
-
-							/* update layer density */
-							c->tree_layers[layer].layer_density = c->tree_layers[layer].layer_n_trees / g_settings->sizeCell;
-
-							/* update layer cover proj */
-							c->tree_layers[layer].layer_cover_proj  -= s->value[CANOPY_COVER_PROJ];
-
-
-
-											/* reset to zero n_trees */
-							s->counter[DEAD_TREE] += s->counter[N_TREE];
-							s->counter[N_TREE]    = 0;
-							c->n_trees -= deadtree;
-
-							// jan 2025 save mortality data / save info for printing
-							// if entire class is remove, call here the output print function
-							// save info for printing (auxiliary variables)
-
-							//new var to add 
-							c->dead_tree_to_print     =       deadtree ;  
-							c->dead_stem_b_to_print   =       deadtree * s->value[TREE_STEM_C]  ; 
-							c->dead_branch_b_to_print  =      deadtree * s->value[TREE_BRANCH_C]  ; 
-							c->dead_croot_b_to_print   =      deadtree * s->value[TREE_CROOT_C] ; 
-
-							c->thinned_tree_to_print   =       0    ;     
-							c->hwp_to_print            =       0.   ;
-							c->thinned_branch_to_print =      0.  ; /*  branch volume removed (m3/ha/yr) */
-							c->thinned_stem_to_print   =      0. ;
-							c->thinned_stem2_to_print  =      0.;
-
-							EOY_print_output_class_level_mortality(c, height, dbh, age, species, year);
-		
-
-							/* remove dead C and N biomass */
-							tree_biomass_remove ( c, height, dbh, age, species, deadtree , nat_man);
-
+							/* initialize variables */
+							livetree = s->counter[N_TREE];
+							//deadtree = 0;
+							// we know that usually starting from the last height class, there is only one DBH and one age...
 						
-							/* litter fluxes and pools */
-							littering             ( c, s );
+							// for forest navigator test: we use a relaxation factor. so that we remove smoothly the trees
+							// after some test, with 10% we have an exponential decrease of living trees
 
-							// ad this point we should have the printing of the tree biomass removed and everything
+							tree_to_rm2 = round(tree_remove_st*0.1)  ;
+							deadtree = tree_to_rm2;
 
-							/* call remove_tree_class */
-							if ( ! tree_class_remove(c, height, dbh, age, species) )
-							{
-								logger_error(g_debug_log, "unable to remove tree class");
-								exit(1);
-							}
-
-		
-							deadtree = 0;
-							livetree = 0;
-
-							/* check */
-							CHECK_CONDITION( s->value[CANOPY_COVER_PROJ] ,  > , s->value[CANOPY_COVER_PROJ] + eps );
+							//deadtree = tree_remove_st;
+						
+						
+							livetree -= deadtree;
+			
+							// check if this is larger than the number of trees in the class
+							// if so, remove the entire class and go on.
+							// 
+							//
+							// directly remove the plants, and we should call then 
 							
-							c->GREFFMORT_HAPPENS = 1 ;
+							// livetree = max(0, livetree) ;
 
-							goto height_end; 
+							if ( livetree > 0 )
+							{
 
-						}	
+								/* update at cell level */
+								c->daily_dead_tree += deadtree;
+
+								/* update layer trees */
+								c->tree_layers[layer].layer_n_trees -=deadtree;
+
+								/* update layer density */
+								c->tree_layers[layer].layer_density = c->tree_layers[layer].layer_n_trees / g_settings->sizeCell;
+
+								/* update layer cover proj */
+								c->tree_layers[layer].layer_cover_proj  -= s->value[CANOPY_COVER_PROJ];
+
+
+								/* recompute dbhdc eff */
+								dbhdc_function         (c, layer, height, dbh, age, species, year);
+
+								/* recompute crown area */
+								crown_allometry        ( c, height, dbh, age, species );
+
+								/* recompute canopy cover with */
+								s->value[CANOPY_COVER_PROJ] = s->value[CROWN_AREA_PROJ] * livetree / g_settings->sizeCell;
+
+								/* check for recompued canopy cover */
+								c->tree_layers[layer].layer_cover_proj += s->value[CANOPY_COVER_PROJ];
+
+
+								//printf(" SONO THIN PRIMA DI TREE BIOMASS REMOVE \n");
+
+								//FIXME
+								/* remove dead C and N biomass */
+								tree_biomass_remove ( c, height, dbh, age, species, deadtree, nat_man );
+
+								/* update live and dead tree (do not move above) */
+								s->counter[DEAD_TREE] += deadtree;
+								s->counter[N_TREE]     = livetree;
+								c->n_trees            -= deadtree;
+
+								deadtree = 0;
+								livetree = 0;
+
+								/* check */
+								CHECK_CONDITION( s->value[CANOPY_COVER_PROJ] ,  > , s->value[CANOPY_COVER_PROJ] + eps );
+								goto height_end; 
+
+							} else {   // removing more trees than the ones in the class
+
+								deadtree = s->counter[N_TREE];
+								// remove the ENTIRE CLASS; 
+								//the issue is, go on, 
+
+								/* update at cell level */
+								c->daily_dead_tree +=  s->counter[N_TREE];
+
+								/* update layer trees */
+								c->tree_layers[layer].layer_n_trees -= s->counter[N_TREE];
+
+
+								/* update layer density */
+								c->tree_layers[layer].layer_density = c->tree_layers[layer].layer_n_trees / g_settings->sizeCell;
+
+								/* update layer cover proj */
+								c->tree_layers[layer].layer_cover_proj  -= s->value[CANOPY_COVER_PROJ];
+
+
+
+												/* reset to zero n_trees */
+								s->counter[DEAD_TREE] += s->counter[N_TREE];
+								s->counter[N_TREE]    = 0;
+								c->n_trees -= deadtree;
+
+								// jan 2025 save mortality data / save info for printing
+								// if entire class is remove, call here the output print function
+								// save info for printing (auxiliary variables)
+
+								//new var to add 
+								c->dead_tree_to_print     =       deadtree ;  
+								c->dead_stem_b_to_print   =       deadtree * s->value[TREE_STEM_C]  ; 
+								c->dead_branch_b_to_print  =      deadtree * s->value[TREE_BRANCH_C]  ; 
+								c->dead_croot_b_to_print   =      deadtree * s->value[TREE_CROOT_C] ; 
+
+								c->thinned_tree_to_print   =       0    ;     
+								c->hwp_to_print            =       0.   ;
+								c->thinned_branch_to_print =      0.  ; /*  branch volume removed (m3/ha/yr) */
+								c->thinned_stem_to_print   =      0. ;
+								c->thinned_stem2_to_print  =      0.;
+
+								EOY_print_output_class_level_mortality(c, height, dbh, age, species, year);
+			
+
+								/* remove dead C and N biomass */
+								tree_biomass_remove ( c, height, dbh, age, species, deadtree , nat_man);
+
+							
+								/* litter fluxes and pools */
+								littering             ( c, s );
+
+								// ad this point we should have the printing of the tree biomass removed and everything
+
+								/* call remove_tree_class */
+								if ( ! tree_class_remove(c, height, dbh, age, species) )
+								{
+									logger_error(g_debug_log, "unable to remove tree class");
+									exit(1);
+								}
+
+			
+								deadtree = 0;
+								livetree = 0;
+
+								/* check */
+								CHECK_CONDITION( s->value[CANOPY_COVER_PROJ] ,  > , s->value[CANOPY_COVER_PROJ] + eps );
+								
+								c->GREFFMORT_HAPPENS = 1 ;
+
+								goto height_end; 
+
+							}	
+						}
+					}
 				}
 			}
-			next_dbh :
-		}
 
 		} // loop in the same layer for all the heigth
 	}
 
-
+		
     height_end:
 
 	 							//printf("in mortaliy GEff  height              = %d  \n", height);
