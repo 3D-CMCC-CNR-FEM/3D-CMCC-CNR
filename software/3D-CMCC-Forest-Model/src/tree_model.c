@@ -130,7 +130,7 @@ int Tree_model_daily (matrix_t *const m, const int cell, const int day, const in
 	{
 	   c->PRINT_MAN_HEADER = 0  ;    // serve per eventualmente stampare l header dell output file 
 
-	   EOY_print_output_class_level_management(c, 0, 0, 0, 0, year);
+	   EOY_print_output_class_level_mortality(c, 0, 0, 0, 0, year);
 	}
 
 	c->PRINT_MAN_HEADER = 1 ; 
@@ -508,7 +508,7 @@ int Tree_model_daily (matrix_t *const m, const int cell, const int day, const in
 												c->thinned_stem_to_print   =   0. ;
 												c->thinned_stem2_to_print  =    0.;
 
-												EOY_print_output_class_level_management(c, height, dbh, age, species, year);
+												EOY_print_output_class_level_mortality(c, height, dbh, age, species, year);
 											}
 
                                          }
@@ -542,7 +542,7 @@ int Tree_model_daily (matrix_t *const m, const int cell, const int day, const in
 												c->thinned_stem_to_print   =   0. ;
 												c->thinned_stem2_to_print  =    0.;
 
-												EOY_print_output_class_level_management(c, height, dbh, age, species, year);
+												EOY_print_output_class_level_mortality(c, height, dbh, age, species, year);
 		 									}
 							      	}
 
