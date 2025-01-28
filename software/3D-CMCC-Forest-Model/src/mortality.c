@@ -121,7 +121,7 @@ void self_thinning_mortality_new(cell_t *const c, const int layer, const int yea
 					// for forest navigator test: we use a relaxation factor. so that we remove smoothly the trees
 						// after some test, with 10% we have an exponential decrease of living trees
 
-						tree_to_rm2 = round(tree_remove_st*0.1)  ;
+						tree_to_rm2 = round(tree_remove_st*self_thinning_rf)  ;
 						deadtree = tree_to_rm2;
 
 						//deadtree = tree_remove_st;
