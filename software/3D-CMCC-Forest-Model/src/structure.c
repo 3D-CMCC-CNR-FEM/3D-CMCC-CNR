@@ -551,7 +551,7 @@ int annual_forest_structure(cell_t* const c, const int year)
 			}
 		    
 		}
-		next_layer :	
+		//next_layer :	
 	}
 	for_class_end :
 	logger(g_debug_log, "**************************************\n");
