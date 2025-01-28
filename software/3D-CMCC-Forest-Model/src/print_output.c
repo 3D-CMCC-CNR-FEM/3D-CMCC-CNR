@@ -1493,7 +1493,7 @@ void EOY_print_output_cell_level_mc(cell_t *const c, const int year, const int y
 // jan.2025 print the mortality data
 
 
-void EOY_print_output_class_level_management(cell_t *const c, const int height, const int dbh, const int age, const int species, const int year)
+void EOY_print_output_class_level_mortality(cell_t *const c, const int height, const int dbh, const int age, const int species, const int year)
 {
 // this version allows to print for each output date, for each row the output according to each class
 
