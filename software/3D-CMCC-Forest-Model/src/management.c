@@ -55,7 +55,13 @@ static int harvesting (cell_t *const c, const int height, const int dbh, const i
     // update class level n_trees
      c->n_trees -=   s->counter[N_TREE];
 
-    // save info for printing
+    // save info for printing (auxiliary variables)
+
+    //new var to add 
+    c->dead_tree_to_print     =      0 ;  
+	c->dead_stem_b_to_print   =      0. ; 
+	c->dead_branch_b_to_print  =      0. ; 
+	c->dead_croot_b_to_print   =      0. ; 
 
 	c->thinned_tree_to_print   =      s->counter[THINNED_TREE]     ;     
     c->hwp_to_print            =      s->value[C_HWP];
@@ -104,6 +110,9 @@ int forest_management (cell_t *const c, const int day, const int month, const in
 	age_t *a;
 	species_t *s;
  
+    // in the previous version we used to use the management file only for management related mortality
+	// now we move it in tree_model, as also natural-mortality data are printed.
+	#if 0
     if ( (c->dos == 1) & ((MANAGEMENT_VAR == g_settings->management) || (MANAGEMENT_ON == g_settings->management)))
 	{
 	   c->PRINT_MAN_HEADER = 0  ;    // serve per eventualmente stampare l header dell output file 
@@ -112,6 +121,7 @@ int forest_management (cell_t *const c, const int day, const int month, const in
 	}
 
 	c->PRINT_MAN_HEADER = 1 ; 
+   #endif 
 
     // REGENERATION WHEN MAN = OFF 
 
@@ -736,6 +746,11 @@ void thinning (cell_t *const c, const int height, const int dbh, const int age, 
 
             // let s save here the info we need 
 
+            //new var to add 
+            c->dead_tree_to_print     =      0 ;  
+	        c->dead_stem_b_to_print   =      0. ; 
+	        c->dead_branch_b_to_print  =      0. ; 
+	        c->dead_croot_b_to_print   =      0. ; 
 
             c->thinned_tree_to_print   =      s->counter[THINNED_TREE]     ;     
             c->hwp_to_print            =      s->value[C_HWP];
@@ -756,6 +771,11 @@ void thinning (cell_t *const c, const int height, const int dbh, const int age, 
         	littering             ( c, s );
 
 			// let s save here the info we need  
+            //new var to add 
+    		c->dead_tree_to_print     =      0 ;  
+			c->dead_stem_b_to_print   =      0. ; 
+			c->dead_branch_b_to_print  =      0. ; 
+			c->dead_croot_b_to_print   =      0. ; 
 
 			c->thinned_tree_to_print   =      s->counter[THINNED_TREE]     ;     
             c->hwp_to_print            =      s->value[C_HWP];
