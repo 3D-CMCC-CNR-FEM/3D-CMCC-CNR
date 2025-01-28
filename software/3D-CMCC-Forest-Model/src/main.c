@@ -1968,9 +1968,12 @@ int main(int argc, char *argv[]) {
 						//		, matrix->cells[cell].y
 						//		, day+1, month+1, year+g_settings->year_start
 						//);
+
+							#if 1  
 								printf("ok cell_model BALANCE CLOSURE (%02d-%02d-%d)\n"
 								, day+1, month+1, year+g_settings->year_start
-						);
+						    );
+							#endif 
 
 					}
                   
