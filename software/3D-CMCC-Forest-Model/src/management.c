@@ -69,7 +69,7 @@ static int harvesting (cell_t *const c, const int height, const int dbh, const i
     c->thinned_stem_to_print   =  s->value[VOLUME_HWP] ;
 	c->thinned_stem2_to_print  =   s->value[VOLUME2_HWP];
 
-    EOY_print_output_class_level_management(c, height, dbh, age, species, year);
+    EOY_print_output_class_level_mortality(c, height, dbh, age, species, year);
 
     /* litter fluxes and pools */
 	littering             ( c, s );
@@ -117,7 +117,7 @@ int forest_management (cell_t *const c, const int day, const int month, const in
 	{
 	   c->PRINT_MAN_HEADER = 0  ;    // serve per eventualmente stampare l header dell output file 
 
-	   EOY_print_output_class_level_management(c, 0, 0, 0, 0, year);
+	   EOY_print_output_class_level_mortality(c, 0, 0, 0, 0, year);
 	}
 
 	c->PRINT_MAN_HEADER = 1 ; 
@@ -759,7 +759,7 @@ void thinning (cell_t *const c, const int height, const int dbh, const int age, 
 			c->thinned_stem2_to_print  =   s->value[VOLUME2_HWP];
                   
             // we need to trasfer the information to print 
-            EOY_print_output_class_level_management(c, height, dbh, age, species, year);
+            EOY_print_output_class_level_mortality(c, height, dbh, age, species, year);
 
 		}
 			else   // comment: this should not happen! anyhow we should set a minimum we have to leave in the stand.
@@ -783,7 +783,7 @@ void thinning (cell_t *const c, const int height, const int dbh, const int age, 
             c->thinned_stem_to_print   =  s->value[VOLUME_HWP] ;
 			c->thinned_stem2_to_print  =   s->value[VOLUME2_HWP];
 
-            EOY_print_output_class_level_management(c, height, dbh, age, species, year);	  
+            EOY_print_output_class_level_mortality(c, height, dbh, age, species, year);	  
 
 			/* remove completely all trees */
 			tree_class_remove   (c, height, dbh, age, species );
