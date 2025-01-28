@@ -43,6 +43,7 @@ void self_thinning_mortality_new(cell_t *const c, const int layer, const int yea
 	int nat_man;   /* natural or managed mortality 0 = natural; 1 = managed */
 
 	int tree_to_rm2 = 0 ;
+	double dbh_temp = 0. ;
 
 	height_t *h;
 	dbh_t *d;
@@ -89,22 +90,20 @@ void self_thinning_mortality_new(cell_t *const c, const int layer, const int yea
 
 		h = &c->heights[height];
 
-			//printf(" in self thin c->heights[height] %f!!!\n",c->heights[height].value);
+		// printf(" in self thin c->heights[height] %f!!!\n",c->heights[height].value);
 		// ddalmo : added, as the selfthinning bc of crown competition is whitin the same layer...
 
 		if( layer == c->heights[height].height_z )
 			{
-
-
 			for ( dbh = h->dbhs_count - 1; dbh >= 0; --dbh)
 			{
 				d = &c->heights[height].dbhs[dbh];
-
+                dbh_temp = c->heights[height].dbhs[dbh].value; 
 				// Skip selt-thinning tree removal is large trees
 
-				if (d < self_thinning_treshold)
+				if (dbh_temp < self_thinning_treshold)
                 {
-
+                 
 					for ( age = 0; age < d->ages_count ; ++age )
 					{
 						a = &c->heights[height].dbhs[dbh].ages[age];
@@ -125,12 +124,12 @@ void self_thinning_mortality_new(cell_t *const c, const int layer, const int yea
 							// for forest navigator test: we use a relaxation factor. so that we remove smoothly the trees
 							// after some test, with 10% we have an exponential decrease of living trees
 
-							tree_to_rm2 = round(tree_remove_st*0.1)  ;
+							tree_to_rm2 = round(tree_remove_st*self_thinning_rf)  ;
 							deadtree = tree_to_rm2;
 
 							//deadtree = tree_remove_st;
 						
-						
+						    
 							livetree -= deadtree;
 			
 							// check if this is larger than the number of trees in the class
@@ -171,6 +170,7 @@ void self_thinning_mortality_new(cell_t *const c, const int layer, const int yea
 
 
 								//printf(" SONO THIN PRIMA DI TREE BIOMASS REMOVE \n");
+								printf(" SONO SELFTHIN PRIMA DI TREE BIOMASS REMOVE deadtree %d \n", deadtree);
 
 								//FIXME
 								/* remove dead C and N biomass */
