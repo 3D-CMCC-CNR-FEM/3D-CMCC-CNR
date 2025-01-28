@@ -119,9 +119,22 @@ int Tree_model_daily (matrix_t *const m, const int cell, const int day, const in
 
 	/****************************************************************************/
 
+	 
+
 	if ( ! day && ! month )
 	{
                 printf("\n anno, year= %d\n",c->years[year].year);
+
+            //if ( (c->dos == 1) & ((MANAGEMENT_VAR == g_settings->management) || (MANAGEMENT_ON == g_settings->management)))
+	  if ( (c->dos == 1))
+	{
+	   c->PRINT_MAN_HEADER = 0  ;    // serve per eventualmente stampare l header dell output file 
+
+	   EOY_print_output_class_level_management(c, 0, 0, 0, 0, year);
+	}
+
+	c->PRINT_MAN_HEADER = 1 ; 
+
 
                // ddalmo at some point: let's perform the if statement here
                //if (MANAGEMENT_VAR == g_settings->management || MANAGEMENT_ON == g_settings->management)
@@ -417,7 +430,7 @@ int Tree_model_daily (matrix_t *const m, const int cell, const int day, const in
 							// printf("BEFORE mortaliy GEff  m->cells[cell].heights_count               = %d \n ", m->cells[cell].heights_count);
 								 
 
-							if ( ! growth_efficiency_mortality ( c, height, dbh, age, species ) )
+							if ( ! growth_efficiency_mortality ( c, height, dbh, age, species ,year) )
 							{
 
 								/* turnover */
@@ -472,11 +485,31 @@ int Tree_model_daily (matrix_t *const m, const int cell, const int day, const in
 
 
                                             /* Mortality based on tree Age (LPJ) */
-											age_mortality        ( c, height, dbh, age, species );
+											age_mortality        ( c, height, dbh, age, species ,year);
 
 
 							          		 /* Mortality based on stochasticity */
-											stochastic_mortality ( c, height, dbh, age, species );
+
+
+											stochastic_mortality ( c, height, dbh, age, species ,year);
+
+
+											if (s->counter[DEAD_TREE] > 0 )
+											{                             
+												//new var to add 
+												c->dead_tree_to_print     =       s->counter[DEAD_TREE];  
+												c->dead_stem_b_to_print   =       s->counter[DEAD_TREE] * s->value[TREE_STEM_C]  ; 
+												c->dead_branch_b_to_print  =      s->counter[DEAD_TREE] * s->value[TREE_BRANCH_C]  ; 
+												c->dead_croot_b_to_print   =      s->counter[DEAD_TREE] * s->value[TREE_CROOT_C] ; 
+
+												c->thinned_tree_to_print   =       0    ;     
+												c->hwp_to_print            =       0.;
+												c->thinned_branch_to_print =      0.  ; /*  stem volume removed (m3/ha/yr) */
+												c->thinned_stem_to_print   =   0. ;
+												c->thinned_stem2_to_print  =    0.;
+
+												EOY_print_output_class_level_management(c, height, dbh, age, species, year);
+											}
 
                                          }
 
@@ -485,11 +518,32 @@ int Tree_model_daily (matrix_t *const m, const int cell, const int day, const in
                                     {         // with management ON or OFF always compute mortality
 	
 											/* Mortality based on tree Age (LPJ) */
-											age_mortality        ( c, height, dbh, age, species );
+											age_mortality        ( c, height, dbh, age, species ,year);
 
 
 											/* Mortality based on stochasticity */
-											stochastic_mortality ( c, height, dbh, age, species );
+											stochastic_mortality ( c, height, dbh, age, species,year );
+
+                                   			 // PRINT MORTALITY DATA 
+
+
+											 if (s->counter[DEAD_TREE] > 0 )
+			   								{  
+
+												//new var to add 
+												c->dead_tree_to_print     =       s->counter[DEAD_TREE];  
+												c->dead_stem_b_to_print   =       s->counter[DEAD_TREE] * s->value[TREE_STEM_C]  ; 
+												c->dead_branch_b_to_print  =      s->counter[DEAD_TREE] * s->value[TREE_BRANCH_C]  ; 
+												c->dead_croot_b_to_print   =      s->counter[DEAD_TREE] * s->value[TREE_CROOT_C] ; 
+
+												c->thinned_tree_to_print   =       0    ;     
+												c->hwp_to_print            =       0.;
+												c->thinned_branch_to_print =      0.  ; /*  stem volume removed (m3/ha/yr) */
+												c->thinned_stem_to_print   =   0. ;
+												c->thinned_stem2_to_print  =    0.;
+
+												EOY_print_output_class_level_management(c, height, dbh, age, species, year);
+		 									}
 							      	}
 
                                     // update 
@@ -549,7 +603,7 @@ int Tree_model_daily (matrix_t *const m, const int cell, const int day, const in
 							else
 							{
 
-                         
+                                // GROWTH EFFICIENCY MORTALITY 
 								 
 								//FIXME here model should remove class just after have checked that the balances are closed
 								//so model has to include c fluxes that go out to litter and cwd
