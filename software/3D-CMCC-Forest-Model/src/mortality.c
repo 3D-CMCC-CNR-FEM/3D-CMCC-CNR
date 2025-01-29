@@ -97,7 +97,7 @@ void self_thinning_mortality_new(cell_t *const c, const int layer, const int yea
 			{
 			for ( dbh = h->dbhs_count - 1; dbh >= 0; --dbh)
 			{
-				//d = &c->heights[height].dbhs[dbh];
+				d = &c->heights[height].dbhs[dbh];
                 dbh_temp = c->heights[height].dbhs[dbh].value; 
 				// Skip selt-thinning tree removal is large trees
 
