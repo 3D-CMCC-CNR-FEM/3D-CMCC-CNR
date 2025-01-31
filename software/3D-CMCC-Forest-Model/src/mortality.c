@@ -158,86 +158,54 @@ void self_thinning_mortality_new(cell_t *const c, const int layer, const int yea
 
 								/* recompute dbhdc eff */
 								dbhdc_function         (c, layer, height, dbh, age, species, year);
-								/* recompute dbhdc eff */
-								dbhdc_function         (c, layer, height, dbh, age, species, year);
 
-								/* recompute crown area */
-								crown_allometry        ( c, height, dbh, age, species );
 								/* recompute crown area */
 								crown_allometry        ( c, height, dbh, age, species );
 
 								/* recompute canopy cover with */
 								s->value[CANOPY_COVER_PROJ] = s->value[CROWN_AREA_PROJ] * livetree / g_settings->sizeCell;
-								/* recompute canopy cover with */
-								s->value[CANOPY_COVER_PROJ] = s->value[CROWN_AREA_PROJ] * livetree / g_settings->sizeCell;
-
+								
 								/* check for recompued canopy cover */
 								c->tree_layers[layer].layer_cover_proj += s->value[CANOPY_COVER_PROJ];
-								/* check for recompued canopy cover */
-								c->tree_layers[layer].layer_cover_proj += s->value[CANOPY_COVER_PROJ];
-
+						
 
 								//printf(" SONO THIN PRIMA DI TREE BIOMASS REMOVE \n");
-								printf(" SONO SELFTHIN PRIMA DI TREE BIOMASS REMOVE deadtree %d \n", deadtree);
+								//printf(" SONO SELFTHIN PRIMA DI TREE BIOMASS REMOVE deadtree %d \n", deadtree);
 
 								//FIXME
 								/* remove dead C and N biomass */
 								tree_biomass_remove ( c, height, dbh, age, species, deadtree, nat_man );
-								//FIXME
-								/* remove dead C and N biomass */
-								tree_biomass_remove ( c, height, dbh, age, species, deadtree, nat_man );
-
+								
 								/* update live and dead tree (do not move above) */
 								s->counter[DEAD_TREE] += deadtree;
 								s->counter[N_TREE]     = livetree;
 								c->n_trees            -= deadtree;
-								/* update live and dead tree (do not move above) */
-								s->counter[DEAD_TREE] += deadtree;
-								s->counter[N_TREE]     = livetree;
-								c->n_trees            -= deadtree;
-
+								
 								deadtree = 0;
 								livetree = 0;
-								deadtree = 0;
-								livetree = 0;
-
+								
 								/* check */
 								CHECK_CONDITION( s->value[CANOPY_COVER_PROJ] ,  > , s->value[CANOPY_COVER_PROJ] + eps );
 								goto height_end; 
-								/* check */
-								CHECK_CONDITION( s->value[CANOPY_COVER_PROJ] ,  > , s->value[CANOPY_COVER_PROJ] + eps );
-								goto height_end; 
-
+								
 							} else {   // removing more trees than the ones in the class
 
 								deadtree = s->counter[N_TREE];
 								// remove the ENTIRE CLASS; 
 								//the issue is, go on, 
-								deadtree = s->counter[N_TREE];
-								// remove the ENTIRE CLASS; 
-								//the issue is, go on, 
-
+								
 								/* update at cell level */
 								c->daily_dead_tree +=  s->counter[N_TREE];
-								/* update at cell level */
-								c->daily_dead_tree +=  s->counter[N_TREE];
-
+								
 								/* update layer trees */
 								c->tree_layers[layer].layer_n_trees -= s->counter[N_TREE];
-								/* update layer trees */
-								c->tree_layers[layer].layer_n_trees -= s->counter[N_TREE];
-
+								
 
 								/* update layer density */
 								c->tree_layers[layer].layer_density = c->tree_layers[layer].layer_n_trees / g_settings->sizeCell;
-								/* update layer density */
-								c->tree_layers[layer].layer_density = c->tree_layers[layer].layer_n_trees / g_settings->sizeCell;
-
+								
 								/* update layer cover proj */
 								c->tree_layers[layer].layer_cover_proj  -= s->value[CANOPY_COVER_PROJ];
-								/* update layer cover proj */
-								c->tree_layers[layer].layer_cover_proj  -= s->value[CANOPY_COVER_PROJ];
-
 
 
 												/* reset to zero n_trees */
