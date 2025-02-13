@@ -373,12 +373,12 @@ void soil_decomposition (cell_t *const c, const meteo_daily_t *const meteo_daily
 		c->daily_soil2N_to_soil3N = pot_soil2C_loss / SOIL2_CN;
 	}
 
-	/* medium microbial recycling pool */
+	/* slow microbial recycling pool */
 	if ( c->soil3C > 0. )
 	{
 		/* carbon */
-		c->daily_soil2_het_resp   = pot_soil2C_loss * RFS2S3;
-		c->daily_soil3C_to_soil4C = pot_soil2C_loss * ( 1. - RFS2S3 );
+		c->daily_soil3_het_resp   = pot_soil3C_loss * RFS3S4;
+		c->daily_soil3C_to_soil4C = pot_soil3C_loss * ( 1. - RFS3S4 );
 		/* nitrogen */
 		c->daily_soil3N_to_soil4N = pot_soil3C_loss / SOIL3_CN;
 	}
